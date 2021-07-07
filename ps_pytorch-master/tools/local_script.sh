@@ -1,5 +1,5 @@
-KEY_PEM_DIR=/home/hwang/My_Code/AWS/HongyiScript.pem
-KEY_PEM_NAME=HongyiScript.pem
+KEY_PEM_DIR=/home/dpmp/dpmp-gpu/ps_pytorch-master
+KEY_PEM_NAME=1.pem
 PUB_IP_ADDR="$1"
 echo "Public address of master node: ${PUB_IP_ADDR}"
 
