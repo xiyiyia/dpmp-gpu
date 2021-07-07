@@ -9,6 +9,7 @@ _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 _HOST = '163.143.0.101'
 _PORT = '6003'
 
+export GRPC_VERBOSITY = DEBUG
 
 class servicer(msg_pb2_grpc.MsgServiceServicer):
 
@@ -21,7 +22,7 @@ class servicer(msg_pb2_grpc.MsgServiceServicer):
 def serve():
     grpcServer = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
     msg_pb2_grpc.add_MsgServiceServicer_to_server(servicer(), grpcServer)
-    grpcServer.add_insecure_port(_HOST + ':' + _PORT, GRPC_VERBOSITY=debug)
+    grpcServer.add_insecure_port(_HOST + ':' + _PORT)
     grpcServer.start()
     try:
         while True:
