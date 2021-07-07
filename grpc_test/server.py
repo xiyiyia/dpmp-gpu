@@ -3,7 +3,7 @@
 import grpc
 import time
 from concurrent import futures
-from stream import stream_pb2, stream_pb2_grpc
+from msg import msg_pb2, msg_pb2_grpc
 
 _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 _HOST = '163.143.0.101'
