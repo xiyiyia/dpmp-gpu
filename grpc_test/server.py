@@ -24,6 +24,7 @@ def serve():
     msg_pb2_grpc.add_MsgServiceServicer_to_server(servicer(), grpcServer)
     grpcServer.add_insecure_port(_HOST + ':' + _PORT)
     grpcServer.start()
+    print(1)
     try:
         while True:
             time.sleep(_ONE_DAY_IN_SECONDS)
