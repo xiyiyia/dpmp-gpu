@@ -1,7 +1,7 @@
 from __future__ import print_function
 import sys
 import threading
-import Queue
+import queue
 import paramiko as pm
 import boto3
 import time
@@ -20,15 +20,15 @@ class Cfg(dict):
        return item
 
 cfg = Cfg({
-    "name" : "Timeout",      # Unique name for this specific configuration
-    "key_name": "HongyiScript",          # Necessary to ssh into created instances
+    "name" : "pc2",      # Unique name for this specific configuration
+    "key_name": "pc2",          # Necessary to ssh into created instances
     # Cluster topology
     "n_masters" : 1,                      # Should always be 1
     "n_workers" : 8,
     "num_replicas_to_aggregate" : "8",
     "method" : "spot",
     # Region speficiation
-    "region" : "us-west-2",
+    "region" : "pc-region-name",
     "availability_zone" : "us-west-2b",
     # Machine type - instance type configuration.
     "master_type" : "m4.2xlarge",
