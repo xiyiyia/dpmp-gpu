@@ -84,7 +84,8 @@ class NN_Trainer(object):
                 # load the training info
                 print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}  Prec@1: {}  Prec@5: {}  Time Cost: {}'.format(
                     i, batch_idx * len(data), len(train_loader.dataset),
-                    100. * batch_idx / len(train_loader), loss.data[0], 
+                    # 100. * batch_idx / len(train_loader), loss.data[0], 
+                    100. * batch_idx / len(train_loader), loss.item(), 
                     prec1.numpy()[0], 
                     prec5.numpy()[0], time.time()-iter_start_time))
             # we evaluate the model performance on end of each epoch
