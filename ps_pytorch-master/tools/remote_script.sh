@@ -11,7 +11,7 @@ cp config ~/.ssh/
 cd ~/.ssh
 eval `ssh-agent -s`
 ssh-add ${KEY_PEM_NAME}
-ssh-keygen -t rsa -b 4096 -C "hongyiwang.hdu@gmail.com"
+ssh-keygen -t rsa -b 4096 -C "fuboqian@cug.edu.cn"
 
 for i in $(seq 2 $DEEPLEARNING_WORKERS_COUNT);
   do
