@@ -22,7 +22,7 @@ import helloworld_pb2
 import helloworld_pb2_grpc
 
 
-_HOST = '163.143.0.120'
+_HOST = 'localhost'
 _PORT = '6003'
 
 def run():
