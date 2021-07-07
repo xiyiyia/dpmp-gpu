@@ -1,5 +1,5 @@
-KEY_PEM_DIR=/home/dpmp/dpmp-gpu/ps_pytorch-master
-KEY_PEM_NAME=1.pem
+KEY_PEM_DIR=/root/.ssh/id_rsa.pub
+KEY_PEM_NAME=id_rsa.pub
 PUB_IP_ADDR="$1"
 echo "Public address of master node: ${PUB_IP_ADDR}"
 
