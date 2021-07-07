@@ -99,7 +99,8 @@ class NN_Trainer(object):
         for data, y_batch in test_loader:
             data, target = Variable(data, volatile=True), Variable(y_batch)
             output = self.network(data)
-            test_loss += F.nll_loss(output, target, size_average=False).data[0] # sum up batch loss
+            # test_loss += F.nll_loss(output, target, size_average=False).data[0] # sum up batch loss
+            test_loss += F.nll_loss(output, target, size_average=False).item() # sum up batch loss
             prec1_tmp, prec5_tmp = accuracy(output.data, y_batch, topk=(1, 5))
             prec1_counter_ += prec1_tmp.numpy()[0]
             prec5_counter_ += prec5_tmp.numpy()[0]
