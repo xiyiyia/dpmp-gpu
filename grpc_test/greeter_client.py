@@ -30,7 +30,9 @@ def run():
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
     # conn = grpc.insecure_channel(_HOST + ':' + _PORT)
+    print(1)
     with grpc.insecure_channel(_HOST + ':' + _PORT) as channel:
+        print(1)
         stub = helloworld_pb2_grpc.GreeterStub(channel)
         response = stub.SayHello(helloworld_pb2.HelloRequest(name='you'))
     print("Greeter client received: " + response.message)
