@@ -3,7 +3,7 @@
 import grpc
 from msg import msg_pb2, msg_pb2_grpc
 
-_HOST = '163.143.0.120'
+_HOST = '163.143.0.101'
 _PORT = '6003'
 
 def run():
