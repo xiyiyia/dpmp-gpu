@@ -23,7 +23,7 @@ def serve():
     grpcServer = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
     msg_pb2_grpc.add_MsgServiceServicer_to_server(servicer(), grpcServer)
     # grpcServer.add_insecure_port(_HOST + ':' + _PORT)
-    grpcServer.add_insecure_port('[:]:' + _PORT)
+    grpcServer.add_insecure_port('[::]:' + _PORT)
     grpcServer.start()
     print(1)
     try:
