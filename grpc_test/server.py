@@ -10,7 +10,7 @@ _HOST = '163.143.0.101'
 _PORT = '6003'
 
 
-class servicer(msg_pb2_grpc.msgServiceServicer):
+class servicer(msg_pb2_grpc.MsgServiceServicer):
 
     def SimpleFun(self, request, context):
         str = request.text
