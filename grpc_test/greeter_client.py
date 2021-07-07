@@ -22,11 +22,15 @@ import helloworld_pb2
 import helloworld_pb2_grpc
 
 
+_HOST = '163.143.0.101'
+_PORT = '6003'
+
 def run():
     # NOTE(gRPC Python Team): .close() is possible on a channel and should be
     # used in circumstances in which the with statement does not fit the needs
     # of the code.
-    with grpc.insecure_channel('163.143.0.120:6003') as channel:
+    # conn = grpc.insecure_channel(_HOST + ':' + _PORT)
+    with grpc.insecure_channel(_HOST + ':' + _PORT) as channel:
         stub = helloworld_pb2_grpc.GreeterStub(channel)
         response = stub.SayHello(helloworld_pb2.HelloRequest(name='you'))
     print("Greeter client received: " + response.message)
