@@ -9,7 +9,7 @@ _ONE_DAY_IN_SECONDS = 60 * 60 * 24
 _HOST = '163.143.0.101'
 _PORT = '6003'
 
-export GRPC_VERBOSITY = DEBUG
+# export GRPC_VERBOSITY = DEBUG
 
 class servicer(msg_pb2_grpc.MsgServiceServicer):
 
