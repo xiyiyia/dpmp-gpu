@@ -35,8 +35,11 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     helloworld_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
     server.add_insecure_port('[::]:6003')
+    print(1)
     # server.add_insecure_port(_HOST + ':' + _PORT)
+    print(1)
     server.start()
+    print(1)
     server.wait_for_termination()
 
 
