@@ -32,7 +32,7 @@ if __name__ == "__main__":
     os.environ['MASTER_ADDR'] = '163.143.0.101'
     os.environ['MASTER_PORT'] = '6003'
     dist.init_process_group('gloo', rank=2, world_size=size)
-    run(2, size)
+    # run(2, size)
     # for rank in range(size):
     #     p = mp.Process(target=init_process, args=(rank, size, run))
     #     p.start()
