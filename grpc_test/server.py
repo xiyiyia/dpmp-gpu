@@ -10,17 +10,17 @@ _HOST = '163.143.0.101'
 _PORT = '6003'
 
 
-class servicer(stream_pb2_grpc.StreamServiceServicer):
+class servicer(msg_pb2_grpc.msgServiceServicer):
 
     def SimpleFun(self, request, context):
         str = request.text
         print("received: " + str)
-        return stream_pb2.ResponseData(text=('hello,gRPC'))
+        return msg_pb2.ResponseData(text=('hello,gRPC'))
 
 
 def serve():
     grpcServer = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
-    stream_pb2_grpc.add_StreamServiceServicer_to_server(servicer(), grpcServer)
+    msg_pb2_grpc.add_MsgServiceServicer_to_server(servicer(), grpcServer)
     grpcServer.add_insecure_port(_HOST + ':' + _PORT)
     grpcServer.start()
     try:
