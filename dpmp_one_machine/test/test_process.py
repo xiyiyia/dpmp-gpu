@@ -71,6 +71,7 @@ def partition_dataset():
     train_set = torch.utils.data.DataLoader(partition,
                                          batch_size=int(bsz),
                                          shuffle=True)
+    print(train_set, bsz)
     return train_set, bsz
 
 # def run(rank, size):
@@ -185,8 +186,10 @@ def run(rank, size, model):
         for data, target in train_set:
             optimizer.zero_grad()
             output = model(data)
+            print(output)
             loss = F.nll_loss(output, target.cuda())
             epoch_loss += loss.item()
+            print(loss)
             loss.backward()
             average_gradients(model)
             optimizer.step()
