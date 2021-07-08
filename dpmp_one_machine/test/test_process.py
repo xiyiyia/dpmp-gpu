@@ -60,7 +60,7 @@ def partition_dataset():
     dataset = torchvision.datasets.MNIST('./data', train=True, download=True,
                              transform=transforms.Compose([
                                 transforms.RandomCrop(32, padding=4),
-                                transforms.RandomHorizontalFlip(),
+                                # transforms.RandomHorizontalFlip(),
                                 transforms.ToTensor(),
                                 transforms.Normalize((0.1307,), (0.3081,))
                              ]))
