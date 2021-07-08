@@ -149,17 +149,17 @@ def make_layers(cfg, batch_norm=False):
 
     input_channel = 1
     for l in cfg:
-        if l == 'M':
-            layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
-            continue
+      if l == 'M':
+          layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
+          continue
 
-        layers += [nn.Conv2d(input_channel, l, kernel_size=3, padding=1)]
+      layers += [nn.Conv2d(input_channel, l, kernel_size=3, padding=1)]
+      print(layers)
+      if batch_norm:
+          layers += [nn.BatchNorm2d(l)]
 
-        if batch_norm:
-            layers += [nn.BatchNorm2d(l)]
-
-        layers += [nn.ReLU(inplace=True)]
-        input_channel = l
+      layers += [nn.ReLU(inplace=True)]
+      input_channel = l
 
     return nn.Sequential(*layers)
 
