@@ -40,11 +40,11 @@ class DataPartitioner(object):
     def __init__(self, data, sizes=[0.7, 0.2, 0.1], seed=1234):
         self.data = data
         self.partitions = []
-        rng = random.random()
-        rng.seed(seed)
+        # rng = random.random()
+        random.seed(seed)
         data_len = len(data)
         indexes = [x for x in range(0, data_len)]
-        rng.shuffle(indexes)
+        random.shuffle(indexes)
 
         for frac in sizes:
             part_len = int(frac * data_len)
