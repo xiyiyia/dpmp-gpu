@@ -55,7 +55,7 @@ class DataPartitioner(object):
 
 """ Partitioning MNIST """
 def partition_dataset():
-    dataset = datasets.MNIST('./data', train=True, download=True,
+    dataset = torchvision.datasets.MNIST('./data', train=True, download=True,
                              transform=transforms.Compose([
                                  transforms.ToTensor(),
                                  transforms.Normalize((0.1307,), (0.3081,))
