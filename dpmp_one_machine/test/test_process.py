@@ -206,7 +206,7 @@ def run(rank, size, model):
           # print("你是什么脸")
           output = model(data)
           print(output,target)
-          loss = F.nll_loss(output, target)
+          loss = nn.CrossEntropyLoss(output, target)
           epoch_loss += loss.item()
           print(epoch_loss, loss)
           loss.backward()
