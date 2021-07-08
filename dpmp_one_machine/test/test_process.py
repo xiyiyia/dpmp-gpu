@@ -105,7 +105,7 @@ def allreduce(send, recv):
            accum[:] += send_buff[:]
        send_req.wait()
    recv[:] = accum[:]
-   
+
 """ Gradient averaging. """
 def average_gradients(model):
     size = float(dist.get_world_size())
@@ -189,8 +189,8 @@ def run(rank, size, model):
 
 def init_process(rank, size, fn, backend='gloo'):
     """ Initialize the distributed environment. """
-    # os.environ['MASTER_ADDR'] = '127.0.0.1'
-    # os.environ['MASTER_PORT'] = '29500'
+    os.environ['MASTER_ADDR'] = '127.0.0.1'
+    os.environ['MASTER_PORT'] = '29500'
     # dist.init_process_group(backend, rank=rank, world_size=size)
     # fn(rank, size)
 
@@ -215,7 +215,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
     args = parser.parse_args()
-
+    print(torch.cuda.device_count())
     size = args.g
     processes = []
     mp.set_start_method("spawn")
