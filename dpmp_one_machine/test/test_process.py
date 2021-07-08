@@ -189,8 +189,8 @@ def run(rank, size, model):
     for epoch in range(1):
         epoch_loss = 0.0
         for data, target in train_set:
-          data.cuda()
-          target.cuda()
+          data = data.cuda()
+          target = target.cuda()
           # print("你是什么脸")
           optimizer.zero_grad()
           # print("你是什么脸")
