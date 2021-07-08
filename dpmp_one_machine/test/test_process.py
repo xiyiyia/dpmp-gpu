@@ -183,11 +183,14 @@ def run(rank, size, model):
                           lr=0.01, momentum=0.5)
     # print("你是什么脸")
     num_batches = math.ceil(len(train_set.dataset) / float(bsz))
+
+    # next(model.parameters()).is_cuda
+
     for epoch in range(1):
         epoch_loss = 0.0
         for data, target in train_set:
-          data.to('cuda')
-          target.to('cuda')
+          data.cuda()
+          target.cuda()
           # print("你是什么脸")
           optimizer.zero_grad()
           # print("你是什么脸")
