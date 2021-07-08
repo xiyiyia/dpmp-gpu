@@ -21,6 +21,8 @@ import time
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
+loss_function = nn.CrossEntropyLoss()
+
 """ Dataset partitioning helper """
 class Partition(object):
 
@@ -248,7 +250,7 @@ if __name__ == "__main__":
     size = args.g
     processes = []
     mp.set_start_method("spawn")
-    loss_function = nn.CrossEntropyLoss()
+    
     # torch.distributed.init_process_group(
     #     backend='nccl', world_size=N, init_method='...'
     # )
