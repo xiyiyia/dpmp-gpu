@@ -205,8 +205,8 @@ def run(rank, size, model):
           optimizer.zero_grad()
           # print("你是什么脸")
           output = model(data)
-          print(output,target)
-          loss = nn.CrossEntropyLoss(output, target)
+          print(len(output),len(target))
+          loss = loss_function(output, target)
           epoch_loss += loss.item()
           print(epoch_loss, loss)
           loss.backward()
@@ -248,7 +248,7 @@ if __name__ == "__main__":
     size = args.g
     processes = []
     mp.set_start_method("spawn")
-
+    loss_function = nn.CrossEntropyLoss()
     # torch.distributed.init_process_group(
     #     backend='nccl', world_size=N, init_method='...'
     # )
