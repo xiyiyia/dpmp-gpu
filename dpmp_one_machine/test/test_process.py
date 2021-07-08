@@ -178,22 +178,25 @@ def run(rank, size, model):
     train_set, bsz = partition_dataset()
     # train_set = train_set.cuda()
     # model = vgg11_bn()
+    print("你是什么脸")
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
-
+    print("你是什么脸")
     num_batches = math.ceil(len(train_set.dataset) / float(bsz))
-    for epoch in range(10):
+    for epoch in range(1):
         epoch_loss = 0.0
         for data, target in train_set:
-            optimizer.zero_grad()
-            output = model(data)
-            print(output)
-            loss = F.nll_loss(output, target)
-            epoch_loss += loss.item()
-            print(loss)
-            loss.backward()
-            average_gradients(model)
-            optimizer.step()
+          print("你是什么脸")
+          optimizer.zero_grad()
+          print("你是什么脸")
+          output = model(data)
+          print(output)
+          loss = F.nll_loss(output, target)
+          epoch_loss += loss.item()
+          print(loss)
+          loss.backward()
+          average_gradients(model)
+          optimizer.step()
         print('Rank ', dist.get_rank(), ', epoch ',
               epoch, ': ', epoch_loss / num_batches)
 
