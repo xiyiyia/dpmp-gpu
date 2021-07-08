@@ -175,7 +175,17 @@ def vgg11_bn():
 """ Distributed Synchronous SGD Example """
 def run(rank, size, model):
     torch.manual_seed(1234)
-    train_set, bsz = partition_dataset()
+    train_set_abort, bsz = partition_dataset()
+    dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
+                             transform=transforms.Compose([
+                                # transforms.Resize([32, 32]),
+                                transforms.ToTensor(),
+                                transforms.Normalize((0.1307,), (0.3081,))
+                             ]))
+    train_set = torch.utils.data.DataLoader(dataset,
+                                              batch_size=128,
+                                              shuffle=True,
+                                              )
     # train_set = train_set.cuda()
     # model = vgg11_bn()
     # print("你是什么脸")
