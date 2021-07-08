@@ -7,6 +7,7 @@ import os
 import sys
 import argparse
 import time
+import math
 from datetime import datetime
 import random
 import numpy as np
@@ -39,7 +40,7 @@ class DataPartitioner(object):
     def __init__(self, data, sizes=[0.7, 0.2, 0.1], seed=1234):
         self.data = data
         self.partitions = []
-        rng = Random()
+        rng = random.random()
         rng.seed(seed)
         data_len = len(data)
         indexes = [x for x in range(0, data_len)]
@@ -173,7 +174,7 @@ def run(rank, size, model):
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
 
-    num_batches = ceil(len(train_set.dataset) / float(bsz))
+    num_batches = math.ceil(len(train_set.dataset) / float(bsz))
     for epoch in range(10):
         epoch_loss = 0.0
         for data, target in train_set:
