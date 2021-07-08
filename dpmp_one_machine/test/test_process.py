@@ -138,11 +138,14 @@ class VGG(nn.Module):
         )
 
     def forward(self, x):
-        output = self.features(x)
-        output = output.view(output.size()[0], -1)
-        output = self.classifier(output)
+      print(x)
+      output = self.features(x)
+      print(output)
+      output = output.view(output.size()[0], -1)
+      print(output)
+      output = self.classifier(output)
 
-        return output
+      return output
 
 def make_layers(cfg, batch_norm=False):
     layers = []
@@ -154,7 +157,7 @@ def make_layers(cfg, batch_norm=False):
           continue
 
       layers += [nn.Conv2d(input_channel, l, kernel_size=3, padding=1)]
-      print(layers)
+      # print(layers)
       if batch_norm:
           layers += [nn.BatchNorm2d(l)]
 
