@@ -176,7 +176,7 @@ def vgg11_bn():
 def run(rank, size, model):
     torch.manual_seed(1234)
     train_set, bsz = partition_dataset()
-    train_set = train_set.cuda()
+    # train_set = train_set.cuda()
     # model = vgg11_bn()
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
