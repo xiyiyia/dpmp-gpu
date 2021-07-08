@@ -141,11 +141,11 @@ class VGG(nn.Module):
         )
 
     def forward(self, x):
-      print(x)
+      # print(x)
       output = self.features(x)
-      print(output)
+      # print(output)
       output = output.view(output.size()[0], -1)
-      print(output)
+      # print(output)
       output = self.classifier(output)
 
       return output
