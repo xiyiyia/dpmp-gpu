@@ -98,15 +98,15 @@ def allreduce(send, recv):
 
    for i in range(size - 1):
        if i % 2 == 0:
-           # Send send_buff
-           send_req = dist.isend(send_buff, right)
-           dist.recv(recv_buff, left)
-           accum[:] += recv_buff[:]
+          # Send send_buff
+          send_req = dist.isend(send_buff, right)
+          dist.recv(recv_buff, left)
+          accum[:] += recv_buff[:]
        else:
-           # Send recv_buff
-           send_req = dist.isend(recv_buff, right)
-           dist.recv(send_buff, left)
-           accum[:] += send_buff[:]
+          # Send recv_buff
+          send_req = dist.isend(recv_buff, right)
+          dist.recv(send_buff, left)
+          accum[:] += send_buff[:]
        send_req.wait()
    recv[:] = accum[:]
 
@@ -186,7 +186,7 @@ def run(rank, size, model):
         for data, target in train_set:
             optimizer.zero_grad()
             output = model(data)
-            loss = F.nll_loss(output, target)
+            loss = F.nll_loss(output, target.cuda())
             epoch_loss += loss.item()
             loss.backward()
             average_gradients(model)
@@ -207,7 +207,7 @@ def init_process(rank, size, fn, backend='gloo'):
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
-    print("done", model)
+    # print("done", model)
     fn(rank, size, model)
     # # Rank 1 gets one more input than rank 0.
     # inputs = [torch.tensor([1]).float() for _ in range(10 + rank)]
