@@ -176,6 +176,7 @@ def vgg11_bn():
 def run(rank, size, model):
     torch.manual_seed(1234)
     train_set, bsz = partition_dataset()
+    train_set = train_set.cuda()
     # model = vgg11_bn()
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
@@ -187,7 +188,7 @@ def run(rank, size, model):
             optimizer.zero_grad()
             output = model(data)
             print(output)
-            loss = F.nll_loss(output, target.cuda())
+            loss = F.nll_loss(output, target)
             epoch_loss += loss.item()
             print(loss)
             loss.backward()
