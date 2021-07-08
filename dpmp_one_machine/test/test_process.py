@@ -57,9 +57,9 @@ class DataPartitioner(object):
 
 """ Partitioning MNIST """
 def partition_dataset():
-    dataset = torchvision.datasets.MNIST('./data', train=True, download=True,
+    dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
                              transform=transforms.Compose([
-                                transforms.Resize([32, 32]),
+                                # transforms.Resize([32, 32]),
                                 transforms.ToTensor(),
                                 transforms.Normalize((0.1307,), (0.3081,))
                              ]))
@@ -152,7 +152,7 @@ class VGG(nn.Module):
 def make_layers(cfg, batch_norm=False):
     layers = []
 
-    input_channel = 1
+    input_channel = 3
     for l in cfg:
       if l == 'M':
           layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
