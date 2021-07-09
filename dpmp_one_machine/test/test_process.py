@@ -230,6 +230,7 @@ def init_process(rank, size, fn, backend='gloo'):
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
+    print(rank)
     # print("done", model)
     fn(rank, size, model)
     # # Rank 1 gets one more input than rank 0.
@@ -246,7 +247,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
     args = parser.parse_args()
-    # print(torch.cuda.device_count())
+    print(torch.cuda.device_count())
     size = args.g
     processes = []
     mp.set_start_method("spawn")
