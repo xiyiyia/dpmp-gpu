@@ -162,6 +162,8 @@ class ModelParallelvgg(VGG):
         super().__init__()
         self.cfg = [64,     'M', 128,      'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M']
         self.features = make_layers(self.cfg, batch_norm=True)
+        self.seq1 == self.features[0:int(len(self.features)/self.g)].copy()
+        self.seq2 == self.features[len(self.seq1) - 1:len(self.seq2) - len(self.seq1)].copy()
         self.classifier = nn.Sequential(
           nn.Linear(512, 4096),
           nn.ReLU(inplace=True),
@@ -174,26 +176,28 @@ class ModelParallelvgg(VGG):
         self.split_size = int(128/g)
         self.g = g
         if(g >= 2):
-          self.features = self.features.to('cuda:0')
-          self.classifier = self.classifier.to('cuda:1')
+          # self.features = self.features.to('cuda:0')
+          self.seq1 = self.seq1.to('cuda:0')
+          self.seq2 = self.seq2.to('cuda:1')
+          self.classifier = self.classifier
     def forward(self, x):
-      print(self.features)
+      # print(self.features)
       if(self.g >= 2):
         splits = iter(x.split(self.split_size, dim=0))
         s_next = next(splits)
-        s_prev = self.features(s_next).to('cuda:1')
+        s_prev = self.seq1(s_next).to('cuda:1')
         print(len(splits),len(s_prev),len(s_next))
         ret = []
 
         for s_next in splits:
-          s_prev = self.classifier(s_prev)
-          print(s_prev,s_next)
-          ret.append(self.fc(s_prev.view(s_prev.size(0), -1)))
+          s_prev = self.seq2(s_prev)
+          print(len(s_prev),len(s_next))
+          ret.append(self.classifier(s_prev.view(s_prev.size(0), -1)))
 
-          s_prev = self.features(s_next).to('cuda:1')
-          print(s_prev,s_next)
+          s_prev = self.seq1(s_next).to('cuda:1')
+          print(len(s_prev),len(s_next))
         
-        s_prev = self.classifier(s_prev)
+        s_prev = self.seq2(s_prev)
         ret.append(self.fc(s_prev.view(s_prev.size(0), -1)))
         # output = self.features(x.to('cuda:0'))
         # output = output.view(output.size()[0], -1)
