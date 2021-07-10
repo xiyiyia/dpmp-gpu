@@ -195,7 +195,7 @@ class ModelParallelvgg(VGG):
         # output = self.classifier(output).to('cuda:1')
         return torch.cat(ret)
       else:
-        output = self.features()
+        output = self.features(x)
         output = output.view(output.size()[0], -1)
         output = self.classifier(output)
         return output
