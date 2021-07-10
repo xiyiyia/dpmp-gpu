@@ -255,7 +255,9 @@ def run(rank, size, model):
           loss.backward()
           # average_gradients(model)
           optimizer.step()
-        print('Rank ', dist.get_rank(), ', epoch ',
+        # print('Rank ', dist.get_rank(), ', epoch ',
+        #       epoch, ': ', epoch_loss / num_batches)
+        print('Rank ', 0, ', epoch ',
               epoch, ': ', epoch_loss / num_batches)
 
 def init_process(rank, size, fn, backend='gloo'):
