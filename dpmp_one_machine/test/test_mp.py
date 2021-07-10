@@ -181,13 +181,16 @@ class ModelParallelvgg(VGG):
         splits = iter(x.split(self.split_size, dim=0))
         s_next = next(splits)
         s_prev = self.features(s_next).to('cuda:1')
+        print(splits,s_prev,s_next)
         ret = []
 
         for s_next in splits:
           s_prev = self.classifier(s_prev)
+          print(s_prev,s_next)
           ret.append(self.fc(s_prev.view(s_prev.size(0), -1)))
 
           s_prev = self.features(s_next).to('cuda:1')
+          print(s_prev,s_next)
         
         s_prev = self.classifier(s_prev)
         ret.append(self.fc(s_prev.view(s_prev.size(0), -1)))
