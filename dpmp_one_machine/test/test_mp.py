@@ -188,16 +188,16 @@ class ModelParallelvgg(VGG):
         splits = iter(x.split(self.split_size, dim=0))
         s_next = next(splits)
         s_prev = self.seq1(s_next).to('cuda:1')
-        print(len(splits),len(s_prev),len(s_next))
+        # print(len(splits),len(s_prev),len(s_next))
         ret = []
 
         for s_next in splits:
           s_prev = self.seq2(s_prev)
-          print(len(s_prev),len(s_next))
+          # print(len(s_prev),len(s_next))
           ret.append(self.classifier(s_prev.view(s_prev.size(0), -1)))
 
           s_prev = self.seq1(s_next).to('cuda:1')
-          print(len(s_prev),len(s_next))
+          # print(len(s_prev),len(s_next))
         
         s_prev = self.seq2(s_prev)
         ret.append(self.fc(s_prev.view(s_prev.size(0), -1)))
@@ -259,7 +259,7 @@ def run(rank, size, model):
           # print("你是什么脸")
           output = model(data)
           print(len(output),len(target))
-          loss = loss_function(output, target)
+          loss = loss_function(output, target).cuda()
           epoch_loss += loss.item()
           print(epoch_loss, loss)
           loss.backward()
