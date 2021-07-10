@@ -138,7 +138,7 @@ class VGG(nn.Module):
           nn.Linear(4096, num_class)
         )
     def forward(self, x):
-      output = self.features(x)
+      output = self.features(x.cuda())
       output = output.view(output.size()[0], -1)
       output = self.classifier(output)
       return output
@@ -195,7 +195,7 @@ class ModelParallelvgg(VGG):
         # output = self.classifier(output).to('cuda:1')
         return torch.cat(ret)
       else:
-        output = self.features(x)
+        output = self.features(x.cuda())
         output = output.view(output.size()[0], -1)
         output = self.classifier(output)
         return output
