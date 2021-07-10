@@ -118,7 +118,8 @@ def allreduce(send, recv):
 
 """ Gradient averaging. """
 def average_gradients(model):
-    size = float(dist.get_world_size())
+    # size = float(dist.get_world_size())
+    size = 1
     for param in model.parameters():
         dist.all_reduce(param.grad.data, op=dist.ReduceOp.SUM)
         param.grad.data /= size
@@ -252,7 +253,7 @@ def run(rank, size, model):
           epoch_loss += loss.item()
           print(epoch_loss, loss)
           loss.backward()
-          average_gradients(model)
+          # average_gradients(model)
           optimizer.step()
         print('Rank ', dist.get_rank(), ', epoch ',
               epoch, ': ', epoch_loss / num_batches)
