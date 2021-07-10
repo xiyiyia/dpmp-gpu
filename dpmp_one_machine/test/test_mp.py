@@ -1,6 +1,6 @@
 """run.py:"""
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
 # from dpmp_one_machine.test.test_dp import make_layers
 import torch.distributed as dist
 import torch.multiprocessing as mp
