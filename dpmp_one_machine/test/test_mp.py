@@ -160,6 +160,8 @@ def make_layers(cfg, batch_norm=False):
 class ModelParallelvgg(VGG):
     def __init__(self, num_class=10,g = 1):
         super().__init__()
+        self.split_size = int(128/g)
+        self.g = g
         self.cfg = [64,     'M', 128,      'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M']
         self.features = make_layers(self.cfg, batch_norm=True)
         self.seq1 == self.features[0:int(len(self.features)/self.g)].copy()
@@ -173,8 +175,6 @@ class ModelParallelvgg(VGG):
           nn.Dropout(),
           nn.Linear(4096, num_class)
         )
-        self.split_size = int(128/g)
-        self.g = g
         if(g >= 2):
           # self.features = self.features.to('cuda:0')
           self.seq1 = self.seq1.to('cuda:0')
