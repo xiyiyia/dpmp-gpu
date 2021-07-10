@@ -171,28 +171,34 @@ class ModelParallelvgg(VGG):
           nn.Linear(4096, num_class)
         )
         self.split_size = int(128/g)
+        self.g = g
         if(g >= 2):
           self.features = self.features.to('cuda:0')
           self.classifier = self.classifier.to('cuda:1')
     def forward(self, x):
-      splits = iter(x.split(self.split_size, dim=0))
-      s_next = next(splits)
-      s_prev = self.features(s_next).to('cuda:1')
-      ret = []
+      if(self.g >= 2):
+        splits = iter(x.split(self.split_size, dim=0))
+        s_next = next(splits)
+        s_prev = self.features(s_next).to('cuda:1')
+        ret = []
 
-      for s_next in splits:
+        for s_next in splits:
+          s_prev = self.classifier(s_prev)
+          ret.append(self.fc(s_prev.view(s_prev.size(0), -1)))
+
+          s_prev = self.features(s_next).to('cuda:1')
+        
         s_prev = self.classifier(s_prev)
         ret.append(self.fc(s_prev.view(s_prev.size(0), -1)))
-
-        s_prev = self.features(s_next).to('cuda:1')
-      
-      s_prev = self.classifier(s_prev)
-      ret.append(self.fc(s_prev.view(s_prev.size(0), -1)))
-
-      # output = self.features(x.to('cuda:0'))
-      # output = output.view(output.size()[0], -1)
-      # output = self.classifier(output).to('cuda:1')
-      return torch.cat(ret)
+        # output = self.features(x.to('cuda:0'))
+        # output = output.view(output.size()[0], -1)
+        # output = self.classifier(output).to('cuda:1')
+        return torch.cat(ret)
+      else:
+        output = self.features(x)
+        output = output.view(output.size()[0], -1)
+        output = self.classifier(output)
+        return output
 def make_layers(cfg, batch_norm=False):
     layers = []
     input_channel = 3
@@ -307,8 +313,7 @@ if __name__ == "__main__":
       stmt, setup, number=1, repeat=1, globals=globals())
   mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
 
-  setup = "import torchvision.models as models;" + \
-          "model = models.resnet50(num_classes=num_classes).to('cuda:0')"
+  setup = "model = VGG()"
   rn_run_times = timeit.repeat(
       stmt, setup, number=1, repeat=1, globals=globals())
   rn_mean, rn_std = np.mean(rn_run_times), np.std(rn_run_times)
