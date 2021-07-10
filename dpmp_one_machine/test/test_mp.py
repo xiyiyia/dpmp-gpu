@@ -250,10 +250,8 @@ def run(rank, size, model):
                                               )
     # train_set = train_set.cuda()
     # model = vgg11_bn()
-    # print("你是什么脸")
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
-    # print("你是什么脸")
     num_batches = math.ceil(len(train_set.dataset) / float(bsz))
 
     # next(model.parameters()).is_cuda
@@ -263,9 +261,9 @@ def run(rank, size, model):
         for data, target in train_set:
           data = data.cuda()
           target = target.cuda()
-          # print("你是什么脸")
+    
           optimizer.zero_grad()
-          # print("你是什么脸")
+    
           output = model(data)
           print(len(output),len(target))
           loss = loss_function(output, target).cuda()
