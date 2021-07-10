@@ -177,11 +177,12 @@ class ModelParallelvgg(VGG):
           self.features = self.features.to('cuda:0')
           self.classifier = self.classifier.to('cuda:1')
     def forward(self, x):
+      print(self.features)
       if(self.g >= 2):
         splits = iter(x.split(self.split_size, dim=0))
         s_next = next(splits)
         s_prev = self.features(s_next).to('cuda:1')
-        print(splits,s_prev,s_next)
+        print(len(splits),len(s_prev),len(s_next))
         ret = []
 
         for s_next in splits:
