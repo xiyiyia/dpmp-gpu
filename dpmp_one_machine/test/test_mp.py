@@ -170,7 +170,7 @@ class ModelParallelvgg(VGG):
           nn.Dropout(),
           nn.Linear(4096, num_class)
         )
-        self.split_size = 128/g
+        self.split_size = int(128/g)
         if(g >= 2):
           self.features = self.features.to('cuda:0')
           self.classifier = self.classifier.to('cuda:1')
