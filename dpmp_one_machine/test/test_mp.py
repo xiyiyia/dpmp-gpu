@@ -164,8 +164,10 @@ class ModelParallelvgg(VGG):
         self.g = g
         self.cfg = [64,     'M', 128,      'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M']
         self.features = make_layers(self.cfg, batch_norm=True)
-        self.seq1 = self.features[0:int(len(self.features)/self.g)].copy()
-        self.seq2 = self.features[len(self.seq1) - 1:len(self.seq2) - len(self.seq1)].copy()
+        iter = (i for i in range(50))
+        sum(1 for _ in iter)
+        self.seq1 = self.features[0:int(sum(1 for _ in self.features)/self.g)]
+        self.seq2 = self.features[sum(1 for _ in self.seq1) - 1:sum(1 for _ in self.features) - sum(1 for _ in self.seq1)]
         self.classifier = nn.Sequential(
           nn.Linear(512, 4096),
           nn.ReLU(inplace=True),
