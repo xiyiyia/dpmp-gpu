@@ -138,7 +138,7 @@ class VGG(nn.Module):
           nn.Linear(4096, num_class)
         )
     def forward(self, x):
-      output = self.features(x.cuda())
+      output = self.features(x)
       output = output.view(output.size()[0], -1)
       output = self.classifier(output)
       return output
@@ -195,7 +195,7 @@ class ModelParallelvgg(VGG):
         # output = self.classifier(output).to('cuda:1')
         return torch.cat(ret)
       else:
-        output = self.features(x.cuda())
+        output = self.features()
         output = output.view(output.size()[0], -1)
         output = self.classifier(output)
         return output
@@ -308,12 +308,12 @@ if __name__ == "__main__":
   #model parallel compare 
   stmt = "run(0,1,model)"
 
-  setup = "model = ModelParallelvgg()"
+  setup = "model = ModelParallelvgg().cuda()"
   mp_run_times = timeit.repeat(
       stmt, setup, number=1, repeat=1, globals=globals())
   mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
 
-  setup = "model = VGG()"
+  setup = "model = VGG().cuda()"
   rn_run_times = timeit.repeat(
       stmt, setup, number=1, repeat=1, globals=globals())
   rn_mean, rn_std = np.mean(rn_run_times), np.std(rn_run_times)
