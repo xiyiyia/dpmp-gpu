@@ -167,7 +167,7 @@ class ModelParallelvgg(VGG):
         iter = (i for i in range(50))
         sum(1 for _ in iter)
         self.seq1 = self.features[0:int(sum(1 for _ in self.features)/self.g)]
-        self.seq2 = self.features[sum(1 for _ in self.seq1) - 1:sum(1 for _ in self.features) - sum(1 for _ in self.seq1)]
+        self.seq2 = self.features[sum(1 for _ in self.seq1) - 1:sum(1 for _ in self.features) - 1]
         self.classifier = nn.Sequential(
           nn.Linear(512, 4096),
           nn.ReLU(inplace=True),
