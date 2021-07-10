@@ -68,7 +68,8 @@ def partition_dataset():
                                 transforms.ToTensor(),
                                 transforms.Normalize((0.1307,), (0.3081,))
                              ]))
-    size = dist.get_world_size()
+    # size = dist.get_world_size()
+    size = 1
     bsz = 128 / float(size)
     partition_sizes = [1.0 / size for _ in range(size)]
     partition = DataPartitioner(dataset, partition_sizes)
