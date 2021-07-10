@@ -183,6 +183,10 @@ class ModelParallelvgg(VGG):
           self.seq2 = self.seq2.to('cuda:1')
           self.classifier = self.classifier.to('cuda:1')
     def forward(self, x):
+      for i in self.seq1:
+        print(i)
+      for j in self.seq2:
+        print(j)
       # print(self.features)
       if(self.g >= 2):
         splits = iter(x.split(self.split_size, dim=0))
@@ -197,7 +201,8 @@ class ModelParallelvgg(VGG):
           s_prev = self.seq2(s_prev)
           # print(len(s_prev),len(s_next))
           # print('error?',s_next.size(0),s_next.size(1),s_prev.size(0),s_prev.size(1),s_prev.view(s_prev.size(0), -1).size(0),s_prev.view(s_prev.size(0), -1).size(1))
-          ret.append(self.classifier(s_prev.view(s_prev.size(0), -1)))
+          # output.view(output.size()[0], -1)
+          ret.append(self.classifier(s_prev.view(s_prev.size()[0], -1)))
           # print('error?')
           s_prev = self.seq1(s_next).to('cuda:1')
           # print(len(s_prev),len(s_next))
