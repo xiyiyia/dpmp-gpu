@@ -268,7 +268,8 @@ def run(rank, size, model):
     
           output = model(data)
           print(len(output),len(target))
-          loss = loss_function(output, target).cuda()
+          # loss = loss_function(output, target).cuda()
+          loss = loss_function(output, target)
           epoch_loss += loss.item()
           print(epoch_loss, loss)
           loss.backward()
