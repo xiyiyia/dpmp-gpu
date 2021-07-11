@@ -211,7 +211,7 @@ class ModelParallelvgg(VGG):
           # print('error?')
         s_prev = self.seq2(s_prev)
         # print('error?')
-        ret.append(self.fc(s_prev.view(s_prev.size(0), -1)))
+        ret.append(self.classifier(s_prev.view(s_prev.size(0), -1)))
         # output = self.features(x.to('cuda:0'))
         # output = output.view(output.size()[0], -1)
         # output = self.classifier(output).to('cuda:1')
