@@ -183,12 +183,12 @@ class ModelParallelvgg(VGG):
           self.seq2 = self.seq2.to('cuda:1')
           self.classifier = self.classifier.to('cuda:1')
     def forward(self, x):
-      for i in self.features:
-        print(i)
-      for i in self.seq1:
-        print(i)
-      for j in self.seq2:
-        print(j)
+      # for i in self.features:
+      #   print(i)
+      # for i in self.seq1:
+      #   print(i)
+      # for j in self.seq2:
+      #   print(j)
       # print(self.features)
       if(self.g >= 2):
         splits = iter(x.split(self.split_size, dim=0))
@@ -267,7 +267,8 @@ def run(rank, size, model):
           optimizer.zero_grad()
     
           output = model(data)
-          print(len(output),len(target))
+          # print(len(output),len(target))
+          target = target.to(output.device)
           # loss = loss_function(output, target).cuda()
           loss = loss_function(output, target)
           epoch_loss += loss.item()
