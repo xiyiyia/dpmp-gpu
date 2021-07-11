@@ -167,7 +167,7 @@ class ModelParallelvgg(VGG):
         iter = (i for i in range(50))
         sum(1 for _ in iter)
         self.seq1 = self.features[0:int(sum(1 for _ in self.features)/self.g)]
-        self.seq2 = self.features[sum(1 for _ in self.seq1) - 1:sum(1 for _ in self.features) - 1]
+        self.seq2 = self.features[sum(1 for _ in self.seq1):sum(1 for _ in self.features)]
         self.classifier = nn.Sequential(
           nn.Linear(512, 4096),
           nn.ReLU(inplace=True),
@@ -183,6 +183,8 @@ class ModelParallelvgg(VGG):
           self.seq2 = self.seq2.to('cuda:1')
           self.classifier = self.classifier.to('cuda:1')
     def forward(self, x):
+      for i in self.features:
+        print(i)
       for i in self.seq1:
         print(i)
       for j in self.seq2:
