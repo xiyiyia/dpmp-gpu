@@ -222,6 +222,7 @@ def run(rank, size, model):
             training_time_end = time.time()
             training_time_list.append(training_time_end-training_time_start)
             average_gradients(model)
+            time.sleep(10)
             communication_time_end = time.time()
             communication_time_list.append(communication_time_end-training_time_end)
             optimizer.step()
