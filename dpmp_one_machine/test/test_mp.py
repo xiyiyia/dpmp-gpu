@@ -166,7 +166,7 @@ def run(model):
         # print('Rank ', dist.get_rank(), ', epoch ',
         #       epoch, ': ', epoch_loss / num_batches)
         print('Rank ', 0, ', epoch ',
-                epoch, ': ', epoch_loss/len(train_set))
+                epoch, ': ', epoch_loss)
 
 
 if __name__ == "__main__":
