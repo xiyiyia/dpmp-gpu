@@ -201,7 +201,7 @@ class ResNet(nn.Module):
         splits = iter(x.split(self.split_size, dim=0))
         ret = []
         for s_next in splits:
-            # print(s_next, output_list)
+            print(len(s_next))
             s_prev = self.feature_list[0](s_next)
             output_list[0] = s_prev.to('cuda:1')
             # print(output_list)
