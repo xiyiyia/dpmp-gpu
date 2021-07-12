@@ -181,17 +181,17 @@ def vgg11_bn():
 def run(rank, size, model):
 
     torch.manual_seed(1234)
-    train_set_abort, bsz = partition_dataset()
-    dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
-                             transform=transforms.Compose([
-                                # transforms.Resize([32, 32]),
-                                transforms.ToTensor(),
-                                transforms.Normalize((0.1307,), (0.3081,))
-                             ]))
-    train_set = torch.utils.data.DataLoader(dataset,
-                                              batch_size=128,
-                                              shuffle=True,
-                                              )
+    train_set, bsz = partition_dataset()
+    # dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
+    #                          transform=transforms.Compose([
+    #                             # transforms.Resize([32, 32]),
+    #                             transforms.ToTensor(),
+    #                             transforms.Normalize((0.1307,), (0.3081,))
+    #                          ]))
+    # train_set = torch.utils.data.DataLoader(dataset,
+    #                                           batch_size=128,
+    #                                           shuffle=True,
+    #                                           )
     # train_set = train_set.cuda()
     # model = vgg11_bn()
     # print("你是什么脸")
@@ -253,9 +253,11 @@ def init_process(rank, size, fn, backend='gloo'):
     dist.init_process_group("nccl", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
     if size == 1:
+        #model = vgg11_bn().to(rank)
         model = vgg11_bn().to(rank)
     else:
-        model = inceptionv3.inceptionv3().to(rank)
+        #model = inceptionv3.inceptionv3().to(rank)
+        model = vgg11_bn().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
