@@ -1,4 +1,4 @@
-import gputils
+import GPUtil
 import time
 import pandas as pd
 time_x = []
