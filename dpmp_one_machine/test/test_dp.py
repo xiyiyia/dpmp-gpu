@@ -201,7 +201,7 @@ def run(rank, size, model):
     num_batches = math.ceil(len(train_set.dataset) / float(bsz))
 
     # next(model.parameters()).is_cuda
-    for epoch in range(10):
+    for epoch in range(1):
         training_time_list = []
         communication_time_list = []
         name = [i for i in range(len(train_set))]
