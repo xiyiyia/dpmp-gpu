@@ -197,13 +197,12 @@ class ResNet(nn.Module):
         # output = self.fc(output)
 
         output_list = [None for i in range(self.g)]
-
         splits = iter(x.split(self.split_size, dim=0))
+        s_next = next(splits)
+        s_prev = self.feature_list[0](s_next)
+        output_list[0] = s_prev.to('cuda:1')
         ret = []
         for s_next in splits:
-            print(len(s_next))
-            s_prev = self.feature_list[0](s_next)
-            output_list[0] = s_prev.to('cuda:1')
             # print(output_list)
             for j in range(len(output_list) - 1):
                 # print(output_list)
@@ -219,7 +218,9 @@ class ResNet(nn.Module):
                     else:
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j ))
                         output_list[len(output_list) - j - 2] = None
-        output_list[0] = None
+            s_prev = self.feature_list[0](s_next)
+            output_list[0] = s_prev.to('cuda:1')
+        # output_list[0] = None
         # print(ret)
         a = True
         while( a == True):
