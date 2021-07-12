@@ -10,7 +10,7 @@ def N_gpu_util_timer():
         gpu_load = GPUs[0].load
         time_x.append(n)
         gpu_y.append(gpu_load)
-        time.sleep(0.05)
+        time.sleep(0.01)
     # print(gpu_y)
     print('N gpu done')
 
