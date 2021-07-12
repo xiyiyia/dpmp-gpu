@@ -91,23 +91,23 @@ class ModelParallelvgg(VGG):
           self.seq2 = self.seq2.to('cuda:1')
           self.classifier = self.classifier.to('cuda:1')
     def forward(self, x):
-      if(self.g >= 2):
-        splits = iter(x.split(self.split_size, dim=0))
-        s_next = next(splits)
-        s_prev = self.seq1(s_next).to('cuda:1')
-        ret = []
-        for s_next in splits:
-          s_prev = self.seq2(s_prev)
-          ret.append(self.classifier(s_prev.view(s_prev.size()[0], -1)))
-          s_prev = self.seq1(s_next).to('cuda:1')
-        s_prev = self.seq2(s_prev)
-        ret.append(self.classifier(s_prev.view(s_prev.size(0), -1)))
-        return torch.cat(ret)
-      else:
-        output = self.features(x)
-        output = output.view(output.size()[0], -1)
-        output = self.classifier(output)
-        return output
+        if(self.g >= 2):
+            splits = iter(x.split(self.split_size, dim=0))
+            s_next = next(splits)
+            s_prev = self.seq1(s_next).to('cuda:1')
+            ret = []
+            for s_next in splits:
+                s_prev = self.seq2(s_prev)
+                ret.append(self.classifier(s_prev.view(s_prev.size()[0], -1)))
+                s_prev = self.seq1(s_next).to('cuda:1')
+            s_prev = self.seq2(s_prev)
+            ret.append(self.classifier(s_prev.view(s_prev.size(0), -1)))
+            return torch.cat(ret)
+        else:
+            output = self.features(x)
+            output = output.view(output.size()[0], -1)
+            output = self.classifier(output)
+            return output
 def make_layers(cfg, batch_norm=False):
     layers = []
     input_channel = 3
