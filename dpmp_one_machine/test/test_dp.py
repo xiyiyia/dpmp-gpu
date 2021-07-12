@@ -227,6 +227,8 @@ def run(rank, size, model):
             optimizer.step()
         print('Rank ', dist.get_rank(), ', epoch ',
               epoch, ': ', epoch_loss / num_batches)
+    training_time_list = np.array(training_time_list).reshape(1,len(train_set))
+    communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
     training_time = pd.DataFrame(columns=name,data=training_time_list)
     communication_time = pd.DataFrame(columns=name,data=communication_time_list)
     training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
