@@ -85,6 +85,7 @@ class ModelParallelvgg(VGG):
           nn.Dropout(),
           nn.Linear(4096, num_class)
         )
+        g = 1
         if(g >= 2):
           self.seq1 = self.seq1.to('cuda:0')
           self.seq2 = self.seq2.to('cuda:1')
