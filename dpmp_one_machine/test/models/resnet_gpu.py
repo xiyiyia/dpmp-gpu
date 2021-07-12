@@ -104,8 +104,8 @@ class ResNet(nn.Module):
             self.feature_list[0] =  torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x)+list(self.conv4_x))).to('cuda:0')
             #self.layer_2 = torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:1')
             # a = torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:1')
-            self.feature_list[1] = torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool)+list(self.fc))).to('cuda:1')
-            # self.fc = self.fc.to('cuda:1')
+            self.feature_list[1] = torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:1')
+            self.fc = self.fc.to('cuda:1')
         if(args.g == 3):
             self.layer_1 = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x))).to('cuda:0')
             self.feature_list[0] =  self.layer_1 
@@ -212,8 +212,10 @@ class ResNet(nn.Module):
                     # print(j,output_list[len(output_list) - j - 2],'no None')
                     if(j == 0):
                         print('once')
-                        ret.append(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2].view(s_prev.size(0), -1)))
+                        # output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2])
+                        ret.append(self.fc(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).view(s_prev.size(0), -1)))
                         output_list[len(output_list) - j - 2] = None
+                        # output_list[len(output_list) - j - 1] = None
                     else:
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j ))
                         output_list[len(output_list) - j - 2] = None
@@ -232,7 +234,7 @@ class ResNet(nn.Module):
                 if(output_list[len(output_list) - j - 2] != None):
                     if(j == 0):
                         print('twice')
-                        ret.append(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2].view(s_prev.size(0), -1)))
+                        ret.append(self.fc(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).view(s_prev.size(0), -1)))
                         output_list[len(output_list) - j - 2] = None
                     else:
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j))
