@@ -196,7 +196,15 @@ class ResNet(nn.Module):
                         output_list[len(output_list) - j - 2] = None
         output_list[0] = None
         # print(ret)
-        while(output_list[len(output_list) - 1 == None]):
+        a = True
+        while( a == True):
+            a = False
+            for i in range(len(output_list)):
+                # a = False
+                if(output_list[i] != None):
+                    a = True
+            if(a == False):
+                break
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 2] != None):
                     if(j == 0):
