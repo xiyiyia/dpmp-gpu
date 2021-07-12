@@ -204,7 +204,7 @@ def run(rank, size, model):
     training_time_list = []
     communication_time_list = []
     name = [i for i in range(len(train_set))]
-    for epoch in range(1):
+    for epoch in range(5):
         epoch_loss = 0.0
         # range = 0
         for data, target in train_set:
