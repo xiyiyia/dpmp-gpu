@@ -99,8 +99,10 @@ class ResNet(nn.Module):
         self.fc = nn.Linear(512 * block.expansion, num_classes)
         self.feature_list = [[] for i in range(args.g)]
         if(args.g == 2):
-            self.feature_list[0].append( torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x)+list(self.conv4_x))).to('cuda:0'))
-            self.feature_list[1].append( torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:1'))
+            a = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x)+list(self.conv4_x))).to('cuda:0')
+            self.feature_list[0].append( a)
+            a = torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:1')
+            self.feature_list[1].append( a)
             self.fc = self.fc.to('cuda:1')
         if(args.g == 3):
             self.feature_list[0].append( torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x))).to('cuda:0'))
