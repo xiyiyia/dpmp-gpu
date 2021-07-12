@@ -237,7 +237,7 @@ class ResNet(nn.Module):
                     else:
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j))
                         output_list[len(output_list) - j - 2] = None
-        print(len(torch.cat(ret)))
+        print(torch.cat(ret).shape(1))
         # print(ret)
 
         return torch.cat(ret)
