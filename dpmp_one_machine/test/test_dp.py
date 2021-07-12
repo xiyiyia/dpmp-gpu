@@ -21,7 +21,7 @@ import torchvision.transforms as transforms
 import time
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-from models import resnet, inceptionv3
+from models import *
 loss_function = nn.CrossEntropyLoss()
 
 """ Dataset partitioning helper """
@@ -251,7 +251,7 @@ def init_process(rank, size, fn, backend='gloo'):
     dist.init_process_group("nccl", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
     # model = vgg11_bn().to(rank)
-    model = resnet.resnet50().to(rank)
+    model = inceptionv3.to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
