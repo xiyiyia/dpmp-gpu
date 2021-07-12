@@ -145,7 +145,7 @@ def run(model):
     # num_batches = math.ceil(len(train_set.dataset) / float(bsz))
     for epoch in range(10):
         epoch_loss = 0.0
-        for data, target in len(train_set):
+        for data, target in train_set:
           data = data.cuda()
           target = target.cuda()
     
@@ -173,7 +173,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=2, help='number of gpus')
-    parser.add_argument('-b', type=int, default=128, help='batchsize')
+    parser.add_argument('-b', type=int, default=120, help='batchsize')
     args = parser.parse_args()
     # print(torch.cuda.device_count())
     # size = args.g

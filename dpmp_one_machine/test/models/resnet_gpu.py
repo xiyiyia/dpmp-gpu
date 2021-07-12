@@ -83,7 +83,7 @@ class ResNet(nn.Module):
         super().__init__()
 
         self.in_channels = 64
-        self.split_size = int(args.b/args.g)
+        self.split_size = 12
         self.g = args.g
         self.conv1 = nn.Sequential(
             nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False),
