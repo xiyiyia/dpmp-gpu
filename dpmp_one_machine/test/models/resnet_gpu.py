@@ -192,7 +192,7 @@ class ResNet(nn.Module):
                         ret.append(self.fc(output_list[len(output_list) - j - 2].view(s_prev.size(0), -1)))
                         output_list[len(output_list) - j - 2] = None
                     else:
-                        output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j -1 ))
+                        output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j ))
                         output_list[len(output_list) - j - 2] = None
         output_list[0] = None
         # print(ret)
@@ -204,7 +204,7 @@ class ResNet(nn.Module):
                         ret.append(self.fc(output_list[len(output_list) - j - 2].view(s_prev.size(0), -1)))
                         output_list[len(output_list) - j - 2] = None
                     else:
-                        output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j - 1))
+                        output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j))
                         output_list[len(output_list) - j - 2] = None
         print(len(torch.cat(ret)))
         # print(ret)
