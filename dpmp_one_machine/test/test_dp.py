@@ -5,6 +5,7 @@ import torch.distributed as dist
 import torch.multiprocessing as mp
 import os
 import sys
+import pandas as pd
 import argparse
 import time
 import math
@@ -115,6 +116,7 @@ def allreduce(send, recv):
 """ Gradient averaging. """
 def average_gradients(model):
     size = float(dist.get_world_size())
+
     for param in model.parameters():
         dist.all_reduce(param.grad.data, op=dist.ReduceOp.SUM)
         param.grad.data /= size
@@ -176,6 +178,7 @@ def vgg11_bn():
 
 """ Distributed Synchronous SGD Example """
 def run(rank, size, model):
+
     torch.manual_seed(1234)
     train_set_abort, bsz = partition_dataset()
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
@@ -197,25 +200,44 @@ def run(rank, size, model):
     num_batches = math.ceil(len(train_set.dataset) / float(bsz))
 
     # next(model.parameters()).is_cuda
-
+    training_time_list = []
+    communication_time_list = []
+    name = [i for i in range(len(train_set))]
     for epoch in range(1):
         epoch_loss = 0.0
+        # range = 0
         for data, target in train_set:
-          data = data.cuda()
-          target = target.cuda()
-          # print("你是什么脸")
-          optimizer.zero_grad()
-          # print("你是什么脸")
-          output = model(data)
-          print(len(output),len(target))
-          loss = loss_function(output, target)
-          epoch_loss += loss.item()
-          print(epoch_loss, loss)
-          loss.backward()
-          average_gradients(model)
-          optimizer.step()
+            training_time_start = time.time()
+            data = data.cuda()
+            target = target.cuda()
+            # print("你是什么脸")
+            optimizer.zero_grad()
+            # print("你是什么脸")
+            output = model(data)
+            print(len(output),len(target))
+            loss = loss_function(output, target)
+            epoch_loss += loss.item()
+            print(epoch_loss, loss)
+            loss.backward()
+            training_time_end = time.time()
+            training_time_list.append(training_time_end-training_time_start)
+            average_gradients(model)
+            communication_time_end = time.time()
+            communication_time_list.append(communication_time_end-training_time_end)
+            optimizer.step()
         print('Rank ', dist.get_rank(), ', epoch ',
               epoch, ': ', epoch_loss / num_batches)
+    training_time = pd.DataFrame(columns=name,data=training_time_list)
+    communication_time = pd.DataFrame(columns=name,data=communication_time_list)
+    training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
+    communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
+    # test.to_csv('./testcsv.csv',encoding='gbk')
+    # fl_c = open('./communication_time_'+str(dist.get_rank())+'.csv',"w+")
+    # fl_c.write(training_time_list)
+    # fl_c.close()
+    # fl = open('./training_time_'+str(dist.get_rank())+'.csv',"w+")
+    # fl.write(training_time_list)
+    # fl.close()
 
 def init_process(rank, size, fn, backend='gloo'):
     """ Initialize the distributed environment. """
