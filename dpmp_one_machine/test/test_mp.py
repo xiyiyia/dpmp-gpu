@@ -126,7 +126,7 @@ def make_layers(cfg, batch_norm=False):
 """ Distributed Synchronous SGD Example """
 def run(model):
     torch.manual_seed(1234)
-    summary(model, [(3, 255, 255)].cuda())
+    summary(model.cpu(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
                              transform=transforms.Compose([
                                 # transforms.Resize([32, 32]),
