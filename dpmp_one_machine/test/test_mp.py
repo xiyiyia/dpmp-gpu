@@ -20,6 +20,7 @@ import torchvision
 import torchvision.transforms as transforms
 import time
 import timeit
+from summary import summary
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from models import resnet_gpu 
@@ -69,8 +70,11 @@ class ModelParallelvgg(VGG):
         self.features = make_layers(self.cfg, batch_norm=True)
         # iter = (i for i in range(50))
         # sum(1 for _ in iter)
+        # self.list = [None for i in range(2)]
+        
         self.seq1 = self.features[0:int(sum(1 for _ in self.features)/self.g)]
         self.seq2 = self.features[sum(1 for _ in self.seq1):sum(1 for _ in self.features)]
+        self.list = [self.seq1,self.seq2]
         print(torch.nn.Sequential(*(list(self.seq1)+list(self.seq2))))
         self.classifier = nn.Sequential(
           nn.Linear(512, 4096),
@@ -121,6 +125,7 @@ def make_layers(cfg, batch_norm=False):
 """ Distributed Synchronous SGD Example """
 def run(model):
     torch.manual_seed(1234)
+    summary(model, (3, 224, 224))
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
                              transform=transforms.Compose([
                                 # transforms.Resize([32, 32]),
@@ -162,46 +167,46 @@ def run(model):
 
 if __name__ == "__main__":
 
-  parser = argparse.ArgumentParser()
-  parser.add_argument('-g', type=int, default=2, help='number of gpus')
-  parser.add_argument('-b', type=int, default=128, help='batchsize')
-  args = parser.parse_args()
-  print(torch.cuda.device_count())
-  # size = args.g
-  size = torch.cuda.device_count()
-  processes = []
-  mp.set_start_method("spawn")
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-g', type=int, default=2, help='number of gpus')
+    parser.add_argument('-b', type=int, default=128, help='batchsize')
+    args = parser.parse_args()
+    print(torch.cuda.device_count())
+    # size = args.g
+    size = torch.cuda.device_count()
+    processes = []
+    mp.set_start_method("spawn")
 
 
-  #model parallel compare 
-  stmt = "run(model)"
+    #model parallel compare 
+    stmt = "run(model)"
 
-  # setup = "model = ModelParallelvgg(g = 2)"
-  setup = "model = resnet_gpu.resnet50(args)"
-  mp_run_times = timeit.repeat(
-      stmt, setup, number=1, repeat=1, globals=globals())
-  mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
+    # setup = "model = ModelParallelvgg(g = 2)"
+    setup = "model = resnet_gpu.resnet50(args)"
+    mp_run_times = timeit.repeat(
+        stmt, setup, number=1, repeat=1, globals=globals())
+    mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
 
-  setup = "model = VGG().cuda()"
-  rn_run_times = timeit.repeat(
-      stmt, setup, number=1, repeat=1, globals=globals())
-  rn_mean, rn_std = np.mean(rn_run_times), np.std(rn_run_times)
+    setup = "model = VGG().cuda()"
+    rn_run_times = timeit.repeat(
+        stmt, setup, number=1, repeat=1, globals=globals())
+    rn_mean, rn_std = np.mean(rn_run_times), np.std(rn_run_times)
 
 
-  def plot(means, stds, labels, fig_name):
-      fig, ax = plt.subplots()
-      ax.bar(np.arange(len(means)), means, yerr=stds,
+    def plot(means, stds, labels, fig_name):
+        fig, ax = plt.subplots()
+        ax.bar(np.arange(len(means)), means, yerr=stds,
             align='center', alpha=0.5, ecolor='red', capsize=10, width=0.6)
-      ax.set_ylabel('ResNet50 Execution Time (Second)')
-      ax.set_xticks(np.arange(len(means)))
-      ax.set_xticklabels(labels)
-      ax.yaxis.grid(True)
-      plt.tight_layout()
-      plt.savefig(fig_name)
-      plt.close(fig)
+        ax.set_ylabel('ResNet50 Execution Time (Second)')
+        ax.set_xticks(np.arange(len(means)))
+        ax.set_xticklabels(labels)
+        ax.yaxis.grid(True)
+        plt.tight_layout()
+        plt.savefig(fig_name)
+        plt.close(fig)
 
 
-  plot([mp_mean, rn_mean],
-      [mp_std, rn_std],
-      ['Model Parallel', 'Single GPU'],
-      'mp_vs_rn.png')
+    plot([mp_mean, rn_mean],
+        [mp_std, rn_std],
+        ['Model Parallel', 'Single GPU'],
+        'mp_vs_rn.png')
