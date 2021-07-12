@@ -74,7 +74,7 @@ class ModelParallelvgg(VGG):
         self.seq1 = self.features[0:int(sum(1 for _ in self.features)/self.g)]
         self.seq2 = self.features[sum(1 for _ in self.seq1):sum(1 for _ in self.features)]
         self.list = [self.seq1,self.seq2]
-        print(torch.nn.Sequential(*(list(self.seq1)+list(self.seq2))))
+        # print(torch.nn.Sequential(*(list(self.seq1)+list(self.seq2))))
         self.classifier = nn.Sequential(
           nn.Linear(512, 4096),
           nn.ReLU(inplace=True),
@@ -182,8 +182,8 @@ if __name__ == "__main__":
     #model parallel compare 
     stmt = "run(model)"
 
-    setup = "model = ModelParallelvgg(g = 2)"
-    # setup = "model = resnet_gpu.resnet50(args)"
+    # setup = "model = ModelParallelvgg(g = 2)"
+    setup = "model = resnet_gpu.resnet50(args)"
     mp_run_times = timeit.repeat(
         stmt, setup, number=1, repeat=1, globals=globals())
     mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
