@@ -74,7 +74,7 @@ def partition_dataset():
     train_set = torch.utils.data.DataLoader(partition,
                                          batch_size=int(bsz),
                                          shuffle=True)
-    print(train_set, bsz)
+    #print(train_set, bsz)
     return train_set, bsz
 
 # def run(rank, size):
@@ -201,10 +201,10 @@ def run(rank, size, model):
     num_batches = math.ceil(len(train_set.dataset) / float(bsz))
 
     # next(model.parameters()).is_cuda
-    training_time_list = []
-    communication_time_list = []
-    name = [i for i in range(len(train_set))]
     for epoch in range(10):
+        training_time_list = []
+        communication_time_list = []
+        name = [i for i in range(len(train_set))]
         epoch_loss = 0.0
         # range = 0
         for data, target in train_set:
@@ -288,7 +288,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
     args = parser.parse_args()
-    print(torch.cuda.device_count())
+    # print(torch.cuda.device_count())
     # size = args.g
     size = torch.cuda.device_count()
     processes = []
