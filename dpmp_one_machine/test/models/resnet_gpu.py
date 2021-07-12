@@ -188,7 +188,7 @@ class ResNet(nn.Module):
                 if(output_list[len(output_list) - j - 2] != None):
                     print(j,output_list[len(output_list) - j - 2],'no None')
                     if(j == 0):
-                        ret.append(self.classifier(output_list[len(output_list) - j - 2].view(s_prev.size()[0], -1)))
+                        ret.append(self.fc(output_list[len(output_list) - j - 2].view(s_prev.size()[0], -1)))
                         output_list[len(output_list) - j - 2] = None
                     else:
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j -1 ))
@@ -199,7 +199,7 @@ class ResNet(nn.Module):
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 1] != None):
                     if(j == 0):
-                        ret.append(self.classifier(output_list[len(output_list) - j - 2].view(s_prev.size()[0], -1)))
+                        ret.append(self.fc(output_list[len(output_list) - j - 2].view(s_prev.size()[0], -1)))
                         output_list[len(output_list) - j - 2] = None
                     else:
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j - 1))
