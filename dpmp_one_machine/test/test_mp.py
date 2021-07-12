@@ -168,7 +168,7 @@ class ModelParallelvgg(VGG):
         # sum(1 for _ in iter)
         self.seq1 = self.features[0:int(sum(1 for _ in self.features)/self.g)]
         self.seq2 = self.features[sum(1 for _ in self.seq1):sum(1 for _ in self.features)]
-        print(torch.cat([self.seq1[self.seq1.nonzero()], self.seq2[self.seq2.nonzero()]]))
+        print(torch.nn.Sequential(self.seq1, self.seq2))
         self.classifier = nn.Sequential(
           nn.Linear(512, 4096),
           nn.ReLU(inplace=True),
