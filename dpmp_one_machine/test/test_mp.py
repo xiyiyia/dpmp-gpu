@@ -135,7 +135,7 @@ def run(model):
                                 transforms.Normalize((0.1307,), (0.3081,))
                              ]))
     train_set = torch.utils.data.DataLoader(dataset,
-                                              batch_size=128,
+                                              batch_size=100,
                                               shuffle=True,
                                               )
     # train_set = train_set.cuda()
@@ -166,7 +166,7 @@ def run(model):
         # print('Rank ', dist.get_rank(), ', epoch ',
         #       epoch, ': ', epoch_loss / num_batches)
         print('Rank ', 0, ', epoch ',
-                epoch, ': ', epoch_loss)
+                epoch, ': ', epoch_loss/len(train_set))
 
 
 if __name__ == "__main__":
