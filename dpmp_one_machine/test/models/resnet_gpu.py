@@ -184,28 +184,30 @@ class ResNet(nn.Module):
             # print(output_list)
             for j in range(len(output_list) - 1):
                 # print(output_list)
-                print(j,output_list[len(output_list) - j - 2],'no None')
+                # print(j,output_list[len(output_list) - j - 2],'no None')
                 if(output_list[len(output_list) - j - 2] != None):
-                    print(j,output_list[len(output_list) - j - 2],'no None')
+                    # print(j,output_list[len(output_list) - j - 2],'no None')
                     if(j == 0):
+                        print('once')
                         ret.append(self.fc(output_list[len(output_list) - j - 2].view(s_prev.size()[0], -1)))
                         output_list[len(output_list) - j - 2] = None
                     else:
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j -1 ))
                         output_list[len(output_list) - j - 2] = None
         output_list[0] = None
-        print(ret)
+        # print(ret)
         while(output_list[len(output_list) - 1 == None]):
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 1] != None):
                     if(j == 0):
+                        print('once')
                         ret.append(self.fc(output_list[len(output_list) - j - 2].view(s_prev.size()[0], -1)))
                         output_list[len(output_list) - j - 2] = None
                     else:
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j - 1))
                         output_list[len(output_list) - j - 2] = None
         # print(torch.cat(ret))
-        print(ret)
+        # print(ret)
         return torch.cat(ret)
 
 def resnet18(args):
