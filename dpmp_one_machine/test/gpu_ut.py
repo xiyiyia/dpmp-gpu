@@ -16,7 +16,7 @@ def N_gpu_util_timer():
 
 if __name__ == '__main__':
     N_gpu_util_timer()
-    location_acc = '/home/cifar-gcn-drl/Test_data/GPU' + '.csv'
+    location_acc = './GPU.csv'
     dataframe_1 = pd.DataFrame(time_x, columns=['X'])
     dataframe_1 = pd.concat([dataframe_1, pd.DataFrame(gpu_y,columns=['Y'])],axis=1)
     dataframe_1.to_csv(location_acc,mode = 'w', header = False,index=False,sep=',')
