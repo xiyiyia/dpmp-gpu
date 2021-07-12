@@ -258,7 +258,7 @@ def init_process(rank, size, fn, backend='gloo'):
     else:
         model = inceptionv3.inceptionv3().to(rank)
         # model = vgg11_bn().to(rank)
-        model = ResNet.resnet101().to(rank)
+        model = resnet101().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
