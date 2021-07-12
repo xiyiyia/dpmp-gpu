@@ -115,6 +115,7 @@ def allreduce(send, recv):
 
 """ Gradient averaging. """
 def average_gradients(model):
+    torch.cuda.current_device()
     size = float(dist.get_world_size())
 
     for param in model.parameters():
