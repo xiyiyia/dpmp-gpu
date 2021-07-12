@@ -211,7 +211,7 @@ class ResNet(nn.Module):
                 if(output_list[len(output_list) - j - 2] != None):
                     # print(j,output_list[len(output_list) - j - 2],'no None')
                     if(j == 0):
-                        # print('once')
+                        print('once')
                         # output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2])
                         ret.append(self.fc(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).view(s_prev.size(0), -1)))
                         output_list[len(output_list) - j - 2] = None
