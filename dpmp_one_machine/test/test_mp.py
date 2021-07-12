@@ -164,10 +164,11 @@ class ModelParallelvgg(VGG):
         self.g = g
         self.cfg = [64,     'M', 128,      'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M']
         self.features = make_layers(self.cfg, batch_norm=True)
-        iter = (i for i in range(50))
-        sum(1 for _ in iter)
+        # iter = (i for i in range(50))
+        # sum(1 for _ in iter)
         self.seq1 = self.features[0:int(sum(1 for _ in self.features)/self.g)]
         self.seq2 = self.features[sum(1 for _ in self.seq1):sum(1 for _ in self.features)]
+        print([self.seq1,self.seq2],type([self.seq1,self.seq2]))
         self.classifier = nn.Sequential(
           nn.Linear(512, 4096),
           nn.ReLU(inplace=True),
@@ -178,43 +179,21 @@ class ModelParallelvgg(VGG):
           nn.Linear(4096, num_class)
         )
         if(g >= 2):
-          # self.features = self.features.to('cuda:0')
           self.seq1 = self.seq1.to('cuda:0')
           self.seq2 = self.seq2.to('cuda:1')
           self.classifier = self.classifier.to('cuda:1')
     def forward(self, x):
-      # for i in self.features:
-      #   print(i)
-      # for i in self.seq1:
-      #   print(i)
-      # for j in self.seq2:
-      #   print(j)
-      # print(self.features)
       if(self.g >= 2):
         splits = iter(x.split(self.split_size, dim=0))
         s_next = next(splits)
-        # print(s_next.size(0),s_next.size(1))
         s_prev = self.seq1(s_next).to('cuda:1')
-        # print(len(splits),len(s_prev),len(s_next))
         ret = []
-
         for s_next in splits:
-          # print('error?')
           s_prev = self.seq2(s_prev)
-          # print(len(s_prev),len(s_next))
-          # print('error?',s_next.size(0),s_next.size(1),s_prev.size(0),s_prev.size(1),s_prev.view(s_prev.size(0), -1).size(0),s_prev.view(s_prev.size(0), -1).size(1))
-          # output.view(output.size()[0], -1)
           ret.append(self.classifier(s_prev.view(s_prev.size()[0], -1)))
-          # print('error?')
           s_prev = self.seq1(s_next).to('cuda:1')
-          # print(len(s_prev),len(s_next))
-          # print('error?')
         s_prev = self.seq2(s_prev)
-        # print('error?')
         ret.append(self.classifier(s_prev.view(s_prev.size(0), -1)))
-        # output = self.features(x.to('cuda:0'))
-        # output = output.view(output.size()[0], -1)
-        # output = self.classifier(output).to('cuda:1')
         return torch.cat(ret)
       else:
         output = self.features(x)
@@ -255,9 +234,6 @@ def run(rank, size, model):
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
     num_batches = math.ceil(len(train_set.dataset) / float(bsz))
-
-    # next(model.parameters()).is_cuda
-
     for epoch in range(1):
         epoch_loss = 0.0
         for data, target in train_set:
@@ -272,7 +248,7 @@ def run(rank, size, model):
           # loss = loss_function(output, target).cuda()
           loss = loss_function(output, target)
           epoch_loss += loss.item()
-          print(epoch_loss, loss)
+          # print(epoch_loss, loss)
           loss.backward()
           # average_gradients(model)
           optimizer.step()
