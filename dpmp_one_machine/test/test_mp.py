@@ -20,7 +20,6 @@ import torchvision
 import torchvision.transforms as transforms
 import time
 import timeit
-from torchsummary import summary
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from models import resnet_gpu 
@@ -126,7 +125,7 @@ def make_layers(cfg, batch_norm=False):
 """ Distributed Synchronous SGD Example """
 def run(model):
     torch.manual_seed(1234)
-    summary(model.cuda(), [(3, 255, 255)])
+    # summary(model.cuda(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
                              transform=transforms.Compose([
                                 # transforms.Resize([32, 32]),
