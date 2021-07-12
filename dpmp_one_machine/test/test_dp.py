@@ -67,7 +67,7 @@ def partition_dataset():
                                 transforms.Normalize((0.1307,), (0.3081,))
                              ]))
     size = dist.get_world_size()
-    bsz = 128 / float(size)
+    bsz = 4*128 / float(size)
     partition_sizes = [1.0 / size for _ in range(size)]
     partition = DataPartitioner(dataset, partition_sizes)
     partition = partition.use(dist.get_rank())
@@ -258,6 +258,7 @@ def init_process(rank, size, fn, backend='gloo'):
     else:
         model = inceptionv3.inceptionv3().to(rank)
         # model = vgg11_bn().to(rank)
+        model = resnet101().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
