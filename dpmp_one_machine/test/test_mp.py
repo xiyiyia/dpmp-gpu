@@ -145,7 +145,7 @@ def run(model):
     # num_batches = math.ceil(len(train_set.dataset) / float(bsz))
     for epoch in range(10):
         epoch_loss = 0.0
-        for data, target in train_set:
+        for data, target in len(train_set):
           data = data.cuda()
           target = target.cuda()
     
@@ -166,7 +166,7 @@ def run(model):
         # print('Rank ', dist.get_rank(), ', epoch ',
         #       epoch, ': ', epoch_loss / num_batches)
         print('Rank ', 0, ', epoch ',
-                epoch, ': ', epoch_loss)
+                epoch, ': ', epoch_loss/len(train_set))
 
 
 if __name__ == "__main__":
