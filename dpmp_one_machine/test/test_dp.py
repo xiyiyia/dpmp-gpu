@@ -204,7 +204,7 @@ def run(rank, size, model):
     training_time_list = []
     communication_time_list = []
     name = [i for i in range(len(train_set))]
-    for epoch in range(1):
+    for epoch in range(10):
         epoch_loss = 0.0
         # range = 0
         for data, target in train_set:
@@ -265,7 +265,10 @@ def init_process(rank, size, fn, backend='gloo'):
     )
     print(rank)
     # print("done", model)
+    start = time.time()
     fn(rank, size, model)
+    stop = time.time()
+    print('training_time_dp', stop - start)
     # # Rank 1 gets one more input than rank 0.
     # inputs = [torch.tensor([1]).float() for _ in range(10 + rank)]
     # with model.join():
