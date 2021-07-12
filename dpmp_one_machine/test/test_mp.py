@@ -126,7 +126,7 @@ def make_layers(cfg, batch_norm=False):
 def run(model):
     torch.manual_seed(1234)
     # model.cuda()
-    print(model)
+    # print(model)
     # summary(model.cuda(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
                              transform=transforms.Compose([
@@ -143,7 +143,7 @@ def run(model):
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
     # num_batches = math.ceil(len(train_set.dataset) / float(bsz))
-    for epoch in range(1):
+    for epoch in range(10):
         epoch_loss = 0.0
         for data, target in train_set:
           data = data.cuda()
@@ -190,10 +190,10 @@ if __name__ == "__main__":
         stmt, setup, number=1, repeat=1, globals=globals())
     mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
 
-    setup = "model = VGG().cuda()"
-    rn_run_times = timeit.repeat(
-        stmt, setup, number=1, repeat=1, globals=globals())
-    rn_mean, rn_std = np.mean(rn_run_times), np.std(rn_run_times)
+    # setup = "model = VGG().cuda()"
+    # rn_run_times = timeit.repeat(
+    #     stmt, setup, number=1, repeat=1, globals=globals())
+    # rn_mean, rn_std = np.mean(rn_run_times), np.std(rn_run_times)
 
 
     def plot(means, stds, labels, fig_name):
@@ -208,8 +208,8 @@ if __name__ == "__main__":
         plt.savefig(fig_name)
         plt.close(fig)
 
-
-    plot([mp_mean, rn_mean],
-        [mp_std, rn_std],
-        ['Model Parallel', 'Single GPU'],
-        'mp_vs_rn.png')
+    print("time_training_mp",mp_mean,mp_std)
+    plot([mp_mean],
+        [mp_std],
+        ['Model Parallel'],
+        'pipe_mp.png')
