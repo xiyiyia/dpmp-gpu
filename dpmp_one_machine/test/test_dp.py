@@ -21,7 +21,7 @@ import torchvision.transforms as transforms
 import time
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
-
+from models import resnet, inceptionv3
 loss_function = nn.CrossEntropyLoss()
 
 """ Dataset partitioning helper """
@@ -250,7 +250,8 @@ def init_process(rank, size, fn, backend='gloo'):
 
     dist.init_process_group("nccl", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
-    model = vgg11_bn().to(rank)
+    # model = vgg11_bn().to(rank)
+    model = resnet.resnet50().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
@@ -267,7 +268,12 @@ def init_process(rank, size, fn, backend='gloo'):
 
 
 if __name__ == "__main__":
-
+    torchvision.datasets.CIFAR10('./data', train=True, download=True,
+                             transform=transforms.Compose([
+                                # transforms.Resize([32, 32]),
+                                transforms.ToTensor(),
+                                transforms.Normalize((0.1307,), (0.3081,))
+                             ]))
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
     args = parser.parse_args()
