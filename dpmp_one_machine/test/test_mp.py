@@ -155,7 +155,7 @@ def run(model):
           # print(len(output),len(target))
           target = target.to(output.device)
           # loss = loss_function(output, target).cuda()
-          loss = loss_function(output, target)
+          loss = loss_function(output, target).cuda()
           epoch_loss += loss.item()
           # print(epoch_loss, loss)
           loss.backward()
