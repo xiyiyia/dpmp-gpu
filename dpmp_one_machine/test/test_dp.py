@@ -227,8 +227,8 @@ def run(rank, size, model):
             communication_time_end = time.time()
             communication_time_list.append(communication_time_end-training_time_end)
             optimizer.step()
-        print('Rank ', dist.get_rank(), ', epoch ',
-              epoch, ': ', epoch_loss / num_batches)
+    print('Rank ', dist.get_rank(), ', epoch ',
+            epoch, ': ', epoch_loss / num_batches)
     training_time_list = np.array(training_time_list).reshape(1,len(train_set))
     communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
     training_time = pd.DataFrame(columns=name,data=training_time_list)
@@ -251,7 +251,7 @@ def init_process(rank, size, fn, backend='gloo'):
     # fn(rank, size)
 
     # dist.init_process_group("nccl", rank=rank, world_size=size)
-    dist.init_process_group("gloo", rank=rank, world_size=size)
+    dist.init_process_group("nccl", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
     if size == 1:
         #model = vgg11_bn().to(rank)

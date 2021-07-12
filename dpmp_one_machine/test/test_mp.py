@@ -163,8 +163,8 @@ def run(model):
           optimizer.step()
         # print('Rank ', dist.get_rank(), ', epoch ',
         #       epoch, ': ', epoch_loss / num_batches)
-        print('Rank ', 0, ', epoch ',
-              epoch, ': ', epoch_loss)
+    print('Rank ', 0, ', epoch ',
+            epoch, ': ', epoch_loss)
 
 
 if __name__ == "__main__":
