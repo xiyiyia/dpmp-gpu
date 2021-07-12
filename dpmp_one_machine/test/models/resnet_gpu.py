@@ -178,9 +178,12 @@ class ResNet(nn.Module):
         splits = iter(x.split(self.split_size, dim=0))
         ret = []
         for s_next in splits:
+            print(s_next, output_list)
             s_prev = self.feature_list[0](s_next).to('cuda:1')
             output_list[0] = s_prev.to('cuda:1')
+            print(output_list)
             for j in range(len(output_list) - 1):
+                print(output_list)
                 if(output_list[len(output_list) - j - 1] != None):
                     if(j == 0):
                         ret.append(self.classifier(output_list[len(output_list) - j - 1].view(s_prev.size()[0], -1)))
