@@ -251,8 +251,10 @@ def init_process(rank, size, fn, backend='gloo'):
 
     dist.init_process_group("nccl", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
-    # model = vgg11_bn().to(rank)
-    model = inceptionv3.inceptionv3().to(rank)
+    if size == 1:
+        model = vgg11_bn().to(rank)
+    else:
+        model = inceptionv3.inceptionv3().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
