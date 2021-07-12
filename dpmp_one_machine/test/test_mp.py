@@ -20,7 +20,7 @@ import torchvision
 import torchvision.transforms as transforms
 import time
 import timeit
-from summary import summary
+import summary
 import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from models import resnet_gpu 
