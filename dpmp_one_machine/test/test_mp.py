@@ -181,8 +181,8 @@ if __name__ == "__main__":
     #model parallel compare 
     stmt = "run(model)"
 
-    setup = "model = ModelParallelvgg(g = 2)"
-    # setup = "model = resnet_gpu.resnet50(args)"
+    # setup = "model = ModelParallelvgg(g = 2)"
+    setup = "model = resnet_gpu.resnet50(args)"
     mp_run_times = timeit.repeat(
         stmt, setup, number=1, repeat=1, globals=globals())
     mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
