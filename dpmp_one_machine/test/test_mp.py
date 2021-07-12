@@ -191,7 +191,7 @@ if __name__ == "__main__":
     mp_run_times = timeit.repeat(
         stmt, setup, number=1, repeat=1, globals=globals())
     mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
-
+    print("time_training_mp",mp_mean,mp_std)
     # setup = "model = VGG().cuda()"
     # rn_run_times = timeit.repeat(
     #     stmt, setup, number=1, repeat=1, globals=globals())
