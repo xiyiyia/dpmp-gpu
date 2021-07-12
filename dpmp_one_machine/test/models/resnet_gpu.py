@@ -200,7 +200,7 @@ class ResNet(nn.Module):
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 1] != None):
                     if(j == 0):
-                        print('once')
+                        print('twice')
                         ret.append(self.fc(output_list[len(output_list) - j - 2].view(s_prev.size()[0], -1)))
                         output_list[len(output_list) - j - 2] = None
                     else:
