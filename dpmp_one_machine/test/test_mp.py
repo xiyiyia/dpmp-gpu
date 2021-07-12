@@ -156,12 +156,13 @@ def run(model):
           target = target.to(output.device)
           # loss = loss_function(output, target).cuda()
           # print(len(output),len(target))
-          loss = loss_function(output, target).cuda()
-          epoch_loss += loss.item()
-          # print(epoch_loss, loss)
-          loss.backward()
-          # average_gradients(model)
-          optimizer.step()
+          if(len(output) == len(target)):
+            loss = loss_function(output, target).cuda()
+            epoch_loss += loss.item()
+            # print(epoch_loss, loss)
+            loss.backward()
+            # average_gradients(model)
+            optimizer.step()
         # print('Rank ', dist.get_rank(), ', epoch ',
         #       epoch, ': ', epoch_loss / num_batches)
         print('Rank ', 0, ', epoch ',

@@ -221,7 +221,7 @@ class ResNet(nn.Module):
                         output_list[len(output_list) - j - 2] = None
             s_prev = self.feature_list[0](s_next)
             output_list[0] = s_prev.to('cuda:1')
-        print(i)
+        # print(i)
         # output_list[0] = None
         # print(ret)
         a = True
@@ -236,7 +236,7 @@ class ResNet(nn.Module):
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 2] != None):
                     if(j == 0):
-                        print('twice')
+                        # print('twice')
                         ret.append(self.fc(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).view(s_prev.size(0), -1)))
                         output_list[len(output_list) - j - 2] = None
                     else:
