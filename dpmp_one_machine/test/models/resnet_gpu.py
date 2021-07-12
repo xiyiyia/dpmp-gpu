@@ -184,25 +184,26 @@ class ResNet(nn.Module):
             # print(output_list)
             for j in range(len(output_list) - 1):
                 # print(output_list)
-                if(output_list[len(output_list) - j - 1] != None):
-                    print(j,output_list[len(output_list) - j - 1],'no None')
+                print(j,output_list[len(output_list) - j - 2],'no None')
+                if(output_list[len(output_list) - j - 2] != None):
+                    print(j,output_list[len(output_list) - j - 2],'no None')
                     if(j == 0):
-                        ret.append(self.classifier(output_list[len(output_list) - j - 1].view(s_prev.size()[0], -1)))
-                        output_list[len(output_list) - j - 1] = None
+                        ret.append(self.classifier(output_list[len(output_list) - j - 2].view(s_prev.size()[0], -1)))
+                        output_list[len(output_list) - j - 2] = None
                     else:
-                        output_list[len(output_list) - j] = self.feature_list[len(output_list) - j](output_list[len(output_list) - j - 1]).to('cuda:' + str(len(output_list) - j))
-                        output_list[len(output_list) - j - 1] = None
+                        output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j -1 ))
+                        output_list[len(output_list) - j - 2] = None
         output_list[0] = None
         print(ret)
         while(output_list[len(output_list) - 1 == None]):
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 1] != None):
                     if(j == 0):
-                        ret.append(self.classifier(output_list[len(output_list) - j - 1].view(s_prev.size()[0], -1)))
-                        output_list[len(output_list) - j - 1] = None
+                        ret.append(self.classifier(output_list[len(output_list) - j - 2].view(s_prev.size()[0], -1)))
+                        output_list[len(output_list) - j - 2] = None
                     else:
-                        output_list[len(output_list) - j] = self.feature_list[len(output_list) - j](output_list[len(output_list) - j - 1]).to('cuda:' + str(len(output_list) - j))
-                        output_list[len(output_list) - j - 1] = None
+                        output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j - 1))
+                        output_list[len(output_list) - j - 2] = None
         # print(torch.cat(ret))
         print(ret)
         return torch.cat(ret)
