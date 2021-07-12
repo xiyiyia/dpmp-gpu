@@ -179,7 +179,7 @@ def vgg11_bn():
 
 """ Distributed Synchronous SGD Example """
 def run(rank, size, model):
-
+    print(model)
     torch.manual_seed(1234)
     train_set, bsz = partition_dataset()
     # dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
@@ -259,7 +259,7 @@ def init_process(rank, size, fn, backend='gloo'):
     else:
         # model = inceptionv3.inceptionv3().to(rank)
         # model = vgg11_bn().to(rank)
-        model = resnet.resnet101().to(rank)
+        model = resnet.resnet50().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
