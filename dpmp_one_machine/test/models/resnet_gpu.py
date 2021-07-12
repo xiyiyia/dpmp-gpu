@@ -171,7 +171,7 @@ class ResNet(nn.Module):
         # output = output.view(output.size(0), -1)
         # output = self.fc(output)
 
-        output_list = [None for i in range(len(self.g))]
+        output_list = [None for i in range(self.g)]
 
         splits = iter(x.split(self.split_size, dim=0))
         ret = []
