@@ -176,8 +176,8 @@ if __name__ == "__main__":
     parser.add_argument('-b', type=int, default=120, help='batchsize')
     args = parser.parse_args()
     # print(torch.cuda.device_count())
-    # size = args.g
-    size = torch.cuda.device_count()
+    size = args.g
+    # size = torch.cuda.device_count()
     processes = []
     mp.set_start_method("spawn")
 
