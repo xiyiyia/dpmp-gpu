@@ -175,8 +175,8 @@ def run(args, model):
         #       epoch, ': ', epoch_loss / num_batches)
         print('Rank ', 0, ', epoch ',
                 epoch, ': ', epoch_loss/len(train_set))
-    #stop = time.time()
-    #print('training_time_dp', stop - start)
+    stop = time.time()
+    print('training_time_dp', stop - start)
 
 if __name__ == "__main__":
 
