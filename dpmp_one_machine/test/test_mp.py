@@ -171,8 +171,8 @@ def run(args, model):
             #print('training_time_bc', stop - start)
             batch_stop = time.time()
             # print('training_time_bc', batch_stop - stop)
-        # print('Rank ', dist.get_rank(), ', epoch ',
-        #       epoch, ': ', epoch_loss / num_batches)
+            print('Rank ', 0, ', epoch ',
+                  epoch, ': ', epoch_loss)
         print('Rank ', 0, ', epoch ',
                 epoch, ': ', epoch_loss/len(train_set))
     stop = time.time()
