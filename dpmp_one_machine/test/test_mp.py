@@ -24,6 +24,7 @@ import matplotlib.pyplot as plt
 from torch.utils.data import DataLoader
 from models import resnet_gpu, resnet
 from torch.utils.tensorboard import SummaryWriter
+from torchgpipe import GPipe
 
 loss_function = nn.CrossEntropyLoss()
 
@@ -126,6 +127,8 @@ def make_layers(cfg, batch_norm=False):
 def run(args, model):
     torch.manual_seed(1234)
     # model.cuda()
+    # model = nn.Sequential(a, b, c, d)
+    model = GPipe(model, balance=[18, 19, 54], chunks=10)
     print(model)
     # summary(model.cuda(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
@@ -195,8 +198,8 @@ if __name__ == "__main__":
     stmt = "run(args,model)"
 
     # setup = "model = ModelParallelvgg(g = 2)"
-    setup = "model = resnet_gpu.resnet152(args)"
-    # setup = "model = resnet.resnet50()"
+    # setup = "model = resnet_gpu.resnet152(args)"
+    setup = "model = resnet.resnet152()"
     mp_run_times = timeit.repeat(
         stmt, setup, number=1, repeat=1, globals=globals())
     mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
