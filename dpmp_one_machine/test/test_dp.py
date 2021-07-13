@@ -228,6 +228,8 @@ def run(args, rank, size, model):
             # print(epoch_loss, loss)
             loss.backward()
             training_time_end = time.time()
+            if(rank == 0):
+                print('training_time_bc', training_time_end - stop)
             training_time_list.append(training_time_end-training_time_start)
             average_gradients(model)
             # time.sleep(10)
@@ -236,7 +238,7 @@ def run(args, rank, size, model):
             optimizer.step()
             batch_stop = time.time()
             if(rank == 0):
-                print('training_time_bc', batch_stop - stop)
+                print('training_time_comu', batch_stop - stop)
         print('communication_time:',communication_time_end -training_time_end)
         training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
