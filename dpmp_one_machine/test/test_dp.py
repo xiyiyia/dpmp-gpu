@@ -209,6 +209,7 @@ def run(args, rank, size, model):
         epoch_loss = 0.0
         # range = 0
         for data, target in train_set:
+            print(target)
             training_time_start = time.time()
             data = data.cuda()
             target = target.cuda()
