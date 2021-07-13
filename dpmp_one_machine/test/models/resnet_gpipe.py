@@ -79,23 +79,34 @@ class BottleNeck(nn.Module):
 
 class ResNet(nn.Module):
 
-    def __init__(self, block, num_block, num_classes=10):
+    def __init__(self, args, block, num_block, num_classes=10):
         super().__init__()
 
         self.in_channels = 64
+        self.split_size = 10
+        self.g = args.g
 
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(64),
-            nn.ReLU(inplace=True))
-        #we use a different inputsize than the original paper
-        #so conv2_x's stride is 1
-        self.conv2_x = self._make_layer(block, 64, num_block[0], 1)
-        self.conv3_x = self._make_layer(block, 128, num_block[1], 2)
-        self.conv4_x = self._make_layer(block, 256, num_block[2], 2)
-        self.conv5_x = self._make_layer(block, 512, num_block[3], 2)
-        self.avg_pool = nn.AdaptiveAvgPool2d((1, 1))
+        conv1 = nn.Sequential(nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False),nn.BatchNorm2d(64),nn.ReLU(inplace=True))
+        conv2_x = self._make_layer(block, 64, num_block[0], 1)
+        conv3_x = self._make_layer(block, 128, num_block[1], 2)
+        conv4_x = self._make_layer(block, 256, num_block[2], 2)
+        conv5_x = self._make_layer(block, 512, num_block[3], 2)
+        avg_pool = nn.AdaptiveAvgPool2d((1, 1)) 
+        # self.fc = nn.Linear(512 * block.expansion, num_classes)
+
+        self.feature = nn.Sequential(*(list(conv1)+ list(conv2_x)+list(conv3_x)+list(conv4_x)+list(conv5_x)+list(nn.Sequential(avg_pool))))
+
         self.fc = nn.Linear(512 * block.expansion, num_classes)
+        # self.lenth = sum(1 for _ in self.feature)
+        # print(self.lenth)
+        # self.feature_list = [None for i in range(args.g)]
+        # bsz = int(self.lenth/self.g)
+        # for i in range(args.g):
+        #     if(i == args.g - 1):
+        #         self.feature_list[i] = self.feature[i * bsz: self.lenth].cuda('cuda:'+str(i))
+        #         self.fc == nn.Sequential(self.fc).cuda('cuda:'+str(i))
+        #         break
+        #     self.feature_list[i] = self.feature[i * bsz: (i+1)* bsz].cuda('cuda:'+str(i))
 
     def _make_layer(self, block, out_channels, num_blocks, stride):
         """make resnet layers(by layer i didnt mean this 'layer' was the
@@ -124,57 +135,39 @@ class ResNet(nn.Module):
 
     def forward(self, x):
         # print
-        start = time.time()
         output = self.conv1(x)
-        stop = time.time()
-        print("1", stop - start)
         output = self.conv2_x(output)
-        stop = time.time()
-        print("2", stop - start)
         output = self.conv3_x(output)
-        stop = time.time()
-        print("3", stop - start)
         output = self.conv4_x(output)
-        stop = time.time()
-        print("4", stop - start)
         output = self.conv5_x(output)
-        stop = time.time()
-        print("5", stop - start)
         output = self.avg_pool(output)
-        stop = time.time()
-        print("6", stop - start)
         output = output.view(output.size(0), -1)
-        output = self.fc(output)
-        stop = time.time()
-        print("7", stop - start)
-        
-
         return output
 
-def resnet18():
+def resnet18(args):
     """ return a ResNet 18 object
     """
-    return ResNet(BasicBlock, [2, 2, 2, 2])
+    return ResNet(args,BasicBlock, [2, 2, 2, 2])
 
-def resnet34():
+def resnet34(args):
     """ return a ResNet 34 object
     """
-    return ResNet(BasicBlock, [3, 4, 6, 3])
+    return ResNet(args,BasicBlock, [3, 4, 6, 3])
 
-def resnet50():
+def resnet50(args):
     """ return a ResNet 50 object
     """
-    return ResNet(BottleNeck, [3, 4, 6, 3])
+    return ResNet(args,BottleNeck, [3, 4, 6, 3])
 
-def resnet101():
+def resnet101(args):
     """ return a ResNet 101 object
     """
-    return ResNet(BottleNeck, [3, 4, 23, 3])
+    return ResNet(args,BottleNeck, [3, 4, 23, 3])
 
-def resnet152():
+def resnet152(args):
     """ return a ResNet 152 object
     """
-    return ResNet(BottleNeck, [3, 8, 36, 3])
+    return ResNet(args,BottleNeck, [3, 8, 36, 3])
 
 
 
