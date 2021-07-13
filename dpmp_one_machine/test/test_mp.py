@@ -227,12 +227,13 @@ def run(args, model):
     # model.cuda()
     # model = nn.Sequential(a, b, c, d)
     print(resnet152())
-        
+    print(sum(1 for _ in resnet152()))
+    
     # partitions = torch.cuda.device_count()
     # partitions = args.g
     # sample = torch.empty(args.b, 3, 224, 224)
     # balance = balance_by_time(partitions, model, sample)
-    model = GPipe(resnet152(), balance, chunks=10)
+    model = GPipe(resnet152(), balance=[], chunks=10)
     # print(model)
     # summary(model.cuda(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
