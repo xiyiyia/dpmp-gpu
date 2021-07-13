@@ -1,6 +1,7 @@
 """run.py:"""
 #!/usr/bin/env python
 
+from dpmp_one_machine.models.resnet import ResNet, resnet152
 import torch.distributed as dist
 import torch.multiprocessing as mp
 import os
@@ -206,12 +207,17 @@ def run(rank, size, model):
           # print("你是什么脸")
           optimizer.zero_grad()
           # print("你是什么脸")
+          start = time.time()
           output = model(data)
+          stop_1 = time.time()
+          print("f",stop_1 - start)
           print(len(output),len(target))
           loss = loss_function(output, target)
           epoch_loss += loss.item()
           print(epoch_loss, loss)
           loss.backward()
+          stop = time.time()
+          print("b",stop - stop_1)
           average_gradients(model)
           optimizer.step()
         print('Rank ', dist.get_rank(), ', epoch ',
@@ -226,7 +232,7 @@ def init_process(rank, size, fn, backend='gloo'):
 
     dist.init_process_group("nccl", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
-    model = vgg11_bn().to(rank)
+    model = ResNet.resnet152().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
@@ -247,9 +253,9 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
     args = parser.parse_args()
-    print(torch.cuda.device_count())
-    # size = args.g
-    size = torch.cuda.device_count()
+    #print(torch.cuda.device_count())
+    size = args.g
+    #size = torch.cuda.device_count()
     processes = []
     mp.set_start_method("spawn")
     
