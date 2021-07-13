@@ -11,7 +11,7 @@
 import torch
 import torch.nn as nn
 import time
-import torch.distributed as dist
+# import torch.distributed as dist
 class BasicBlock(nn.Module):
     """Basic Block for resnet 18 and resnet 34
 
@@ -124,7 +124,7 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        print(dist.get_world_size,len(x))
+        print(len(x))
         output = self.conv1(x)
         output = self.conv2_x(output)
         output = self.conv3_x(output)
