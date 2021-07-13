@@ -233,13 +233,13 @@ def run(args, rank, size, model):
             training_time_list.append(training_time_end-training_time_start)
             average_gradients(model)
             if(rank == 0):
+                batch_stop = time.time()
                 bsz_time = batch_stop - stop
                 print('training_time_comu', batch_stop - stop)
             # time.sleep(10)
             communication_time_end = time.time()
             communication_time_list.append(communication_time_end-training_time_end)
             optimizer.step()
-            batch_stop = time.time()
             training_time_end = time.time()
             if(rank == 0):
                 print('training_time_bc', training_time_end - stop - bsz_time)
