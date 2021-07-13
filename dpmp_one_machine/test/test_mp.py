@@ -128,6 +128,7 @@ def run(args, model):
     torch.manual_seed(1234)
     # model.cuda()
     # model = nn.Sequential(a, b, c, d)
+    print(model)
     model = GPipe(model, balance=[18, 18, 19], chunks=10)
     print(model)
     # summary(model.cuda(), [(3, 255, 255)])
