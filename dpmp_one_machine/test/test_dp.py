@@ -59,7 +59,7 @@ class DataPartitioner(object):
         return Partition(self.data, self.partitions[partition])
 
 """ Partitioning MNIST """
-def partition_dataset():
+def partition_dataset(args):
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
                              transform=transforms.Compose([
                                 # transforms.Resize([32, 32]),
@@ -67,12 +67,12 @@ def partition_dataset():
                                 transforms.Normalize((0.1307,), (0.3081,))
                              ]))
     size = dist.get_world_size()
-    bsz = 4*128 / float(size)
+    bsz = args.g
     partition_sizes = [1.0 / size for _ in range(size)]
     partition = DataPartitioner(dataset, partition_sizes)
     partition = partition.use(dist.get_rank())
     train_set = torch.utils.data.DataLoader(partition,
-                                         batch_size=int(bsz),
+                                         batch_size=bsz,
                                          shuffle=True)
     #print(train_set, bsz)
     return train_set, bsz
@@ -178,10 +178,11 @@ def vgg11_bn():
     return VGG(make_layers(cfg['A'], batch_norm=True))
 
 """ Distributed Synchronous SGD Example """
-def run(rank, size, model):
+def run(args, rank, size, model):
     # print(model)
     torch.manual_seed(1234)
-    train_set, bsz = partition_dataset()
+    train_set, bsz = partition_dataset(args)
+    
     # dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
     #                          transform=transforms.Compose([
     #                             # transforms.Resize([32, 32]),
@@ -198,8 +199,8 @@ def run(rank, size, model):
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
     # print("你是什么脸")
-    num_batches = math.ceil(len(train_set.dataset) / float(bsz))
-
+    # num_batches = math.ceil(len(train_set.dataset) / float(bsz))
+    print(len(train_set),bsz)
     # next(model.parameters()).is_cuda
     for epoch in range(1):
         training_time_list = []
@@ -234,7 +235,7 @@ def run(rank, size, model):
         training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
         communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
         print('Rank ', dist.get_rank(), ', epoch ',
-                epoch, ': ', epoch_loss / num_batches)
+                epoch, ': ', epoch_loss / bsz)
     # test.to_csv('./testcsv.csv',encoding='gbk')
     # fl_c = open('./communication_time_'+str(dist.get_rank())+'.csv',"w+")
     # fl_c.write(training_time_list)
@@ -243,15 +244,15 @@ def run(rank, size, model):
     # fl.write(training_time_list)
     # fl.close()
 
-def init_process(rank, size, fn, backend='gloo'):
+def init_process(args,rank, size, fn, backend='gloo'):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
     # dist.init_process_group(backend, rank=rank, world_size=size)
     # fn(rank, size)
 
-    # dist.init_process_group("nccl", rank=rank, world_size=size)
-    dist.init_process_group("gloo", rank=rank, world_size=size)
+    dist.init_process_group("nccl", rank=rank, world_size=size)
+    # dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
     if size == 1:
         #model = vgg11_bn().to(rank)
@@ -266,7 +267,7 @@ def init_process(rank, size, fn, backend='gloo'):
     # print(rank)
     # print("done", model)
     start = time.time()
-    fn(rank, size, model)
+    fn(args, rank, size, model)
     stop = time.time()
     print('training_time_dp', stop - start)
     # # Rank 1 gets one more input than rank 0.
@@ -287,9 +288,10 @@ if __name__ == "__main__":
                              ]))
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
-    args = parser.parse_args()
+    parser.add_argument('-b', type=int, default=120, help='batchsize')
+    args_1 = parser.parse_args()
     # print(torch.cuda.device_count())
-    size = args.g
+    size = args_1.g
     # size = torch.cuda.device_count()
     processes = []
     mp.set_start_method("spawn")
@@ -300,7 +302,7 @@ if __name__ == "__main__":
     # model = DistributedDataParallel(model, device_ids=[i], output_device=i)
 
     for rank in range(size):
-        p = mp.Process(target=init_process, args=(rank, size, run))
+        p = mp.Process(target=init_process, args=(args_1, rank, size, run))
         p.start()
         processes.append(p)
     for p in processes:
