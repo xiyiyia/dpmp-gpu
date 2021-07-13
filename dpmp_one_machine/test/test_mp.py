@@ -147,12 +147,12 @@ def run(args, model):
     for epoch in range(1):
         epoch_loss = 0.0
         for data, target in train_set:
-            batch_start = time.time()
+            
             data = data.cuda()
             target = target.cuda()
 
             optimizer.zero_grad()
-
+            batch_start = time.time()
             output = model(data)
             stop = time.time()
             print('training_time_fw', stop - batch_start)

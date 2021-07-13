@@ -212,13 +212,14 @@ def run(args, rank, size, model):
         for data, target in train_set:
             # batch_start = time.time()
             # print(target)
-            training_time_start = time.time()
+            
             data = data.cuda()
             target = target.cuda()
             # print("你是什么脸")
             optimizer.zero_grad()
             # print("你是什么脸")
             output = model(data)
+            training_time_start = time.time()
             stop = time.time()
             if(rank == 0):
                 print('training_time_fw', stop - training_time_start)
@@ -228,17 +229,20 @@ def run(args, rank, size, model):
             # print(epoch_loss, loss)
             loss.backward()
             training_time_end = time.time()
-            if(rank == 0):
-                print('training_time_bc', training_time_end - stop)
+
             training_time_list.append(training_time_end-training_time_start)
             average_gradients(model)
+            if(rank == 0):
+                bsz_time = batch_stop - stop
+                print('training_time_comu', batch_stop - stop)
             # time.sleep(10)
             communication_time_end = time.time()
             communication_time_list.append(communication_time_end-training_time_end)
             optimizer.step()
             batch_stop = time.time()
+            training_time_end = time.time()
             if(rank == 0):
-                print('training_time_comu', batch_stop - stop)
+                print('training_time_bc', training_time_end - stop - bsz_time)
         print('communication_time:',communication_time_end -training_time_end)
         training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
