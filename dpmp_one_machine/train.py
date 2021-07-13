@@ -43,11 +43,15 @@ def train(epoch):
         ticks_f = time.time()
 
         optimizer.zero_grad()
+        start = time.time()
         outputs = net(images)
+        stop = time.time()
+        print('fw:',stop - start)
         loss = loss_function(outputs, labels)
         loss.backward()
         optimizer.step()
-
+        stop_1 = time.time()
+        print('bc:',stop_1 - stop)
         ticks_l = time.time()
 
         n_iter = (epoch - 1) * len(cifar100_training_loader) + batch_index + 1
