@@ -224,7 +224,7 @@ def flatten_sequential(module):
 """ Distributed Synchronous SGD Example """
 def run(args, model):
     torch.manual_seed(1234)
-    model.cuda()
+    # model.cuda()
     # model = nn.Sequential(a, b, c, d)
     # print(resnet152())
     # print(sum(1 for _ in resnet152()))

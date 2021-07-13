@@ -98,7 +98,7 @@ class ResNet(nn.Module):
 
         self.fc = nn.Linear(512 * block.expansion, num_classes)
         self.lenth = sum(1 for _ in self.feature)
-        print(self.lenth)
+        # print(self.lenth)
         self.feature_list = [None for i in range(args.g)]
         bsz = int(self.lenth/self.g)
         for i in range(args.g):
