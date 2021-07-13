@@ -105,12 +105,12 @@ class ResNet(nn.Module):
         bsz = int(self.lenth/self.g)
         for i in range(args.g):
             if(i == args.g - 1):
-                self.feature_list[i] = self.features[i * bsz: self.lenth].cuda('cuda:'+str(i))
+                self.feature_list[i] = self.feature[i * bsz: self.lenth].cuda('cuda:'+str(i))
                 self.fc == self.fc.cuda('cuda:'+str(i))
-            self.feature_list[i] = self.features[i * bsz: (i+1)* bsz].cuda('cuda:'+str(i))
-            #self.feature_list[i] = self.features[i * bsz: (i+1)* bsz]
+            self.feature_list[i] = self.feature[i * bsz: (i+1)* bsz].cuda('cuda:'+str(i))
+            #self.feature_list[i] = self.feature[i * bsz: (i+1)* bsz]
         # if(args.g == 2):
-        #     self.feature_list[0] =  self.features[0:int(sum(1 for _ in self.features)/self.g)].to('cuda:0')
+        #     self.feature_list[0] =  self.feature[0:int(sum(1 for _ in self.feature)/self.g)].to('cuda:0')
         #     torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x))).to('cuda:0')
         #     self.feature_list[1] = torch.nn.Sequential(*(list(self.conv4_x)+list(self.conv5_x)+list(self.avg_pool))).to('cuda:1')
         #     self.fc = self.fc.to('cuda:1')
