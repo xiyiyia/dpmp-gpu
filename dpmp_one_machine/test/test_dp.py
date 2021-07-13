@@ -218,8 +218,8 @@ def run(args, rank, size, model):
             # print("你是什么脸")
             optimizer.zero_grad()
             # print("你是什么脸")
-            output = model(data)
             training_time_start = time.time()
+            output = model(data)
             stop = time.time()
             if(rank == 0):
                 print('training_time_fw', stop - training_time_start)
