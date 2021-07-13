@@ -91,68 +91,76 @@ class ResNet(nn.Module):
             nn.ReLU(inplace=True))
         #we use a different inputsize than the original paper
         #so conv2_x's stride is 1
-        self.conv2_x = self._make_layer(block, 64, num_block[0], 1)
-        self.conv3_x = self._make_layer(block, 128, num_block[1], 2)
-        self.conv4_x = self._make_layer(block, 256, num_block[2], 2)
-        self.conv5_x = self._make_layer(block, 512, num_block[3], 2)
-        self.avg_pool = nn.Sequential( nn.AdaptiveAvgPool2d((1, 1)) )
+        self.feature = nn.Sequential(*(list(self.conv1)+ self._make_layer(block, 64, num_block[0], 1)+self._make_layer(block, 128, num_block[1], 2)+ \
+                                        self._make_layer(block, 256, num_block[2], 2)+self._make_layer(block, 512, num_block[3], 2)+list(self.conv5_x)+list(self.avg_pool)))
+        # self.conv2_x = self._make_layer(block, 64, num_block[0], 1)
+        # self.conv3_x = self._make_layer(block, 128, num_block[1], 2)
+        # self.conv4_x = self._make_layer(block, 256, num_block[2], 2)
+        # self.conv5_x = self._make_layer(block, 512, num_block[3], 2)
+        # self.avg_pool = nn.Sequential( nn.AdaptiveAvgPool2d((1, 1)) )
         self.fc = nn.Sequential( nn.Linear(512 * block.expansion, num_classes))
+
+        self.lenth = sum(1 for _ in self.feature)
         self.feature_list = [None for i in range(args.g)]
-        if(args.g == 2):
-            # a = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x)+list(self.conv4_x))).to('cuda:0')
-            #self.layer_1 = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x)+list(self.conv4_x))).to('cuda:0')
-            self.feature_list[0] =  torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x))).to('cuda:0')
-            #self.layer_2 = torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:1')
-            # a = torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:1')
-            self.feature_list[1] = torch.nn.Sequential(*(list(self.conv4_x)+list(self.conv5_x)+list(self.avg_pool))).to('cuda:1')
-            self.fc = self.fc.to('cuda:1')
-        if(args.g == 3):
-            # self.layer_1 = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x))).to('cuda:0')
-            self.feature_list[0] =  torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x))).to('cuda:0')
-            # self.layer_2 = torch.nn.Sequential(*(list(self.conv4_x)+list(self.conv5_x))).to('cuda:1')
-            self.feature_list[1] = torch.nn.Sequential(*(list(self.conv3_x)+list(self.conv4_x))).to('cuda:1')
-            # self.layer_3 = torch.nn.Sequential(*(list(self.avg_pool))).to('cuda:2')
-            self.feature_list[2] =  torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:2')
-            self.fc = self.fc.to('cuda:2')
-        if(args.g == 4):
-            # self.layer_1 = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x))).to('cuda:0')
-            # self.feature_list[0] =  self.layer_1
-            self.feature_list[0] = torch.nn.Sequential(*(list(self.conv1))).to('cuda:0')
-            # self.layer_2 = torch.nn.Sequential(*(list(self.conv3_x)+list(self.conv4_x))).to('cuda:1')
-            # self.feature_list[1] = self.layer_2 
-            self.feature_list[1] = torch.nn.Sequential(*(list(self.conv2_x)+list(self.conv3_x))).to('cuda:1')
-            # self.layer_3 = torch.nn.Sequential(*(list(self.conv5_x))).to('cuda:2')
-            # self.feature_list[2] = self.layer_3
-            self.feature_list[2] = torch.nn.Sequential(*(list(self.conv4_x))).to('cuda:2')
-            # self.layer_4 = torch.nn.Sequential(*(list(self.avg_pool))).to('cuda:3')
-            # self.feature_list[3] = self.layer_4
-            self.feature_list[3] = torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:3')
-            self.fc = self.fc.to('cuda:3')
-        if(args.g == 5):
-            # self.layer_1 = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x))).to('cuda:0')
-            # self.feature_list[0] = self.layer_1
-            self.feature_list[0] = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x))).to('cuda:0')
-            # self.layer_2 = torch.nn.Sequential(*(list(self.conv3_x))).to('cuda:1')
-            # self.feature_list[1] = self.layer_2
-            self.feature_list[1] = torch.nn.Sequential(*(list(self.conv3_x))).to('cuda:1')
-            # self.layer_3 = torch.nn.Sequential(*(list(self.conv4_x))).to('cuda:2')
-            # self.feature_list[2] = self.layer_3
-            self.feature_list[2] = torch.nn.Sequential(*(list(self.conv4_x))).to('cuda:2')
-            # self.layer_4 = torch.nn.Sequential(*(list(self.conv5_x))).to('cuda:3')
-            # self.feature_list[3] = self.layer_4
-            self.feature_list[3] = torch.nn.Sequential(*(list(self.conv5_x))).to('cuda:3')
-            # self.layer_5 = torch.nn.Sequential(*(list(self.avg_pool))).to('cuda:4')
-            # self.feature_list[4] = self.layer_5
-            self.feature_list[4] = torch.nn.Sequential(*(list(self.avg_pool))).to('cuda:4')
-            self.fc = self.fc.to('cuda:4')
-        if(args.g == 6):
-            self.feature_list[0] = torch.nn.Sequential(*(list(self.conv1))).to('cuda:0')
-            self.feature_list[1] = torch.nn.Sequential(*(list(self.conv2_x))).to('cuda:1')
-            self.feature_list[2] = torch.nn.Sequential(*(list(self.conv3_x))).to('cuda:2')
-            self.feature_list[3] = torch.nn.Sequential(*(list(self.conv4_x))).to('cuda:3')
-            self.feature_list[4] = torch.nn.Sequential(*(list(self.conv5_x))).to('cuda:4')
-            self.feature_list[5] = torch.nn.Sequential(*(list(self.avg_pool))).to('cuda:5')
-            self.fc = self.fc.to('cuda:5')
+        bsz = int(self.lenth/self.g)
+        for i in range(args.g):
+            if(i == args.g - 1):
+                self.feature_list[i] = self.features[i * bsz: self.lenth].cuda('cuda:'+str(i))
+                self.fc == self.fc.cuda('cuda:'+str(i))
+            self.feature_list[i] = self.features[i * bsz: (i+1)* bsz].cuda('cuda:'+str(i))
+            #self.feature_list[i] = self.features[i * bsz: (i+1)* bsz]
+        # if(args.g == 2):
+        #     self.feature_list[0] =  self.features[0:int(sum(1 for _ in self.features)/self.g)].to('cuda:0')
+        #     torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x))).to('cuda:0')
+        #     self.feature_list[1] = torch.nn.Sequential(*(list(self.conv4_x)+list(self.conv5_x)+list(self.avg_pool))).to('cuda:1')
+        #     self.fc = self.fc.to('cuda:1')
+        # if(args.g == 3):
+        #     # self.layer_1 = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x)+list(self.conv3_x))).to('cuda:0')
+        #     self.feature_list[0] =  torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x))).to('cuda:0')
+        #     # self.layer_2 = torch.nn.Sequential(*(list(self.conv4_x)+list(self.conv5_x))).to('cuda:1')
+        #     self.feature_list[1] = torch.nn.Sequential(*(list(self.conv3_x)+list(self.conv4_x))).to('cuda:1')
+        #     # self.layer_3 = torch.nn.Sequential(*(list(self.avg_pool))).to('cuda:2')
+        #     self.feature_list[2] =  torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:2')
+        #     self.fc = self.fc.to('cuda:2')
+        # if(args.g == 4):
+        #     # self.layer_1 = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x))).to('cuda:0')
+        #     # self.feature_list[0] =  self.layer_1
+        #     self.feature_list[0] = torch.nn.Sequential(*(list(self.conv1))).to('cuda:0')
+        #     # self.layer_2 = torch.nn.Sequential(*(list(self.conv3_x)+list(self.conv4_x))).to('cuda:1')
+        #     # self.feature_list[1] = self.layer_2 
+        #     self.feature_list[1] = torch.nn.Sequential(*(list(self.conv2_x)+list(self.conv3_x))).to('cuda:1')
+        #     # self.layer_3 = torch.nn.Sequential(*(list(self.conv5_x))).to('cuda:2')
+        #     # self.feature_list[2] = self.layer_3
+        #     self.feature_list[2] = torch.nn.Sequential(*(list(self.conv4_x))).to('cuda:2')
+        #     # self.layer_4 = torch.nn.Sequential(*(list(self.avg_pool))).to('cuda:3')
+        #     # self.feature_list[3] = self.layer_4
+        #     self.feature_list[3] = torch.nn.Sequential(*(list(self.conv5_x)+list(self.avg_pool))).to('cuda:3')
+        #     self.fc = self.fc.to('cuda:3')
+        # if(args.g == 5):
+        #     # self.layer_1 = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x))).to('cuda:0')
+        #     # self.feature_list[0] = self.layer_1
+        #     self.feature_list[0] = torch.nn.Sequential(*(list(self.conv1)+list(self.conv2_x))).to('cuda:0')
+        #     # self.layer_2 = torch.nn.Sequential(*(list(self.conv3_x))).to('cuda:1')
+        #     # self.feature_list[1] = self.layer_2
+        #     self.feature_list[1] = torch.nn.Sequential(*(list(self.conv3_x))).to('cuda:1')
+        #     # self.layer_3 = torch.nn.Sequential(*(list(self.conv4_x))).to('cuda:2')
+        #     # self.feature_list[2] = self.layer_3
+        #     self.feature_list[2] = torch.nn.Sequential(*(list(self.conv4_x))).to('cuda:2')
+        #     # self.layer_4 = torch.nn.Sequential(*(list(self.conv5_x))).to('cuda:3')
+        #     # self.feature_list[3] = self.layer_4
+        #     self.feature_list[3] = torch.nn.Sequential(*(list(self.conv5_x))).to('cuda:3')
+        #     # self.layer_5 = torch.nn.Sequential(*(list(self.avg_pool))).to('cuda:4')
+        #     # self.feature_list[4] = self.layer_5
+        #     self.feature_list[4] = torch.nn.Sequential(*(list(self.avg_pool))).to('cuda:4')
+        #     self.fc = self.fc.to('cuda:4')
+        # if(args.g == 6):
+        #     self.feature_list[0] = torch.nn.Sequential(*(list(self.conv1))).to('cuda:0')
+        #     self.feature_list[1] = torch.nn.Sequential(*(list(self.conv2_x))).to('cuda:1')
+        #     self.feature_list[2] = torch.nn.Sequential(*(list(self.conv3_x))).to('cuda:2')
+        #     self.feature_list[3] = torch.nn.Sequential(*(list(self.conv4_x))).to('cuda:3')
+        #     self.feature_list[4] = torch.nn.Sequential(*(list(self.conv5_x))).to('cuda:4')
+        #     self.feature_list[5] = torch.nn.Sequential(*(list(self.avg_pool))).to('cuda:5')
+        #     self.fc = self.fc.to('cuda:5')
         # if(args.g == 7):
         #     self.feature_list[0].append( torch.nn.Sequential(*(list(self.conv1))).to('cuda:0'))
         #     self.feature_list[1].append( torch.nn.Sequential(*(list(self.conv2_x))).to('cuda:1'))
@@ -183,8 +191,8 @@ class ResNet(nn.Module):
         for stride in strides:
             layers.append(block(self.in_channels, out_channels, stride))
             self.in_channels = out_channels * block.expansion
-
-        return nn.Sequential(*layers)
+        return layers
+        # return nn.Sequential(*layers)
 
     def forward(self, x):
         # output = self.conv1(x)
@@ -195,7 +203,7 @@ class ResNet(nn.Module):
         # output = self.avg_pool(output)
         # output = output.view(output.size(0), -1)
         # output = self.fc(output)
-        i = 1
+        # i = 1
         output_list = [None for i in range(self.g)]
         splits = iter(x.split(self.split_size, dim=0))
         s_next = next(splits)
@@ -203,16 +211,9 @@ class ResNet(nn.Module):
         output_list[0] = s_prev.to('cuda:1')
         ret = []
         for s_next in splits:
-            i += 1
-            # print(output_list)
             for j in range(len(output_list) - 1):
-                # print(output_list)
-                # print(j,output_list[len(output_list) - j - 2],'no None')
                 if(output_list[len(output_list) - j - 2] != None):
-                    # print(j,output_list[len(output_list) - j - 2],'no None')
                     if(j == 0):
-                        # print('once')
-                        # output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2])
                         ret.append(self.fc(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).view(s_prev.size(0), -1)))
                         output_list[len(output_list) - j - 2] = None
                         # output_list[len(output_list) - j - 1] = None
@@ -221,27 +222,22 @@ class ResNet(nn.Module):
                         output_list[len(output_list) - j - 2] = None
             s_prev = self.feature_list[0](s_next)
             output_list[0] = s_prev.to('cuda:1')
-        # print(i)
-        # output_list[0] = None
-        # print(ret)
         a = True
         while( a == True):
-            a = False
-            for i in range(len(output_list)):
-                # a = False
-                if(output_list[i] != None):
-                    a = True
-            if(a == False):
-                break
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 2] != None):
                     if(j == 0):
-                        # print('twice')
                         ret.append(self.fc(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).view(s_prev.size(0), -1)))
                         output_list[len(output_list) - j - 2] = None
                     else:
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j))
                         output_list[len(output_list) - j - 2] = None
+            a = False
+            for i in range(len(output_list)):
+                # a = False
+                if(output_list[i] != None):
+                    a = True
+                    break
         # print(len(torch.cat(ret)[0]))
         # print(ret)
 
