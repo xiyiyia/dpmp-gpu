@@ -226,7 +226,7 @@ def run(args, model):
     torch.manual_seed(1234)
     # model.cuda()
     # model = nn.Sequential(a, b, c, d)
-    print(model)
+    print(resnet152())
         
     # partitions = torch.cuda.device_count()
     # partitions = args.g
@@ -304,8 +304,8 @@ if __name__ == "__main__":
     # setup = "model = ModelParallelvgg(g = 2)"
     # setup = "model = resnet_gpu.resnet152(args)"
     # setup = "model = resnet.resnet152()"
-    # setup = "model = resnet_gpipe.resnet152(args)"
-    setup = "model = resnet152(args)"
+    setup = "model = resnet_gpipe.resnet152(args)"
+    # setup = "model = resnet152(args)"
     mp_run_times = timeit.repeat(
         stmt, setup, number=1, repeat=1, globals=globals())
     mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
