@@ -129,7 +129,8 @@ class ResNet(nn.Module):
             self.in_channels = out_channels * block.expansion
 
         return nn.Sequential(*layers)
-
+    def return_gpipe(self):
+        return self.feature
     def forward(self, x):
         # print
         output = self.conv1(x)
