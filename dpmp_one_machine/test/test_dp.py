@@ -226,7 +226,7 @@ def run(args, rank, size, model):
             # print(len(output),len(target))
             loss = loss_function(output, target)
             epoch_loss += loss.item()
-            # print(epoch_loss, loss)
+            print(epoch_loss, loss)
             loss.backward()
             training_time_end = time.time()
 
