@@ -171,8 +171,8 @@ def run(args, model):
             #print('training_time_bc', stop - start)
             batch_stop = time.time()
             print('training_time_bc', batch_stop - stop)
-            print('Rank ', 0, ', epoch ',
-                  epoch, ': ', epoch_loss)
+            # print('Rank ', 0, ', epoch ',
+            #       epoch, ': ', epoch_loss)
         print('Rank ', 0, ', epoch ',
                 epoch, ': ', epoch_loss/len(train_set))
     stop = time.time()
@@ -194,8 +194,8 @@ if __name__ == "__main__":
     #model parallel compare 
     stmt = "run(args,model)"
 
-    setup = "model = ModelParallelvgg(g = 2)"
-    # setup = "model = resnet_gpu.resnet152(args)"
+    # setup = "model = ModelParallelvgg(g = 2)"
+    setup = "model = resnet_gpu.resnet152(args)"
     # setup = "model = resnet.resnet50()"
     mp_run_times = timeit.repeat(
         stmt, setup, number=1, repeat=1, globals=globals())
