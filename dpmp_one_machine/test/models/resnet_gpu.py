@@ -101,12 +101,14 @@ class ResNet(nn.Module):
         self.fc = nn.Sequential( nn.Linear(512 * block.expansion, num_classes))
 
         self.lenth = sum(1 for _ in self.feature)
+        print(self.lenth)
         self.feature_list = [None for i in range(args.g)]
         bsz = int(self.lenth/self.g)
         for i in range(args.g):
             if(i == args.g - 1):
                 self.feature_list[i] = self.feature[i * bsz: self.lenth].cuda('cuda:'+str(i))
                 self.fc == self.fc.cuda('cuda:'+str(i))
+                break
             self.feature_list[i] = self.feature[i * bsz: (i+1)* bsz].cuda('cuda:'+str(i))
             #self.feature_list[i] = self.feature[i * bsz: (i+1)* bsz]
         # if(args.g == 2):
