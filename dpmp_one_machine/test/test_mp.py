@@ -25,7 +25,7 @@ from torch.utils.data import DataLoader
 from models import resnet_gpu, resnet, resnet_gpipe
 from torch.utils.tensorboard import SummaryWriter
 from torchgpipe import GPipe
-
+from collections import OrderedDict
 loss_function = nn.CrossEntropyLoss()
 
 class VGG(nn.Module):
