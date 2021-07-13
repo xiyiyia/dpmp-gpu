@@ -272,7 +272,7 @@ def init_process(args,rank, size, fn, backend='gloo'):
     # dist.init_process_group(backend, rank=rank, world_size=size)
     # fn(rank, size)
 
-    dist.init_process_group("nccl", rank=rank, world_size=size)
+    dist.init_process_group("mpi", rank=rank, world_size=size)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
     if size == 1:
