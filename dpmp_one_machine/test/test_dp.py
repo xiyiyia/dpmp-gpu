@@ -210,7 +210,7 @@ def run(args, rank, size, model):
         epoch_loss = 0.0
         # range = 0
         for data, target in train_set:
-            batch_start = time.time()
+            # batch_start = time.time()
             # print(target)
             training_time_start = time.time()
             data = data.cuda()
@@ -221,7 +221,7 @@ def run(args, rank, size, model):
             output = model(data)
             stop = time.time()
             if(rank == 0):
-                print('training_time_fw', stop - start)
+                print('training_time_fw', stop - training_time_start)
             # print(len(output),len(target))
             loss = loss_function(output, target)
             epoch_loss += loss.item()
