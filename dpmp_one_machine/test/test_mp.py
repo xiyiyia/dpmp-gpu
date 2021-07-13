@@ -123,7 +123,7 @@ def make_layers(cfg, batch_norm=False):
     return nn.Sequential(*layers)
 
 """ Distributed Synchronous SGD Example """
-def run(model):
+def run(args, model):
     torch.manual_seed(1234)
     # model.cuda()
     # print(model)
@@ -135,7 +135,7 @@ def run(model):
                                 transforms.Normalize((0.1307,), (0.3081,))
                              ]))
     train_set = torch.utils.data.DataLoader(dataset,
-                                              batch_size=100,
+                                              batch_size=args.b,
                                               shuffle=True,
                                               )
     # train_set = train_set.cuda()
@@ -143,6 +143,7 @@ def run(model):
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
     # num_batches = math.ceil(len(train_set.dataset) / float(bsz))
+    start = time.time()
     for epoch in range(1):
         epoch_loss = 0.0
         for data, target in train_set:
@@ -167,13 +168,14 @@ def run(model):
         #       epoch, ': ', epoch_loss / num_batches)
         print('Rank ', 0, ', epoch ',
                 epoch, ': ', epoch_loss/len(train_set))
-
+    stop = time.time()
+    print('training_time_dp', stop - start)
 
 if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=2, help='number of gpus')
-    parser.add_argument('-b', type=int, default=120, help='batchsize')
+    parser.add_argument('-b', type=int, default=100, help='batchsize')
     args = parser.parse_args()
     # print(torch.cuda.device_count())
     size = args.g
@@ -183,7 +185,7 @@ if __name__ == "__main__":
 
 
     #model parallel compare 
-    stmt = "run(model)"
+    stmt = "run(args,model)"
 
     # setup = "model = ModelParallelvgg(g = 2)"
     setup = "model = resnet_gpu.resnet50(args)"

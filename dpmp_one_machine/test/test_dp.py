@@ -271,10 +271,10 @@ def init_process(args,rank, size, fn, backend='gloo'):
     )
     # print(rank)
     # print("done", model)
-    start = time.time()
+    # start = time.time()
     fn(args, rank, size, model)
-    stop = time.time()
-    print('training_time_dp', stop - start)
+    # stop = time.time()
+    # print('training_time_dp', stop - start)
     # # Rank 1 gets one more input than rank 0.
     # inputs = [torch.tensor([1]).float() for _ in range(10 + rank)]
     # with model.join():
