@@ -219,8 +219,9 @@ def run(args, rank, size, model):
             optimizer.zero_grad()
             # print("你是什么脸")
             output = model(data)
-            # stop = time.time()
-            # print('training_time_dp', stop - start)
+            stop = time.time()
+            if(rank == 0):
+                print('training_time_fw', stop - start)
             # print(len(output),len(target))
             loss = loss_function(output, target)
             epoch_loss += loss.item()
@@ -234,7 +235,8 @@ def run(args, rank, size, model):
             communication_time_list.append(communication_time_end-training_time_end)
             optimizer.step()
             batch_stop = time.time()
-            print('training_time_batch', batch_stop - batch_start)
+            if(rank == 0):
+                print('training_time_bc', batch_stop - stop)
         print('communication_time:',communication_time_end -training_time_end)
         training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
@@ -244,8 +246,8 @@ def run(args, rank, size, model):
         communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
         print('Rank ', dist.get_rank(), ', epoch ',
                 epoch, ': ', epoch_loss / bsz)
-    stop = time.time()
-    print('training_time_dp', stop - start)
+    #stop = time.time()
+    #print('training_time_dp', stop - start)
     # test.to_csv('./testcsv.csv',encoding='gbk')
     # fl_c = open('./communication_time_'+str(dist.get_rank())+'.csv',"w+")
     # fl_c.write(training_time_list)

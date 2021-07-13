@@ -155,7 +155,7 @@ def run(args, model):
 
             output = model(data)
             stop = time.time()
-            print('training_time_dp', stop - start)
+            print('training_time_fw', stop - start)
             # print(len(output),len(target))
             target = target.to(output.device)
             # loss = loss_function(output, target).cuda()
@@ -167,14 +167,16 @@ def run(args, model):
                 loss.backward()
                 # average_gradients(model)
                 optimizer.step()
+                stop = time.time()
+                print('training_time_bc', stop - start)
             batch_stop = time.time()
             print('training_time_batch', batch_stop - batch_start)
         # print('Rank ', dist.get_rank(), ', epoch ',
         #       epoch, ': ', epoch_loss / num_batches)
         print('Rank ', 0, ', epoch ',
                 epoch, ': ', epoch_loss/len(train_set))
-    stop = time.time()
-    print('training_time_dp', stop - start)
+    #stop = time.time()
+    #print('training_time_dp', stop - start)
 
 if __name__ == "__main__":
 
