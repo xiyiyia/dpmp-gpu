@@ -236,7 +236,7 @@ def run(args, rank, size, model):
             average_gradients(model)
             if(rank == 0):
                 batch_stop = time.time()
-                bsz_time = batch_stop - stop
+                bsz_time = batch_stop - batch_start
                 print('training_time_comu', batch_stop - batch_start)
             # time.sleep(10)
             communication_time_end = time.time()
