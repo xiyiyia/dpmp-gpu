@@ -200,7 +200,7 @@ def run(args, rank, size, model):
                           lr=0.01, momentum=0.5)
     # print("你是什么脸")
     # num_batches = math.ceil(len(train_set.dataset) / float(bsz))
-    print(len(train_set),bsz)
+    # print(len(train_set),bsz)
     # next(model.parameters()).is_cuda
     for epoch in range(1):
         training_time_list = []
@@ -209,7 +209,7 @@ def run(args, rank, size, model):
         epoch_loss = 0.0
         # range = 0
         for data, target in train_set:
-            print(target)
+            # print(target)
             training_time_start = time.time()
             data = data.cuda()
             target = target.cuda()
@@ -227,6 +227,7 @@ def run(args, rank, size, model):
             average_gradients(model)
             # time.sleep(10)
             communication_time_end = time.time()
+            print('communication_time:',communication_time_end -training_time_end)
             communication_time_list.append(communication_time_end-training_time_end)
             optimizer.step()
         training_time_list = np.array(training_time_list).reshape(1,len(train_set))
