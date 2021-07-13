@@ -290,7 +290,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=2, help='number of gpus')
-    parser.add_argument('-b', type=int, default=100, help='batchsize')
+    parser.add_argument('-b', type=int, default=128, help='batchsize')
     args = parser.parse_args()
     # print(torch.cuda.device_count())
     size = args.g
