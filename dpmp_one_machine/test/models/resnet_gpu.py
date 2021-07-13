@@ -91,14 +91,13 @@ class ResNet(nn.Module):
             nn.ReLU(inplace=True))
         #we use a different inputsize than the original paper
         #so conv2_x's stride is 1
-        self.feature = nn.Sequential(*(list(self.conv1)+ self._make_layer(block, 64, num_block[0], 1)+self._make_layer(block, 128, num_block[1], 2)+ \
-                                        self._make_layer(block, 256, num_block[2], 2)+self._make_layer(block, 512, num_block[3], 2)+list(nn.Sequential( nn.AdaptiveAvgPool2d((1, 1)) ))))
-        # self.conv2_x = self._make_layer(block, 64, num_block[0], 1)
-        # self.conv3_x = self._make_layer(block, 128, num_block[1], 2)
-        # self.conv4_x = self._make_layer(block, 256, num_block[2], 2)
-        # self.conv5_x = self._make_layer(block, 512, num_block[3], 2)
-        # self.avg_pool = nn.Sequential( nn.AdaptiveAvgPool2d((1, 1)) )
-        self.fc = nn.Sequential( nn.Linear(512 * block.expansion, num_classes))
+        self.conv2_x = self._make_layer(block, 64, num_block[0], 1)
+        self.conv3_x = self._make_layer(block, 128, num_block[1], 2)
+        self.conv4_x = self._make_layer(block, 256, num_block[2], 2)
+        self.conv5_x = self._make_layer(block, 512, num_block[3], 2)
+        self.avg_pool = nn.AdaptiveAvgPool2d((1, 1)) 
+        self.fc = nn.Linear(512 * block.expansion, num_classes)
+        self.feature = nn.Sequential(*(list(self.conv1)+ list(self.conv2_x)+list(self.conv3_x)+list(self.conv4_x)+list(self.conv5_x)+list(nn.Sequential(self.avg_pool))))
 
         self.lenth = sum(1 for _ in self.feature)
         print(self.lenth)
@@ -107,7 +106,7 @@ class ResNet(nn.Module):
         for i in range(args.g):
             if(i == args.g - 1):
                 self.feature_list[i] = self.feature[i * bsz: self.lenth].cuda('cuda:'+str(i))
-                self.fc == self.fc.cuda('cuda:'+str(i))
+                self.fc == nn.Sequential(self.fc).cuda('cuda:'+str(i))
                 break
             self.feature_list[i] = self.feature[i * bsz: (i+1)* bsz].cuda('cuda:'+str(i))
             #self.feature_list[i] = self.feature[i * bsz: (i+1)* bsz]

@@ -126,7 +126,7 @@ def make_layers(cfg, batch_norm=False):
 def run(args, model):
     torch.manual_seed(1234)
     # model.cuda()
-    # print(model)
+    print(model)
     # summary(model.cuda(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
                              transform=transforms.Compose([
