@@ -85,20 +85,18 @@ class ResNet(nn.Module):
         self.in_channels = 64
         self.split_size = 10
         self.g = args.g
-        self.conv1 = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False),
-            nn.BatchNorm2d(64),
-            nn.ReLU(inplace=True))
-        #we use a different inputsize than the original paper
-        #so conv2_x's stride is 1
-        self.conv2_x = self._make_layer(block, 64, num_block[0], 1)
-        self.conv3_x = self._make_layer(block, 128, num_block[1], 2)
-        self.conv4_x = self._make_layer(block, 256, num_block[2], 2)
-        self.conv5_x = self._make_layer(block, 512, num_block[3], 2)
-        self.avg_pool = nn.AdaptiveAvgPool2d((1, 1)) 
-        self.fc = nn.Linear(512 * block.expansion, num_classes)
-        self.feature = nn.Sequential(*(list(self.conv1)+ list(self.conv2_x)+list(self.conv3_x)+list(self.conv4_x)+list(self.conv5_x)+list(nn.Sequential(self.avg_pool))))
 
+        conv1 = nn.Sequential(nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False),nn.BatchNorm2d(64),nn.ReLU(inplace=True))
+        conv2_x = self._make_layer(block, 64, num_block[0], 1)
+        conv3_x = self._make_layer(block, 128, num_block[1], 2)
+        conv4_x = self._make_layer(block, 256, num_block[2], 2)
+        conv5_x = self._make_layer(block, 512, num_block[3], 2)
+        avg_pool = nn.AdaptiveAvgPool2d((1, 1)) 
+        # self.fc = nn.Linear(512 * block.expansion, num_classes)
+
+        self.feature = nn.Sequential(*(list(conv1)+ list(conv2_x)+list(conv3_x)+list(conv4_x)+list(conv5_x)+list(nn.Sequential(avg_pool))))
+
+        self.fc = nn.Linear(512 * block.expansion, num_classes)
         self.lenth = sum(1 for _ in self.feature)
         print(self.lenth)
         self.feature_list = [None for i in range(args.g)]
