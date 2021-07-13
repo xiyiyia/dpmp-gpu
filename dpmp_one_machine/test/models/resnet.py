@@ -10,8 +10,7 @@
 
 import torch
 import torch.nn as nn
-import time
-# import torch.distributed as dist
+
 class BasicBlock(nn.Module):
     """Basic Block for resnet 18 and resnet 34
 
@@ -132,6 +131,8 @@ class ResNet(nn.Module):
         output = self.conv5_x(output)
         output = self.avg_pool(output)
         output = output.view(output.size(0), -1)
+        output = self.fc(output)
+
         return output
 
 def resnet18():
