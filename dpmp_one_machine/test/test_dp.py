@@ -218,6 +218,8 @@ def run(args, rank, size, model):
             optimizer.zero_grad()
             # print("你是什么脸")
             output = model(data)
+            stop = time.time()
+            print('training_time_dp', stop - start)
             # print(len(output),len(target))
             loss = loss_function(output, target)
             epoch_loss += loss.item()
