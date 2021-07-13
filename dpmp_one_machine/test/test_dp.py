@@ -245,7 +245,7 @@ def run(args, rank, size, model):
             training_time_end = time.time()
             if(rank == 0):
                 print('training_time_bc', training_time_end - stop - bsz_time)
-        print('communication_time:',communication_time_end -training_time_end)
+        # print('communication_time:',communication_time_end -training_time_end)
         training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
         training_time = pd.DataFrame(columns=name,data=training_time_list)
@@ -272,8 +272,8 @@ def init_process(args,rank, size, fn, backend='gloo'):
     # dist.init_process_group(backend, rank=rank, world_size=size)
     # fn(rank, size)
 
-    # dist.init_process_group("nccl", rank=rank, world_size=size)
-    dist.init_process_group("gloo", rank=rank, world_size=size)
+    dist.init_process_group("nccl", rank=rank, world_size=size)
+    # dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
     if size == 1:
         #model = vgg11_bn().to(rank)
@@ -281,7 +281,7 @@ def init_process(args,rank, size, fn, backend='gloo'):
     else:
         # model = inceptionv3.inceptionv3().to(rank)
         # model = vgg11_bn().to(rank)
-        # model = resnet.resnet101().to(rank)
+        # model = resnet.resnet50().to(rank)
         model = resnet.resnet152().to(rank)
         # print(model)
     model = torch.nn.parallel.DistributedDataParallel(

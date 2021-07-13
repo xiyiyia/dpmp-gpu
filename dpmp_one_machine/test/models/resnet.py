@@ -10,7 +10,7 @@
 
 import torch
 import torch.nn as nn
-
+import time
 class BasicBlock(nn.Module):
     """Basic Block for resnet 18 and resnet 34
 
@@ -123,14 +123,31 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
+        print(len(x))
+        start = time.time()
         output = self.conv1(x)
+        stop = time.time()
+        print("1", stop - start)
         output = self.conv2_x(output)
+        stop = time.time()
+        print("2", stop - start)
         output = self.conv3_x(output)
+        stop = time.time()
+        print("3", stop - start)
         output = self.conv4_x(output)
+        stop = time.time()
+        print("4", stop - start)
         output = self.conv5_x(output)
+        stop = time.time()
+        print("5", stop - start)
         output = self.avg_pool(output)
+        stop = time.time()
+        print("6", stop - start)
         output = output.view(output.size(0), -1)
         output = self.fc(output)
+        stop = time.time()
+        print("7", stop - start)
+        
 
         return output
 
