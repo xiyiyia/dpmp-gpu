@@ -155,7 +155,7 @@ def run(args, model):
             batch_start = time.time()
             output = model(data)
             stop = time.time()
-            print('training_time_fw', stop - batch_start)
+            # print('training_time_fw', stop - batch_start)
             # print(len(output),len(target))
             target = target.to(output.device)
             # loss = loss_function(output, target).cuda()
@@ -170,7 +170,7 @@ def run(args, model):
             #back_stop = time.time()
             #print('training_time_bc', stop - start)
             batch_stop = time.time()
-            print('training_time_bc', batch_stop - stop)
+            # print('training_time_bc', batch_stop - stop)
         # print('Rank ', dist.get_rank(), ', epoch ',
         #       epoch, ': ', epoch_loss / num_batches)
         print('Rank ', 0, ', epoch ',
