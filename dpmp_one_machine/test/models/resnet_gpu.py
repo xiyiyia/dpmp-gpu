@@ -203,7 +203,7 @@ class ResNet(nn.Module):
         # output = output.view(output.size(0), -1)
         # output = self.fc(output)
         # i = 1
-        start = time.time()
+        # start = time.time()
         output_list = [None for i in range(self.g)]
         splits = iter(x.split(self.split_size, dim=0))
         s_next = next(splits)
@@ -240,8 +240,8 @@ class ResNet(nn.Module):
                     break
         # print(len(torch.cat(ret)[0]))
         # print(ret)
-        stop = time.time()
-        print("real_training_time", stop - start)
+        # stop = time.time()
+        # print("real_training_time", stop - start)
         return torch.cat(ret)
 
 def resnet18(args):
