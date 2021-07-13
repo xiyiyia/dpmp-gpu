@@ -202,6 +202,7 @@ def run(args, rank, size, model):
     # num_batches = math.ceil(len(train_set.dataset) / float(bsz))
     # print(len(train_set),bsz)
     # next(model.parameters()).is_cuda
+    start = time.time()
     for epoch in range(1):
         training_time_list = []
         communication_time_list = []
@@ -238,6 +239,8 @@ def run(args, rank, size, model):
         communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
         print('Rank ', dist.get_rank(), ', epoch ',
                 epoch, ': ', epoch_loss / bsz)
+    stop = time.time()
+    print('training_time_dp', stop - start)
     # test.to_csv('./testcsv.csv',encoding='gbk')
     # fl_c = open('./communication_time_'+str(dist.get_rank())+'.csv',"w+")
     # fl_c.write(training_time_list)
