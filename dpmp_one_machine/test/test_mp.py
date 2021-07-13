@@ -25,6 +25,7 @@ from torch.utils.data import DataLoader
 from models import resnet_gpu, resnet, resnet_gpipe
 from torch.utils.tensorboard import SummaryWriter
 from torchgpipe import GPipe
+from torchgpipe.balance import balance_by_time
 from collections import OrderedDict
 loss_function = nn.CrossEntropyLoss()
 
@@ -226,8 +227,12 @@ def run(args, model):
     # model.cuda()
     # model = nn.Sequential(a, b, c, d)
     # print(model)
-    
-    model = GPipe(resnet152(), balance=[18, 18, 19], chunks=10)
+        
+    # partitions = torch.cuda.device_count()
+    partitions = args.g
+    sample = torch.empty(args.b, 3, 224, 224)
+    balance = balance_by_time(partitions, model, sample)
+    model = GPipe(resnet152(), balance, chunks=10)
     # print(model)
     # summary(model.cuda(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
