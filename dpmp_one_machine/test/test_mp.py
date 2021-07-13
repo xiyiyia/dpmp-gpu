@@ -122,14 +122,23 @@ def make_layers(cfg, batch_norm=False):
       layers += [nn.ReLU(inplace=True)]
       input_channel = l
     return nn.Sequential(*layers)
-
+def flatten_sequential(module):
+    def _flatten(module):
+        for name, child in module.named_children():
+            if isinstance(child, nn.Sequential):
+                for sub_name, sub_child in _flatten(child):
+                    yield (f'{name}_{sub_name}', sub_child)
+            else:
+                yield (name, child)
+    return nn.Sequential(OrderedDict(_flatten(module)))
 """ Distributed Synchronous SGD Example """
 def run(args, model):
     torch.manual_seed(1234)
     # model.cuda()
     # model = nn.Sequential(a, b, c, d)
     # print(model)
-    model = GPipe(model.return_gpipe(), balance=[18, 18, 19], chunks=10)
+    
+    model = GPipe(flatten_sequential(model.return_gpipe()), balance=[18, 18, 19], chunks=10)
     # print(model)
     # summary(model.cuda(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
