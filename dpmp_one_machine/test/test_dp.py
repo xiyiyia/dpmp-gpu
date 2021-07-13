@@ -210,6 +210,7 @@ def run(args, rank, size, model):
         epoch_loss = 0.0
         # range = 0
         for data, target in train_set:
+            batch_start = time.time()
             # print(target)
             training_time_start = time.time()
             data = data.cuda()
@@ -218,8 +219,8 @@ def run(args, rank, size, model):
             optimizer.zero_grad()
             # print("你是什么脸")
             output = model(data)
-            stop = time.time()
-            print('training_time_dp', stop - start)
+            # stop = time.time()
+            # print('training_time_dp', stop - start)
             # print(len(output),len(target))
             loss = loss_function(output, target)
             epoch_loss += loss.item()
@@ -232,6 +233,8 @@ def run(args, rank, size, model):
             communication_time_end = time.time()
             communication_time_list.append(communication_time_end-training_time_end)
             optimizer.step()
+            batch_stop = time.time()
+            print('training_time_batch', batch_stop - batch_start)
         print('communication_time:',communication_time_end -training_time_end)
         training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
