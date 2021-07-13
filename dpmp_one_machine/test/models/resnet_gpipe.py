@@ -94,9 +94,8 @@ class ResNet(nn.Module):
         avg_pool = nn.AdaptiveAvgPool2d((1, 1)) 
         # self.fc = nn.Linear(512 * block.expansion, num_classes)
 
-        self.feature = nn.Sequential(*(list(conv1)+ list(conv2_x)+list(conv3_x)+list(conv4_x)+list(conv5_x)+list(nn.Sequential(avg_pool))))
-
         self.fc = nn.Linear(512 * block.expansion, num_classes)
+        self.feature = nn.Sequential(*(list(conv1)+ list(conv2_x)+list(conv3_x)+list(conv4_x)+list(conv5_x)+list(nn.Sequential(avg_pool))+list(nn.Sequential(self.fc))))
         # self.lenth = sum(1 for _ in self.feature)
         # print(self.lenth)
         # self.feature_list = [None for i in range(args.g)]
