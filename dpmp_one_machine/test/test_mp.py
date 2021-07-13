@@ -123,12 +123,72 @@ def make_layers(cfg, batch_norm=False):
       input_channel = l
     return nn.Sequential(*layers)
 
+class BottleNeck(nn.Module):
+    """Residual block for resnet over 50 layers
+
+    """
+    expansion = 4
+    def __init__(self, in_channels, out_channels, stride=1):
+        super().__init__()
+        self.residual_function = nn.Sequential(
+            nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_channels, out_channels, stride=stride, kernel_size=3, padding=1, bias=False),
+            nn.BatchNorm2d(out_channels),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_channels, out_channels * BottleNeck.expansion, kernel_size=1, bias=False),
+            nn.BatchNorm2d(out_channels * BottleNeck.expansion),
+        )
+
+        self.shortcut = nn.Sequential()
+
+        if stride != 1 or in_channels != out_channels * BottleNeck.expansion:
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_channels, out_channels * BottleNeck.expansion, stride=stride, kernel_size=1, bias=False),
+                nn.BatchNorm2d(out_channels * BottleNeck.expansion)
+            )
+
+    def forward(self, x):
+        return nn.ReLU(inplace=True)(self.residual_function(x) + self.shortcut(x))
+
+def make_layer(self, block, out_channels, num_blocks, stride):
+    """make resnet layers(by layer i didnt mean this 'layer' was the
+    same as a neuron netowork layer, ex. conv layer), one layer may
+    contain more than one residual block
+
+    Args:
+        block: block type, basic block or bottle neck block
+        out_channels: output depth channel number of this layer
+        num_blocks: how many blocks per layer
+        stride: the stride of the first block of this layer
+
+    Return:
+        return a resnet layer
+    """
+
+    # we have num_block blocks per layer, the first block
+    # could be 1 or 2, other blocks would always be 1
+    strides = [stride] + [1] * (num_blocks - 1)
+    layers = []
+    for stride in strides:
+        layers.append(block(self.in_channels, out_channels, stride))
+        self.in_channels = out_channels * block.expansion
+
+    return nn.Sequential(*layers)
+
 """ Distributed Synchronous SGD Example """
 def run(args, model):
     torch.manual_seed(1234)
-    # model.cuda()
-    # model = nn.Sequential(a, b, c, d)
-    print(model)
+    num_block = [3, 8, 36, 3]
+    conv1 = nn.Sequential(nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False),nn.BatchNorm2d(64),nn.ReLU(inplace=True))
+    conv2_x = make_layer(BottleNeck, 64, num_block[0], 1)
+    conv3_x = make_layer(BottleNeck, 128, num_block[1], 2)
+    conv4_x = make_layer(BottleNeck, 256, num_block[2], 2)
+    conv5_x = make_layer(BottleNeck, 512, num_block[3], 2)
+    avg_pool = nn.AdaptiveAvgPool2d((1, 1))
+    fc = nn.Linear(512 * BottleNeck.expansion, 10)
+    model = nn.Sequential(*(list(conv1)+ list(conv2_x)+list(conv3_x)+list(conv4_x)+list(conv5_x)+list(nn.Sequential(avg_pool))+list(nn.Sequential(fc))))
     model = GPipe(model, balance=[18, 18, 19], chunks=10)
     print(model)
     # summary(model.cuda(), [(3, 255, 255)])
