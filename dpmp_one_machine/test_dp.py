@@ -232,7 +232,7 @@ def init_process(rank, size, fn, backend='gloo'):
 
     dist.init_process_group("nccl", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
-    model = ResNet.resnet152().to(rank)
+    model = resnet.resnet152().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
