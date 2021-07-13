@@ -147,23 +147,25 @@ def run(args, model):
     for epoch in range(1):
         epoch_loss = 0.0
         for data, target in train_set:
-          data = data.cuda()
-          target = target.cuda()
-    
-          optimizer.zero_grad()
-    
-          output = model(data)
-          # print(len(output),len(target))
-          target = target.to(output.device)
-          # loss = loss_function(output, target).cuda()
-          # print(len(output),len(target))
-          if(len(output) == len(target)):
-            loss = loss_function(output, target).cuda()
-            epoch_loss += loss.item()
-            # print(epoch_loss, loss)
-            loss.backward()
-            # average_gradients(model)
-            optimizer.step()
+            data = data.cuda()
+            target = target.cuda()
+
+            optimizer.zero_grad()
+
+            output = model(data)
+            stop = time.time()
+            print('training_time_dp', stop - start)
+            # print(len(output),len(target))
+            target = target.to(output.device)
+            # loss = loss_function(output, target).cuda()
+            # print(len(output),len(target))
+            if(len(output) == len(target)):
+                loss = loss_function(output, target).cuda()
+                epoch_loss += loss.item()
+                # print(epoch_loss, loss)
+                loss.backward()
+                # average_gradients(model)
+                optimizer.step()
         # print('Rank ', dist.get_rank(), ', epoch ',
         #       epoch, ': ', epoch_loss / num_batches)
         print('Rank ', 0, ', epoch ',
