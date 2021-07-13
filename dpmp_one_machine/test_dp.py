@@ -1,7 +1,7 @@
 """run.py:"""
 #!/usr/bin/env python
 
-from models.resnet import ResNet, resnet152
+from models import resnet
 import torch.distributed as dist
 import torch.multiprocessing as mp
 import os
