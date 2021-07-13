@@ -263,8 +263,8 @@ def init_process(args,rank, size, fn, backend='gloo'):
     # dist.init_process_group(backend, rank=rank, world_size=size)
     # fn(rank, size)
 
-    dist.init_process_group("nccl", rank=rank, world_size=size)
-    # dist.init_process_group("gloo", rank=rank, world_size=size)
+    # dist.init_process_group("nccl", rank=rank, world_size=size)
+    dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
     if size == 1:
         #model = vgg11_bn().to(rank)
@@ -273,6 +273,7 @@ def init_process(args,rank, size, fn, backend='gloo'):
         # model = inceptionv3.inceptionv3().to(rank)
         # model = vgg11_bn().to(rank)
         model = resnet.resnet50().to(rank)
+        print(model)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
@@ -300,7 +301,7 @@ if __name__ == "__main__":
                              ]))
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
-    parser.add_argument('-b', type=int, default=120, help='batchsize')
+    parser.add_argument('-b', type=int, default=100, help='batchsize')
     args_1 = parser.parse_args()
     # print(torch.cuda.device_count())
     size = args_1.g
