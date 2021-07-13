@@ -144,7 +144,7 @@ def run(args, model):
                           lr=0.01, momentum=0.5)
     # num_batches = math.ceil(len(train_set.dataset) / float(bsz))
     start = time.time()
-    for epoch in range(10):
+    for epoch in range(1):
         epoch_loss = 0.0
         for data, target in train_set:
             
