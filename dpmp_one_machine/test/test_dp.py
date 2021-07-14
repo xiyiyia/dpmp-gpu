@@ -208,9 +208,9 @@ def run(args, rank, size, model):
         communication_time_list = []
         name = [i for i in range(len(train_set))]
         epoch_loss = 0.0
-        range = 0
+        # range = 0
         for data, target in train_set:
-            range += 1
+            # range += 1
             # batch_start = time.time()
             # print(target)
             
@@ -246,7 +246,7 @@ def run(args, rank, size, model):
             training_time_end = time.time()
             if(rank == 0):
                 print('training_time_bc', training_time_end - stop - bsz_time)
-        print(range)
+        # print(range)
         # print('communication_time:',communication_time_end -training_time_end)
         training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
