@@ -157,14 +157,12 @@ class ModelParallelvgg(VGG):
         self.split_size = 32
         self.g = g
         self.cfg = [64,     'M', 128,      'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M']
-        self.features = make_layers(self.cfg, batch_norm=True)
+        feature = make_layers(self.cfg, batch_norm=True)
         # iter = (i for i in range(50))
         # sum(1 for _ in iter)
-        # self.list = [None for i in range(2)]
         
-        self.seq1 = self.features[0:int(sum(1 for _ in self.features)/self.g)]
-        self.seq2 = self.features[sum(1 for _ in self.seq1):sum(1 for _ in self.features)]
-        self.list = [self.seq1,self.seq2]
+        self.seq1 = feature[0:int(sum(1 for _ in feature)/self.g)]
+        self.seq2 = feature[sum(1 for _ in self.seq1):sum(1 for _ in feature)]
         # print(torch.nn.Sequential(*(list(self.seq1)+list(self.seq2))))
         self.classifier = nn.Sequential(
           nn.Linear(512, 4096),
@@ -180,6 +178,8 @@ class ModelParallelvgg(VGG):
           self.seq1 = self.seq1.to('cuda:0')
           self.seq2 = self.seq2.to('cuda:1')
           self.classifier = self.classifier.to('cuda:1')
+        else:
+            self.features = feature
     def forward(self, x):
         if(self.g >= 2):
             splits = iter(x.split(self.split_size, dim=0))
