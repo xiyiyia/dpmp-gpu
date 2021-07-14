@@ -203,46 +203,87 @@ class ResNet(nn.Module):
         # output = output.view(output.size(0), -1)
         # output = self.fc(output)
         # i = 1
+        communication_time = 0
+        training_time = 0
+
         start = time.time()
         output_list = [None for i in range(self.g)]
         splits = iter(x.split(self.split_size, dim=0))
         s_next = next(splits)
-        s_prev = self.feature_list[0](s_next)
-        output_list[0] = s_prev.to('cuda:1')
-        ret = []
-        stop = time.time()
-        print('spilit', stop - start)
         start = time.time()
+        s_prev = self.feature_list[0](s_next)
+        stop = time.time()
+        training_time += stop - start
+        output_list[0] = s_prev.to('cuda:1')
+        start = time.time()
+        communication_time += start - stop
+        ret = []
         for s_next in splits:
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 2] != None):
                     if(j == 0):
+                        start = time.time()
                         ret.append(self.fc(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).view(s_prev.size(0), -1)))
+                        stop = time.time()
+                        training_time += stop - start
                         output_list[len(output_list) - j - 2] = None
                         # output_list[len(output_list) - j - 1] = None
                     else:
-                        output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j ))
+                        start = time.time()
+                        output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2])
+                        stop = time.time()
+                        training_time += stop - start
+                        output_list[len(output_list) - j - 1] = output_list[len(output_list) - j - 1].to('cuda:' + str(len(output_list) - j ))
+                        start = time.time()
+                        communication_time += start - stop
                         output_list[len(output_list) - j - 2] = None
             if(output_list[0] != None):
-                ret.append(self.fc(output_list[0].view(s_prev.size(0), -1).to('cuda:0')))
+                stop = time.time()
+                output_list[0] = output_list[0].to('cuda:0')
+                start = time.time()
+                communication_time += start - stop
+                ret.append(self.fc(output_list[0].view(s_prev.size(0), -1)))
+                stop = time.time()
+                training_time += stop - start
                 output_list[0] = None
+            start = time.time()
             s_prev = self.feature_list[0](s_next)
+            stop = time.time()
+            training_time += stop - start
             output_list[0] = s_prev.to('cuda:1')
-        stop = time.time()
-        print('forsplit', stop - start)
+            start = time.time()
+            communication_time += start - stop
+            # s_prev = self.feature_list[0](s_next)
+            # output_list[0] = s_prev.to('cuda:1')
         a = True
         start = time.time()
         while( a == True):
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 2] != None):
                     if(j == 0):
+                        start = time.time()
                         ret.append(self.fc(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).view(s_prev.size(0), -1)))
+                        stop = time.time()
+                        training_time += stop - start
                         output_list[len(output_list) - j - 2] = None
+                        # output_list[len(output_list) - j - 1] = None
                     else:
-                        output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j))
+                        start = time.time()
+                        output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2])
+                        stop = time.time()
+                        training_time += stop - start
+                        output_list[len(output_list) - j - 1] = output_list[len(output_list) - j - 1].to('cuda:' + str(len(output_list) - j ))
+                        start = time.time()
+                        communication_time += start - stop
                         output_list[len(output_list) - j - 2] = None
             if(output_list[0] != None):
-                ret.append(self.fc(output_list[0].view(s_prev.size(0), -1).to('cuda:0')))
+                stop = time.time()
+                output_list[0] = output_list[0].to('cuda:0')
+                start = time.time()
+                communication_time += start - stop
+                ret.append(self.fc(output_list[0].view(s_prev.size(0), -1)))
+                stop = time.time()
+                training_time += stop - start
                 output_list[0] = None
             a = False
             for i in range(len(output_list)):
@@ -250,13 +291,11 @@ class ResNet(nn.Module):
                 if(output_list[i] != None):
                     a = True
                     break
-        stop = time.time()
-        print('forsplit', stop - start)
         # print(len(torch.cat(ret)[0]))
         # print(ret)
         # stop = time.time()
         # print("real_training_time", stop - start)
-        return torch.cat(ret)
+        return communication_time, training_time, torch.cat(ret)
 
 def resnet18(args):
     """ return a ResNet 18 object
