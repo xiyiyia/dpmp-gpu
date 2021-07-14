@@ -312,10 +312,10 @@ if __name__ == "__main__":
         stmt, setup, number=1, repeat=1, globals=globals())
     mp_mean, mp_std = np.mean(mp_run_times), np.std(mp_run_times)
     print("time_training_mp",mp_mean,mp_std)
-    # setup = "model = VGG().cuda()"
-    # rn_run_times = timeit.repeat(
-    #     stmt, setup, number=1, repeat=1, globals=globals())
-    # rn_mean, rn_std = np.mean(rn_run_times), np.std(rn_run_times)
+    setup = "model = VGG().cuda()"
+    rn_run_times = timeit.repeat(
+        stmt, setup, number=1, repeat=1, globals=globals())
+    rn_mean, rn_std = np.mean(rn_run_times), np.std(rn_run_times)
 
 
     def plot(means, stds, labels, fig_name):
@@ -331,7 +331,7 @@ if __name__ == "__main__":
         plt.close(fig)
 
     print("time_training_mp",mp_mean,mp_std)
-    plot([mp_mean],
-        [mp_std],
-        ['Model Parallel'],
+    plot([mp_mean,rn_mean],
+        [mp_std, rn_std],
+        ['Model Parallel','vgg'],
         'pipe_mp.png')
