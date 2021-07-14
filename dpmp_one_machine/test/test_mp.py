@@ -154,7 +154,7 @@ def make_layers(cfg, batch_norm=False):
 class ModelParallelvgg(VGG):
     def __init__(self, num_class=10,g = 1):
         super().__init__()
-        self.split_size = int(128/g)
+        self.split_size = 12
         self.g = g
         self.cfg = [64,     'M', 128,      'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M']
         self.features = make_layers(self.cfg, batch_norm=True)
