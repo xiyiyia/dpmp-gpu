@@ -231,10 +231,10 @@ def run(args, model):
     # partitions = torch.cuda.device_count()
 
 
-    # partitions = args.g
-    # sample = torch.empty(args.b, 3, 224, 224).cuda()
-    # balance = balance_by_time(partitions, resnet152(), sample, device=torch.device('cuda'))
-    # model = GPipe(resnet152(), balance, chunks=10)
+    partitions = args.g
+    sample = torch.empty(args.b, 3, 224, 224).cuda()
+    balance = balance_by_time(partitions, resnet152(), sample, device=torch.device('cuda'))
+    model = GPipe(resnet152(), balance, chunks=args.c)
     print(model)
     # summary(model.cuda(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
@@ -262,7 +262,8 @@ def run(args, model):
 
             optimizer.zero_grad()
             # batch_start = time.time()
-            c, t, output = model(data)
+            # c, t, output = model(data)
+            output = model(data)
             # stop = time.time()
             print('training_time_fw', t)
             print('comunication_time_fw', c)
