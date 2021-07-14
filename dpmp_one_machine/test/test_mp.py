@@ -331,5 +331,5 @@ if __name__ == "__main__":
     # print("time_training_mp",mp_mean,mp_std)
     plot([mp_mean],
         [mp_std],
-        ['Model Parallel','vgg'],
+        ['Model Parallel'],
         'pipe_mp.png')
