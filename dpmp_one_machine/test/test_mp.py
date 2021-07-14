@@ -230,7 +230,7 @@ def run(args, model):
     # print(sum(1 for _ in resnet152()))  
     # partitions = torch.cuda.device_count()
 
-    
+
     partitions = args.g
     sample = torch.empty(args.b, 3, 224, 224).cuda()
     balance = balance_by_time(partitions, resnet152(), sample, device=torch.device('cuda'))
@@ -292,7 +292,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=2, help='number of gpus')
-    parser.add_argument('-b', type=int, default=120, help='batchsize')
+    parser.add_argument('-b', type=int, default=128, help='batchsize')
     args = parser.parse_args()
     # print(torch.cuda.device_count())
     size = args.g
