@@ -227,10 +227,10 @@ def run(args, model):
     # model.cuda()
     # model = nn.Sequential(a, b, c, d)
     # print(resnet152())
-    # print(sum(1 for _ in resnet152()))
+    # print(sum(1 for _ in resnet152()))  
+    # partitions = torch.cuda.device_count()
+
     
-    
-    partitions = torch.cuda.device_count()
     partitions = args.g
     sample = torch.empty(args.b, 3, 224, 224).cuda()
     balance = balance_by_time(partitions, resnet152(), sample, device=torch.device('cuda'))
