@@ -83,7 +83,7 @@ class ResNet(nn.Module):
         super().__init__()
 
         self.in_channels = 64
-        self.split_size = 16
+        self.split_size = args.chunks
         self.g = args.g
 
         conv1 = nn.Sequential(nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False),nn.BatchNorm2d(64),nn.ReLU(inplace=True))
@@ -205,7 +205,7 @@ class ResNet(nn.Module):
         # i = 1
         communication_time = 0
         training_time = 0
-        print(training_time, communication_time)
+        # print(training_time, communication_time)
         start = time.time()
         output_list = [None for i in range(self.g)]
         splits = iter(x.split(self.split_size, dim=0))
@@ -217,8 +217,9 @@ class ResNet(nn.Module):
         output_list[0] = s_prev.to('cuda:1')
         start = time.time()
         communication_time += start - stop
-        print(training_time, communication_time)
+        # print(training_time, communication_time)
         ret = []
+        print(len(s_next))
         for s_next in splits:
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 2] != None):
@@ -227,7 +228,7 @@ class ResNet(nn.Module):
                         ret.append(self.fc(self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).view(s_prev.size(0), -1)))
                         stop = time.time()
                         training_time += stop - start
-                        print(training_time, communication_time)
+                        # print(training_time, communication_time)
                         output_list[len(output_list) - j - 2] = None
                         # output_list[len(output_list) - j - 1] = None
                     else:
@@ -239,7 +240,7 @@ class ResNet(nn.Module):
                         start = time.time()
                         communication_time += start - stop
                         output_list[len(output_list) - j - 2] = None
-                        print(training_time, communication_time)
+                        # print(training_time, communication_time)
             if(output_list[0] != None):
                 stop = time.time()
                 output_list[0] = output_list[0].to('cuda:0')
@@ -249,7 +250,7 @@ class ResNet(nn.Module):
                 stop = time.time()
                 training_time += stop - start
                 output_list[0] = None
-                print(training_time, communication_time)
+                # print(training_time, communication_time)
             start = time.time()
             s_prev = self.feature_list[0](s_next)
             stop = time.time()
@@ -257,7 +258,7 @@ class ResNet(nn.Module):
             output_list[0] = s_prev.to('cuda:1')
             start = time.time()
             communication_time += start - stop
-            print(training_time, communication_time)
+            # print(training_time, communication_time)
             # s_prev = self.feature_list[0](s_next)
             # output_list[0] = s_prev.to('cuda:1')
         a = True
@@ -272,7 +273,7 @@ class ResNet(nn.Module):
                         training_time += stop - start
                         output_list[len(output_list) - j - 2] = None
                         # output_list[len(output_list) - j - 1] = None
-                        print(training_time, communication_time)
+                        # print(training_time, communication_time)
                     else:
                         start = time.time()
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2])
@@ -282,7 +283,7 @@ class ResNet(nn.Module):
                         start = time.time()
                         communication_time += start - stop
                         output_list[len(output_list) - j - 2] = None
-                        print(training_time, communication_time)
+                        # print(training_time, communication_time)
             if(output_list[0] != None):
                 stop = time.time()
                 output_list[0] = output_list[0].to('cuda:0')
@@ -292,7 +293,7 @@ class ResNet(nn.Module):
                 stop = time.time()
                 training_time += stop - start
                 output_list[0] = None
-                print(training_time, communication_time)
+                # print(training_time, communication_time)
             a = False
             for i in range(len(output_list)):
                 # a = False
