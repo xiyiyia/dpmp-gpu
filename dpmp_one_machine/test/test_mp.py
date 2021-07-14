@@ -151,7 +151,7 @@ def make_layers(cfg, batch_norm=False):
       input_channel = l
     return nn.Sequential(*layers)
 
-class ModelParallelvgg(VGG):
+class ModelParallelvgg(nn.Module):
     def __init__(self, num_class=10,g = 1):
         super().__init__()
         self.split_size = 32
