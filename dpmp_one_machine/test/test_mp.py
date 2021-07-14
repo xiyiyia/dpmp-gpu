@@ -304,8 +304,8 @@ if __name__ == "__main__":
     #model parallel compare 
     stmt = "run(args,model)"
 
-    setup = "model = ModelParallelvgg(g = 2)"
-    # setup = "model = resnet_gpu.resnet152(args)"
+    # setup = "model = ModelParallelvgg(g = 2)"
+    setup = "model = resnet_gpu.resnet152(args)"
     # setup = "model = resnet.resnet152()"
     # setup = "model = resnet_gpipe.resnet152(args)"
     # setup = "model = resnet152(args)"
