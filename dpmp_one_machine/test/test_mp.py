@@ -230,12 +230,12 @@ def run(args, model):
     # print(sum(1 for _ in resnet152()))
     
     
-    # partitions = torch.cuda.device_count()
-    # partitions = args.g
-    # sample = torch.empty(args.b, 3, 224, 224).cuda()
-    # balance = balance_by_time(partitions, resnet152(), sample, device=torch.device('cuda'))
-    # model = GPipe(resnet152(), balance, chunks=10)
-    print(model)
+    partitions = torch.cuda.device_count()
+    partitions = args.g
+    sample = torch.empty(args.b, 3, 224, 224).cuda()
+    balance = balance_by_time(partitions, resnet152(), sample, device=torch.device('cuda'))
+    model = GPipe(resnet152(), balance, chunks=10)
+    # print(model)
     # summary(model.cuda(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
                              transform=transforms.Compose([
