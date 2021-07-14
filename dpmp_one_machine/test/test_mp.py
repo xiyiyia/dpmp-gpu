@@ -229,10 +229,10 @@ def run(args, model):
     # partitions = torch.cuda.device_count()
 
 
-    # partitions = args.g
-    # sample = torch.empty(args.b, 3, 224, 224).cuda()
-    # balance = balance_by_time(partitions, resnet152(), sample, device=torch.device('cuda'))
-    # model = GPipe(resnet152(), balance, chunks=args.c)
+    partitions = args.g
+    sample = torch.empty(args.b, 3, 224, 224).cuda()
+    balance = balance_by_time(partitions, resnet152(), sample, device=torch.device('cuda'))
+    model = GPipe(resnet152(), balance, chunks=args.c)
     print(model)
     # summary(model.cuda(), [(3, 255, 255)])
     dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
@@ -282,7 +282,7 @@ def run(args, model):
         print('Rank ', 0, ', epoch ',
                 epoch, ': ', epoch_loss/len(train_set))
     stop = time.time()
-    print('training_time_dp', stop - start)
+    print('training_time_mp', stop - start)
 
 if __name__ == "__main__":
 
