@@ -221,6 +221,9 @@ class ResNet(nn.Module):
                     else:
                         output_list[len(output_list) - j - 1] = self.feature_list[len(output_list) - j - 1](output_list[len(output_list) - j - 2]).to('cuda:' + str(len(output_list) - j ))
                         output_list[len(output_list) - j - 2] = None
+            if(output_list[0] != None):
+                ret.append(self.fc(output_list[0].view(s_prev.size(0), -1).to('cuda:0')))
+                output_list[0] = None
             s_prev = self.feature_list[0](s_next)
             output_list[0] = s_prev.to('cuda:1')
         a = True
