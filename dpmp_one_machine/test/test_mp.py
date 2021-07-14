@@ -163,7 +163,6 @@ class ModelParallelvgg(VGG):
         
         self.seq1 = feature[0:int(sum(1 for _ in feature)/self.g)]
         self.seq2 = feature[sum(1 for _ in self.seq1):sum(1 for _ in feature)]
-        # print(torch.nn.Sequential(*(list(self.seq1)+list(self.seq2))))
         self.classifier = nn.Sequential(
           nn.Linear(512, 4096),
           nn.ReLU(inplace=True),
@@ -178,8 +177,6 @@ class ModelParallelvgg(VGG):
           self.seq1 = self.seq1.to('cuda:0')
           self.seq2 = self.seq2.to('cuda:1')
           self.classifier = self.classifier.to('cuda:1')
-        else:
-            self.features = feature
     def forward(self, x):
         if(self.g >= 2):
             splits = iter(x.split(self.split_size, dim=0))
@@ -194,7 +191,8 @@ class ModelParallelvgg(VGG):
             ret.append(self.classifier(s_prev.view(s_prev.size(0), -1)))
             return torch.cat(ret)
         else:
-            output = self.features(x)
+            output = self.seq1(x)
+            output = self.seq2(output)
             output = output.view(output.size()[0], -1)
             output = self.classifier(output)
             return output
