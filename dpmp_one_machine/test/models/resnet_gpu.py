@@ -231,6 +231,7 @@ class ResNet(nn.Module):
         stop = time.time()
         print('forsplit', stop - start)
         a = True
+        start = time.time()
         while( a == True):
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 2] != None):
@@ -249,7 +250,6 @@ class ResNet(nn.Module):
                 if(output_list[i] != None):
                     a = True
                     break
-        start = time.time()
         stop = time.time()
         print('forsplit', stop - start)
         # print(len(torch.cat(ret)[0]))
