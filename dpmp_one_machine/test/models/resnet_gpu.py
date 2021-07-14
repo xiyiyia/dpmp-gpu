@@ -203,14 +203,16 @@ class ResNet(nn.Module):
         # output = output.view(output.size(0), -1)
         # output = self.fc(output)
         # i = 1
-        # start = time.time()
+        start = time.time()
         output_list = [None for i in range(self.g)]
         splits = iter(x.split(self.split_size, dim=0))
         s_next = next(splits)
         s_prev = self.feature_list[0](s_next)
         output_list[0] = s_prev.to('cuda:1')
         ret = []
-
+        stop = time.time()
+        print('spilit', stop - start)
+        start = time.time()
         for s_next in splits:
             for j in range(len(output_list) - 1):
                 if(output_list[len(output_list) - j - 2] != None):
@@ -226,6 +228,8 @@ class ResNet(nn.Module):
                 output_list[0] = None
             s_prev = self.feature_list[0](s_next)
             output_list[0] = s_prev.to('cuda:1')
+        stop = time.time()
+        print('forsplit', stop - start)
         a = True
         while( a == True):
             for j in range(len(output_list) - 1):
@@ -245,6 +249,9 @@ class ResNet(nn.Module):
                 if(output_list[i] != None):
                     a = True
                     break
+        start = time.time()
+        stop = time.time()
+        print('forsplit', stop - start)
         # print(len(torch.cat(ret)[0]))
         # print(ret)
         # stop = time.time()
