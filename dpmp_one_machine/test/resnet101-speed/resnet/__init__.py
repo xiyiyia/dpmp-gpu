@@ -89,6 +89,6 @@ def build_resnet(layers: List[int],
 
 def resnet101(**kwargs: Any) -> nn.Sequential:
     """Constructs a ResNet-101 model."""
-    # return build_resnet([3, 4, 23, 3], **kwargs)
-    return build_resnet([3, 8, 36, 3], **kwargs)
+    return build_resnet([3, 4, 23, 3], **kwargs)
+    # return build_resnet([3, 8, 36, 3], **kwargs)
     # return ResNet(BottleNeck, [3, 4, 6, 3])
