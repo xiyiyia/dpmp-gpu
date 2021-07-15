@@ -88,7 +88,7 @@ class Experiments:
 
         # # batch_size = 560
         # # chunks = 4
-        balance = [8, 9, 9, 10] # vgg
+        balance = [9, 9, 9, 10] # vgg
         # balance = [22, 46, 61, 54]  # 50
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
