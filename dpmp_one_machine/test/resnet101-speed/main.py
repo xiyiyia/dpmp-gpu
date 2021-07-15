@@ -41,7 +41,7 @@ class Experiments:
         batch_size = 256
         chunks = 2
 
-        partitions = len(List[devices])
+        partitions = 1
         sample = torch.empty(batch_size, 3, 224, 224).cuda()
         balance = balance_by_time(partitions, resnet101(), sample, device=torch.device('cuda'))
         model = GPipe(resnet101(), balance, chunks=chunks)
@@ -59,7 +59,7 @@ class Experiments:
         batch_size = 1024
         chunks = 8
 
-        partitions = len(List[devices])
+        partitions = 2
         sample = torch.empty(batch_size, 3, 224, 224).cuda()
         balance = balance_by_time(partitions, resnet101(), sample, device=torch.device('cuda'))
         model = GPipe(resnet101(), balance, chunks=chunks)
@@ -77,7 +77,7 @@ class Experiments:
         batch_size = 2048
         chunks = 16
 
-        partitions = len(List[devices])
+        partitions = 4
         sample = torch.empty(batch_size, 3, 224, 224).cuda()
         balance = balance_by_time(partitions, resnet101(), sample, device=torch.device('cuda'))
         model = GPipe(resnet101(), balance, chunks=chunks)
@@ -95,7 +95,7 @@ class Experiments:
         batch_size = 4096
         chunks = 32
 
-        partitions = len(List[devices])
+        partitions = 8
         sample = torch.empty(batch_size, 3, 224, 224).cuda()
         balance = balance_by_time(partitions, resnet101(), sample, device=torch.device('cuda'))
         model = GPipe(resnet101(), balance, chunks=chunks)
