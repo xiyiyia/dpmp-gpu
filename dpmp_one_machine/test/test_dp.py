@@ -141,7 +141,7 @@ def average_gradients(model):
 
 
 """ Distributed Synchronous SGD Example """
-def run(rank, size, model, data, epochs):
+def run(rank, size, model, epochs):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
     data, bsz = partition_dataset()
