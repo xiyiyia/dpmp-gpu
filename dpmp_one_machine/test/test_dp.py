@@ -235,12 +235,12 @@ def init_process(args,rank, fn, backend='gloo'):
     fn(rank, args.g, model, args.e, args, data)
 
 if __name__ == "__main__":
-    torchvision.datasets.CIFAR10('./data', train=True, download=True,
-                             transform=transforms.Compose([
-                                # transforms.Resize([32, 32]),
-                                transforms.ToTensor(),
-                                transforms.Normalize((0.1307,), (0.3081,))
-                             ]))
+    # torchvision.datasets.CIFAR10('./data', train=True, download=True,
+    #                          transform=transforms.Compose([
+    #                             # transforms.Resize([32, 32]),
+    #                             transforms.ToTensor(),
+    #                             transforms.Normalize((0.1307,), (0.3081,))
+    #                          ]))
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
     parser.add_argument('-b', type=int, default=128, help='batchsize')
