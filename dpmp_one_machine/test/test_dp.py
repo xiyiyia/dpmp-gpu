@@ -166,7 +166,7 @@ def run(rank, size, model, epochs, args):
             data_trained += input.size(0)
             output = model(input)
             # print(len(output), len(target), rank)
-            loss = loss_function(output, target)
+            loss = loss_function(output, target).cuda()
             loss.backward()
             average_gradients(model)
             optimizer.step()
