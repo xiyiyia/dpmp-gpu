@@ -201,11 +201,11 @@ def init_process(args,rank, fn, backend='gloo'):
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
 
-    dataset_size = 50000//args_1.g
+    dataset_size = 50000//args.g
 
-    input = torch.rand(args_1.b, 3, 224, 224, device='cuda:'+str(rank))
-    target = torch.randint(10, (args_1.b,), device='cuda:'+str(rank))
-    data = [(input, target)] * (dataset_size//args_1.b)
+    input = torch.rand(args.b, 3, 224, 224, device='cuda:'+str(rank))
+    target = torch.randint(10, (args.b,), device='cuda:'+str(rank))
+    data = [(input, target)] * (dataset_size//args.b)
 
     dist.init_process_group("nccl", rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
@@ -214,7 +214,7 @@ def init_process(args,rank, fn, backend='gloo'):
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
-    fn(rank, args.g, model, data, args_1.e)
+    fn(rank, args.g, model, data, args.e)
 
 if __name__ == "__main__":
     # torchvision.datasets.CIFAR10('./data', train=True, download=True,
