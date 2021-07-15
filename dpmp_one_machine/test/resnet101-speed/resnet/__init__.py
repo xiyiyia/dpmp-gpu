@@ -118,15 +118,15 @@ def build_vgg( num_classes: int = 10 ) -> nn.Sequential:
     model = nn.Sequential(*(list(make_layers(cfg['A']))), 
             nn.Flatten(),            
             nn.Linear(25088, 4096),
-            nn.ReLU(inplace=True),
+            nn.ReLU(),
             nn.Dropout(),
             nn.Linear(4096, 4096),
-            nn.ReLU(inplace=True),
+            nn.ReLU(),
             nn.Dropout(),
             nn.Linear(4096, 10))
-    print(model)
+    # print(model)
     model = flatten_sequential(model)
-    print(model)
+    # print(model)
 
     def init_weight(m: nn.Module) -> None:
         if isinstance(m, nn.Conv2d):
