@@ -38,6 +38,7 @@ from typing import Any, List
 
 from torch import nn
 
+from models import vgg
 from models.bottleneck import bottleneck
 from models.flatten_sequential import flatten_sequential
 

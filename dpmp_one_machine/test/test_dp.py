@@ -22,7 +22,7 @@ import time
 import click
 from torch.utils.data import DataLoader, dataset
 # from torch.utils.tensorboard import SummaryWriter
-from models import inceptionv3,resnet
+from models import inceptionv3, resnet, vgg
 # import resnet
 from typing import cast
 
@@ -215,7 +215,8 @@ def init_process(args,rank, fn, backend='gloo'):
     torch.cuda.set_device(rank)
     # model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
-    model = resnet.resnet101().to(rank)
+    # model = resnet.resnet101().to(rank)
+    model = vgg.vgg19_bn().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
