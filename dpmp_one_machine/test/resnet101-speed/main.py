@@ -23,14 +23,14 @@ class Experiments:
 
     @staticmethod
     def baseline(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 118
+        batch_size = 128
         device = devices[0]
         model.to(device)
         return model, batch_size, [torch.device(device)]
 
     @staticmethod
     def pipeline1(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 220
+        batch_size = 256
         chunks = 2
         balance = [370] # 101
         # balance = [183] # 50
@@ -52,8 +52,8 @@ class Experiments:
 
     @staticmethod
     def pipeline4(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 1024
-        chunks = 8
+        batch_size = 2048
+        chunks = 16
         # batch_size = 560
         # chunks = 4
         balance = [44, 92, 124, 110] # 101
@@ -64,8 +64,8 @@ class Experiments:
 
     @staticmethod
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 1024
-        chunks = 8
+        batch_size = 4096
+        chunks = 32
         # batch_size = 720
         # chunks = 8
         balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
