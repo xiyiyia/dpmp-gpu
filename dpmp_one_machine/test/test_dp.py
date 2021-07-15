@@ -174,7 +174,7 @@ def run(rank, size, model, epochs, args, data):
                 optimizer.step()
                 optimizer.zero_grad()
             if(rank == 0):
-                # print("why")
+                print("print")
                 percent = (i+1) / len(data) * 100
                 throughput = data_trained / (time.time()-tick)
                 log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
