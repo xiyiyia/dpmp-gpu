@@ -268,12 +268,12 @@ def cli(ctx: click.Context,
             data_trained += input.size(0)
             # print(len(data),len(input))
             output = model(input)
-            if(len(output) == len(target)):
-                loss = F.cross_entropy(output, target)
-                loss.backward()
+            #if(len(output) == len(target)):
+            loss = F.cross_entropy(output, target)
+            loss.backward()
 
-                optimizer.step()
-                optimizer.zero_grad()
+            optimizer.step()
+            optimizer.zero_grad()
 
             # 00:01:02 | 1/20 epoch (42%) | 200.000 samples/sec (estimated)
             percent = (i+1) / len(data) * 100
