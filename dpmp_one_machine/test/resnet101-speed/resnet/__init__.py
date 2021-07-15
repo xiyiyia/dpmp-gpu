@@ -116,7 +116,7 @@ def build_vgg(layers: List[int],
         return nn.Sequential(*layers)
         
     model = nn.Sequential(OrderedDict([
-        ('feature',make_layers(cfg['A'])),
+        ('layer1',make_layers(cfg['A'])),
         ('ln',nn.Linear(25088, 4096)),
         ('rl',nn.ReLU(inplace=True)),
         ('drop',nn.Dropout()),
