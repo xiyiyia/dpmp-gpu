@@ -20,7 +20,7 @@ import torchvision
 import torchvision.transforms as transforms
 import time
 import click
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, dataset
 # from torch.utils.tensorboard import SummaryWriter
 from models import inceptionv3,resnet
 # import resnet
@@ -141,10 +141,10 @@ def average_gradients(model):
 
 
 """ Distributed Synchronous SGD Example """
-def run(rank, size, model, epochs, args):
+def run(rank, size, model, epochs, args, data):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
-    data, bsz = partition_dataset(args)
+    # data, bsz = partition_dataset(args)
 
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
@@ -218,14 +218,19 @@ def init_process(args,rank, fn, backend='gloo'):
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
-
-    # input = torch.rand(args.b, 3, 224, 224, device='cuda:'+str(rank))
-    # target = torch.randint(10, (args.b,), device='cuda:'+str(rank))
-    # data = [(input, target)] * (dataset_size//args.b)
+    dataset_size = 50000
+    input = torch.rand(args.b, 3, 224, 224)#, device='cuda:'+str(rank))
+    target = torch.randint(10, (args.b,))#, device='cuda:'+str(rank))
+    data = [(input, target)] * (dataset_size//args.b)
     # print(dataset_size)
     # print(data[0])
 
-    fn(rank, args.g, model, args.e, args)
+    if dataset_size % args.b != 0:
+        last_input = input[:dataset_size % args.b]
+        last_target = target[:dataset_size % args.b]
+        data.append((last_input, last_target))
+
+    fn(rank, args.g, model, args.e, args, data)
 
 if __name__ == "__main__":
     torchvision.datasets.CIFAR10('./data', train=True, download=True,
