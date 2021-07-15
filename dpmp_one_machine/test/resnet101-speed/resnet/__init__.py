@@ -115,15 +115,17 @@ def build_vgg(layers: List[int],
             input_channel = l
         
     model = nn.Sequential(OrderedDict([
-        (make_layers(cfg['E'])),
-        (nn.Linear(512, 4096)),
-        (nn.ReLU(inplace=True)),
-        (nn.Dropout()),
-        (nn.Linear(4096, 4096)),
-        (nn.ReLU(inplace=True)),
-        (nn.Dropout()),
-        (nn.Linear(4096, num_classes)),
+        ('feature',make_layers(cfg['A'])),
+        ('ln',nn.Linear(25088, 4096)),
+        ('rl',nn.ReLU(inplace=True)),
+        ('drop',nn.Dropout()),
+        ('lnn', nn.Linear(4096, 4096)),
+        ('rll', nn.ReLU(inplace=True)),
+        ('dp',nn.Dropout()),
+        ('lnnn',nn.Linear(4096, num_classes)),
     ]))
+
+    model = flatten_sequential(model)
 
 
     def init_weight(m: nn.Module) -> None:
@@ -136,7 +138,9 @@ def build_vgg(layers: List[int],
             nn.init.constant_(m.bias, 0)
             return
 
-    return nn.Sequential(*layers)
+    model.apply(init_weight)
+
+    return model
 
 
 def resnet101(**kwargs: Any) -> nn.Sequential:
@@ -145,6 +149,6 @@ def resnet101(**kwargs: Any) -> nn.Sequential:
     # return build_resnet([3, 8, 36, 3], **kwargs)
     # return ResNet(BottleNeck, [3, 4, 6, 3])
 
-def vgg19(**kwargs: Any) -> nn.Sequential:
-    """Constructs a vgg19 model."""
+def vgg11(**kwargs: Any) -> nn.Sequential:
+    """Constructs a vgg11 model."""
     return build_vgg(**kwargs)
