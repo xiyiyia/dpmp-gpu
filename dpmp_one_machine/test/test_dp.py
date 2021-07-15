@@ -154,7 +154,8 @@ def run(rank, size, model, data, epochs):
         # training_time_list = []
         # communication_time_list = []
         # name = [i for i in range(len(train_set))]
-        tick = time.time()
+        if(rank ==0):
+            tick = time.time()
         for i, (input, target) in enumerate(data):
             input.cuda()
             target.cuda()
