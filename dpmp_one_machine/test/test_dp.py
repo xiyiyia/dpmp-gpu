@@ -150,7 +150,7 @@ def run(rank, size, model, epochs, args, data):
                           lr=0.01, momentum=0.5)
 
     tick = time.time()
-    # print(model)
+    print(model)
     data_trained = 0
     for epoch in range(epochs):
         throughputs = []
@@ -214,10 +214,11 @@ def init_process(args,rank, fn, backend='gloo'):
     dist.init_process_group("nccl", rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
-    # model = resnet.resnet101(num_classes=10)
+    model = vgg.vgg11_bn().to(rank)
+    model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
     # model = resnet.resnet101().to(rank)
-    model = vgg.vgg11_bn().to(rank)
+    
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
