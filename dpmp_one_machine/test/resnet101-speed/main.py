@@ -206,7 +206,7 @@ def cli(ctx: click.Context,
         data_trained = 0
         for i, (input, target) in enumerate(data):
             data_trained += input.size(0)
-
+            print(len(data),len(input))
             output = model(input)
             loss = F.cross_entropy(output, target)
             loss.backward()
