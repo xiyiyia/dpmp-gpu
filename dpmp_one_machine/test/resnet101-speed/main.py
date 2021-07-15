@@ -74,7 +74,7 @@ class Experiments:
 
     @staticmethod
     def pipeline4(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 1024
+        batch_size = 512
         chunks = 12
 
         partitions = 4
@@ -92,7 +92,7 @@ class Experiments:
 
     @staticmethod
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 1024
+        batch_size = 512
         chunks = 16
 
         partitions = 8
