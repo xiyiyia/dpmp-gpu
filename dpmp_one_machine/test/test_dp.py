@@ -164,7 +164,7 @@ def run(rank, size, model, epochs, args, data):
             # input = input.cuda()
             # target = target.cuda()
             data_trained += input.size(0)
-            print(input(0).shape)
+            # print(input(0).shape)
             output = model(input)
             # print(len(output), len(target), rank)
             loss = loss_function(output, target)
