@@ -41,7 +41,7 @@ def log(msg: str, clear: bool = False, nl: bool = True) -> None:
         click.echo(' ' * width, nl=False)
         click.echo('\b\r', nl=False)
 
-    t = time.time() - BASE_TIME
+    t = time.time() - 0 #BASE_TIME
     h = t // 3600
     t %= 3600
     m = t // 60
