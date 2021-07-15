@@ -38,7 +38,7 @@ class VGG(nn.Module):
         # print(len(x))
         output = self.features(x)
         print(output.shape)
-        # output = output.view(output.size()[0], -1)
+        output = output.view(output.size(0), -1)
         print(output.shape)
         #print(conv_out.shape)
         output = self.classifier(output)
