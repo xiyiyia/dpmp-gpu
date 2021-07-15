@@ -29,12 +29,10 @@ class Experiments:
 
     @staticmethod
     def pipeline1(model: nn.Module, devices: List[int]) -> Stuffs:
-        print(sum(1 for _ in model))
-        print(model)
         batch_size = 220
         chunks = 2
-        balance = [370]
-
+        # balance = [370] # 101
+        balance = [183] # 50
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
@@ -43,8 +41,8 @@ class Experiments:
     def pipeline2(model: nn.Module, devices: List[int]) -> Stuffs:
         batch_size = 25000
         chunks = 1667
-        balance = [135, 235]
-
+        # balance = [135, 235]  # 101
+        balance = [67, 116]  # 50
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
@@ -53,8 +51,8 @@ class Experiments:
     def pipeline4(model: nn.Module, devices: List[int]) -> Stuffs:
         batch_size = 5632
         chunks = 256
-        balance = [44, 92, 124, 110]
-
+        # balance = [44, 92, 124, 110] # 101
+        balance = [22, 46, 61, 54]  # 50
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
@@ -63,8 +61,8 @@ class Experiments:
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
         batch_size = 5400
         chunks = 150
-        balance = [26, 22, 33, 44, 44, 66, 66, 69]
-
+        # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
+        balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
