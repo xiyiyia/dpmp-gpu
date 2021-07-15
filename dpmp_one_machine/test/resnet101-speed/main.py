@@ -146,7 +146,7 @@ def cli(ctx: click.Context,
     if skip_epochs >= epochs:
         ctx.fail('--skip-epochs=%d must be less than --epochs=%d' % (skip_epochs, epochs))
 
-    model: nn.Module = resnet101(num_classes=1000)
+    model: nn.Module = resnet101(num_classes=10)
 
     f = EXPERIMENTS[experiment]
     try:
@@ -168,7 +168,7 @@ def cli(ctx: click.Context,
     dataset_size = 50000
 
     input = torch.rand(batch_size, 3, 224, 224, device=in_device)
-    target = torch.randint(1000, (batch_size,), device=out_device)
+    target = torch.randint(10, (batch_size,), device=out_device)
     data = [(input, target)] * (dataset_size//batch_size)
 
     if dataset_size % batch_size != 0:
