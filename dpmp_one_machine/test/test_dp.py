@@ -167,11 +167,11 @@ def run(rank, size, model, data, epochs):
             average_gradients(model)
             optimizer.step()
             optimizer.zero_grad()
-
-            # percent = (i+1) / len(input) * 100
-            # throughput = data_trained / (time.time()-tick)
-            # log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
-            #     '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
+            if(rank == 0):
+                percent = (i+1) / len(input) * 100
+                throughput = data_trained / (time.time()-tick)
+                log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
+                    '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
 
 
         # training_time_list = np.array(training_time_list).reshape(1,len(train_set))
