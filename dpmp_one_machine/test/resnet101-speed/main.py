@@ -46,7 +46,7 @@ class Experiments:
         # balance = balance_by_time(partitions, resnet101(), sample, device=torch.device('cuda'))
         # model = GPipe(resnet101(), balance, chunks=chunks)
 
-        batch_size = 122
+        batch_size = 118
         chunks = 1
         balance = [370] # 101
         # balance = [183] # 50
