@@ -22,7 +22,7 @@ class Experiments:
 
     @staticmethod
     def baseline(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 64
+        batch_size = 118
         device = devices[0]
         model.to(device)
         return model, batch_size, [torch.device(device)]
