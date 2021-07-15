@@ -141,10 +141,10 @@ def average_gradients(model):
 
 
 """ Distributed Synchronous SGD Example """
-def run(rank, size, model, epochs):
+def run(rank, size, model, epochs, args):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
-    data, bsz = partition_dataset()
+    data, bsz = partition_dataset(args)
 
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
@@ -224,7 +224,7 @@ def init_process(args,rank, fn, backend='gloo'):
     # print(dataset_size)
     # print(data[0])
 
-    fn(rank, args.g, model, args.e)
+    fn(rank, args.g, model, args.e, args)
 
 if __name__ == "__main__":
     torchvision.datasets.CIFAR10('./data', train=True, download=True,
