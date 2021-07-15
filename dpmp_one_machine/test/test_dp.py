@@ -184,7 +184,7 @@ def run(rank, size, model, data, epochs):
             tock = time.time()
 
             elapsed_time = tock - tick
-            throughput = dataset_size / elapsed_time
+            throughput = 50000 / elapsed_time
             log('%d/%d epoch | %.3f samples/sec, %.3f sec/epoch'
                 '' % (epoch+1, epochs, throughput, elapsed_time), clear=True)
             throughputs.append(throughput)
