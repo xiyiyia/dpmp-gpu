@@ -9,6 +9,7 @@ from torch import nn
 import torch.nn.functional as F
 from torch.optim import SGD
 
+import resnet
 from resnet import resnet101
 import torchgpipe
 from torchgpipe import GPipe
