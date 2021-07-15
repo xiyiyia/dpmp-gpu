@@ -39,8 +39,10 @@ class Experiments:
 
     @staticmethod
     def pipeline2(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 25000
-        chunks = 1667
+        # batch_size = 25000
+        # chunks = 1667
+        batch_size = 220
+        chunks = 2
         # balance = [135, 235]  # 101
         balance = [67, 116]  # 50
         model = cast(nn.Sequential, model)
