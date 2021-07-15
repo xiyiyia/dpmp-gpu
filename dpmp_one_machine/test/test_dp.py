@@ -19,10 +19,37 @@ import torch.optim as optim
 import torchvision
 import torchvision.transforms as transforms
 import time
+import click
 from torch.utils.data import DataLoader
 from torch.utils.tensorboard import SummaryWriter
 from models import inceptionv3,resnet
-loss_function = nn.CrossEntropyLoss()
+# loss_function = nn.CrossEntropyLoss()
+
+
+def hr() -> None:
+    """Prints a horizontal line."""
+    width, _ = click.get_terminal_size()
+    click.echo('-' * width)
+
+
+def log(msg: str, clear: bool = False, nl: bool = True) -> None:
+    """Prints a message with elapsed time."""
+    if clear:
+        # Clear the output line to overwrite.
+        width, _ = click.get_terminal_size()
+        click.echo('\b\r', nl=False)
+        click.echo(' ' * width, nl=False)
+        click.echo('\b\r', nl=False)
+
+    t = time.time() - BASE_TIME
+    h = t // 3600
+    t %= 3600
+    m = t // 60
+    t %= 60
+    s = t
+
+    click.echo('%02d:%02d:%02d | ' % (h, m, s), nl=False)
+    click.echo(msg, nl=nl)
 
 """ Dataset partitioning helper """
 class Partition(object):
@@ -74,19 +101,8 @@ def partition_dataset(args):
     train_set = torch.utils.data.DataLoader(partition,
                                          batch_size=int(bsz/args.g),
                                          shuffle=True)
-    #print(train_set, bsz)
     return train_set, bsz
 
-# def run(rank, size):
-#     tensor = torch.zeros(1)
-#     if rank == 0:
-#         tensor += 1
-#         # Send the tensor to process 1
-#         dist.send(tensor=tensor, dst=1)
-#     else:
-#         # Receive tensor from process 0
-#         dist.recv(tensor=tensor, src=0)
-#     print('Rank ', rank, ' has data ', tensor[0])
 
 """ Implementation of a ring-reduce with addition. """
 def allreduce(send, recv):
@@ -115,220 +131,107 @@ def allreduce(send, recv):
 
 """ Gradient averaging. """
 def average_gradients(model):
-    # print(torch.cuda.current_device())
     size = float(dist.get_world_size())
-
     for param in model.parameters():
         dist.all_reduce(param.grad.data, op=dist.ReduceOp.SUM)
         param.grad.data /= size
 
-cfg = {
-    'A' : [64,     'M', 128,      'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M'],
-    'B' : [64, 64, 'M', 128, 128, 'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M'],
-    'D' : [64, 64, 'M', 128, 128, 'M', 256, 256, 256,      'M', 512, 512, 512,      'M', 512, 512, 512,      'M'],
-    'E' : [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M']
-}
-
-class VGG(nn.Module):
-
-    def __init__(self, features, num_class=10):
-        super().__init__()
-        self.features = features
-
-        self.classifier = nn.Sequential(
-            nn.Linear(512, 4096),
-            nn.ReLU(inplace=True),
-            nn.Dropout(),
-            nn.Linear(4096, 4096),
-            nn.ReLU(inplace=True),
-            nn.Dropout(),
-            nn.Linear(4096, num_class)
-        )
-
-    def forward(self, x):
-      # print(x)
-      output = self.features(x)
-      # print(output)
-      output = output.view(output.size()[0], -1)
-      # print(output)
-      output = self.classifier(output)
-
-      return output
-
-def make_layers(cfg, batch_norm=False):
-    layers = []
-
-    input_channel = 3
-    for l in cfg:
-      if l == 'M':
-          layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
-          continue
-
-      layers += [nn.Conv2d(input_channel, l, kernel_size=3, padding=1)]
-      # print(layers)
-      if batch_norm:
-          layers += [nn.BatchNorm2d(l)]
-
-      layers += [nn.ReLU(inplace=True)]
-      input_channel = l
-
-    return nn.Sequential(*layers)
-
-def vgg11_bn():
-    return VGG(make_layers(cfg['A'], batch_norm=True))
 
 """ Distributed Synchronous SGD Example """
-def run(args, rank, size, model):
-    # print(model)
-    torch.manual_seed(1234)
-    train_set, bsz = partition_dataset(args)
+def run(rank, size, model, data, epochs):
+    # torch.manual_seed(1234)
+    # train_set, bsz = partition_dataset(args)
     
-    # dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
+    optimizer = optim.SGD(model.parameters(),
+                          lr=0.01, momentum=0.5)
+
+    tick = time.time()
+
+    data_trained = 0
+    for epoch in range(epochs):
+        throughputs = []
+        elapsed_times = []
+        # training_time_list = []
+        # communication_time_list = []
+        # name = [i for i in range(len(train_set))]
+        tick = time.time()
+        for i, (input, target) in enumerate(data):
+            data_trained += input.size(0)
+            output = model(input)
+            loss = F.cross_entropy(output, target)
+            loss.backward()
+            average_gradients(model)
+            optimizer.step()
+            optimizer.zero_grad()
+
+            # percent = (i+1) / len(input) * 100
+            # throughput = data_trained / (time.time()-tick)
+            # log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
+            #     '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
+
+
+        # training_time_list = np.array(training_time_list).reshape(1,len(train_set))
+        # communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
+        # training_time = pd.DataFrame(columns=name,data=training_time_list)
+        # communication_time = pd.DataFrame(columns=name,data=communication_time_list)
+        # training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
+        # communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
+
+        # torch.cuda.synchronize(in_device)
+        if(rank == 0):
+            tock = time.time()
+
+            elapsed_time = tock - tick
+            throughput = dataset_size / elapsed_time
+            log('%d/%d epoch | %.3f samples/sec, %.3f sec/epoch'
+                '' % (epoch+1, epochs, throughput, elapsed_time), clear=True)
+            throughputs.append(throughput)
+            elapsed_times.append(elapsed_time)
+    if(rank == 0):
+        n = len(throughputs)
+        throughput = sum(throughputs) / n
+        elapsed_time = sum(elapsed_times) / n
+        click.echo('%.3f samples/sec, %.3f sec/epoch (average)'
+                '' % (throughput*size, elapsed_time))
+
+def init_process(args,rank, data, fn, backend='gloo'):
+    """ Initialize the distributed environment. """
+    os.environ['MASTER_ADDR'] = '127.0.0.1'
+    os.environ['MASTER_PORT'] = '29500'
+
+    dist.init_process_group("nccl", rank=rank, world_size=args.g)
+    # dist.init_process_group("gloo", rank=rank, world_size=size)
+    torch.cuda.set_device(rank)
+    model = resnet.resnet50().to(rank)
+    model = torch.nn.parallel.DistributedDataParallel(
+        model, device_ids=[rank], output_device=rank
+    )
+    fn(rank, args.g, model, data.cuda(), args_1.e)
+
+if __name__ == "__main__":
+    # torchvision.datasets.CIFAR10('./data', train=True, download=True,
     #                          transform=transforms.Compose([
     #                             # transforms.Resize([32, 32]),
     #                             transforms.ToTensor(),
     #                             transforms.Normalize((0.1307,), (0.3081,))
     #                          ]))
-    # train_set = torch.utils.data.DataLoader(dataset,
-    #                                           batch_size=128,
-    #                                           shuffle=True,
-    #                                           )
-    # train_set = train_set.cuda()
-    # model = vgg11_bn()
-    # print("你是什么脸")
-    optimizer = optim.SGD(model.parameters(),
-                          lr=0.01, momentum=0.5)
-    # print("你是什么脸")
-    # num_batches = math.ceil(len(train_set.dataset) / float(bsz))
-    # print(len(train_set),bsz)
-    # next(model.parameters()).is_cuda
-    start = time.time()
-    for epoch in range(1):
-        training_time_list = []
-        communication_time_list = []
-        name = [i for i in range(len(train_set))]
-        epoch_loss = 0.0
-        # range = 0
-        for data, target in train_set:
-            # range += 1
-            # batch_start = time.time()
-            # print(target)
-            
-            data = data.cuda()
-            target = target.cuda()
-            # print("你是什么脸")
-            optimizer.zero_grad()
-            # print("你是什么脸")
-            training_time_start = time.time()
-            output = model(data)
-            stop = time.time()
-            if(rank == 0):
-                print('training_time_fw', stop - training_time_start)
-            # print(len(output),len(target))
-            loss = loss_function(output, target)
-            epoch_loss += loss.item()
-            print(epoch_loss, loss)
-            loss.backward()
-            training_time_end = time.time()
-
-            training_time_list.append(training_time_end-training_time_start)
-
-            batch_start = time.time()
-            average_gradients(model)
-            if(rank == 0):
-                batch_stop = time.time()
-                bsz_time = batch_stop - batch_start
-                print('training_time_comu', batch_stop - batch_start)
-            # time.sleep(10)
-            communication_time_end = time.time()
-            communication_time_list.append(communication_time_end-training_time_end)
-            optimizer.step()
-            training_time_end = time.time()
-            if(rank == 0):
-                print('training_time_bc', training_time_end - stop - bsz_time)
-        # print(range)
-        # print('communication_time:',communication_time_end -training_time_end)
-        training_time_list = np.array(training_time_list).reshape(1,len(train_set))
-        communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
-        training_time = pd.DataFrame(columns=name,data=training_time_list)
-        communication_time = pd.DataFrame(columns=name,data=communication_time_list)
-        training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
-        communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
-        print('Rank ', dist.get_rank(), ', epoch ',
-                epoch, ': ', epoch_loss / bsz)
-    stop = time.time()
-    if(rank == 0):
-        print('training_time_dp', stop - start)
-    # test.to_csv('./testcsv.csv',encoding='gbk')
-    # fl_c = open('./communication_time_'+str(dist.get_rank())+'.csv',"w+")
-    # fl_c.write(training_time_list)
-    # fl_c.close()
-    # fl = open('./training_time_'+str(dist.get_rank())+'.csv',"w+")
-    # fl.write(training_time_list)
-    # fl.close()
-
-def init_process(args,rank, size, fn, backend='gloo'):
-    """ Initialize the distributed environment. """
-    os.environ['MASTER_ADDR'] = '127.0.0.1'
-    os.environ['MASTER_PORT'] = '29500'
-    # dist.init_process_group(backend, rank=rank, world_size=size)
-    # fn(rank, size)
-
-    dist.init_process_group("nccl", rank=rank, world_size=size)
-    # dist.init_process_group("gloo", rank=rank, world_size=size)
-    torch.cuda.set_device(rank)
-    if size == 1:
-        #model = vgg11_bn().to(rank)
-        model = vgg11_bn().to(rank)
-    else:
-        # model = inceptionv3.inceptionv3().to(rank)
-        # model = vgg11_bn().to(rank)
-        # model = resnet.resnet50().to(rank)
-        model = resnet.resnet152().to(rank)
-        # model = vgg11_bn().to(rank)
-        # print(model)
-    model = torch.nn.parallel.DistributedDataParallel(
-        model, device_ids=[rank], output_device=rank
-    )
-    # print(rank)
-    # print("done", model)
-    # start = time.time()
-    fn(args, rank, size, model)
-    # stop = time.time()
-    # print('training_time_dp', stop - start)
-    # # Rank 1 gets one more input than rank 0.
-    # inputs = [torch.tensor([1]).float() for _ in range(10 + rank)]
-    # with model.join():
-    #     for _ in range(5):
-    #         for inp in inputs:
-    #             loss = model(inp).sum()
-    #             loss.backward()
-
-
-if __name__ == "__main__":
-    torchvision.datasets.CIFAR10('./data', train=True, download=True,
-                             transform=transforms.Compose([
-                                # transforms.Resize([32, 32]),
-                                transforms.ToTensor(),
-                                transforms.Normalize((0.1307,), (0.3081,))
-                             ]))
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
     parser.add_argument('-b', type=int, default=128, help='batchsize')
+    parser.add_argument('-e', type=int, default=1, help='epoch')
     args_1 = parser.parse_args()
-    # print(torch.cuda.device_count())
-    size = args_1.g
-    # size = torch.cuda.device_count()
+
+    dataset_size = 50000
+
+    input = torch.rand(args_1.b, 3, 224, 224)
+    target = torch.randint(10, (args_1.b,))
+    data = [[(input, target) * (dataset_size//args_1.g//args_1.b)]] * (dataset_size//args_1.g)
+    
     processes = []
     mp.set_start_method("spawn")
-    
-    # torch.distributed.init_process_group(
-    #     backend='nccl', world_size=N, init_method='...'
-    # )
-    # model = DistributedDataParallel(model, device_ids=[i], output_device=i)
 
-    for rank in range(size):
-        p = mp.Process(target=init_process, args=(args_1, rank, size, run))
+    for rank in range(args_1.g):
+        p = mp.Process(target=init_process, args=(args_1, rank, data[rank], run))
         p.start()
         processes.append(p)
     for p in processes:
