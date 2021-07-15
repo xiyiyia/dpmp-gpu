@@ -25,7 +25,7 @@ class VGG(nn.Module):
         self.features = features
 
         self.classifier = nn.Sequential(
-            nn.Linear(512, 4096),
+            nn.Linear(128, 4096),
             nn.ReLU(inplace=True),
             nn.Dropout(),
             nn.Linear(4096, 4096),
@@ -38,7 +38,7 @@ class VGG(nn.Module):
         # print(len(x))
         output = self.features(x)
         #print(output.shape)
-        # output = output.view(output.size(0), -1)
+        output = output.view(output.size(0), -1)
         #print(output.shape)
         #print(conv_out.shape)
         # output = torch.randn(128, 512).cuda()
