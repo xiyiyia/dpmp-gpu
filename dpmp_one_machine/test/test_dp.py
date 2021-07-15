@@ -168,9 +168,10 @@ def run(rank, size, model, epochs, args, data):
             # print(len(output), len(target), rank)
             loss = loss_function(output, target)
             loss.backward()
-            average_gradients(model)
-            optimizer.step()
-            optimizer.zero_grad()
+            if(i % 128 == 0):
+                average_gradients(model)
+                optimizer.step()
+                optimizer.zero_grad()
             if(rank == 0):
                 print("why")
                 percent = (i+1) / len(data) * 100
