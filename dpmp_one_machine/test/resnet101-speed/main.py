@@ -166,8 +166,8 @@ def cli(ctx: click.Context,
 
     optimizer = SGD(model.parameters(), lr=0.1)
 
-    # in_device = _devices[0]
-    # out_device = _devices[-1]
+    in_device = _devices[0]
+    out_device = _devices[-1]
     # torch.cuda.set_device(in_device)
 
     # This experiment cares about only training speed, rather than accuracy.
@@ -229,8 +229,8 @@ def cli(ctx: click.Context,
 
         data_trained = 0
         for i, (input, target) in enumerate(data):
-            input = input.cuda()
-            target = target.to('cuda:'+str(len(devices) - 1))
+            input = input.to(in_device)
+            target = target.to(out_device)
             data_trained += input.size(0)
             # print(len(data),len(input))
             output = model(input)
