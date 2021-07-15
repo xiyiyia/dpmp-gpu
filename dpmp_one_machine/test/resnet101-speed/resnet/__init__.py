@@ -14,6 +14,13 @@ from resnet.flatten_sequential import flatten_sequential
 
 __all__ = ['resnet101']
 
+cfg = {
+    'A' : [64,     'M', 128,      'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M'],
+    'B' : [64, 64, 'M', 128, 128, 'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M'],
+    'D' : [64, 64, 'M', 128, 128, 'M', 256, 256, 256,      'M', 512, 512, 512,      'M', 512, 512, 512,      'M'],
+    'E' : [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M']
+}
+
 
 def build_resnet(layers: List[int],
                  num_classes: int = 1000,
@@ -86,9 +93,58 @@ def build_resnet(layers: List[int],
 
     return model
 
+def build_vgg(layers: List[int],
+                 num_classes: int = 10
+                 ) -> nn.Sequential:
+    # cfg = cfg['E']
+    def make_layers(cfg, batch_norm=True):
+        layers = []
+
+        input_channel = 3
+        for l in cfg:
+            if l == 'M':
+                layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
+                continue
+
+            layers += [nn.Conv2d(input_channel, l, kernel_size=3, padding=1)]
+
+            if batch_norm:
+                layers += [nn.BatchNorm2d(l)]
+
+            layers += [nn.ReLU(inplace=True)]
+            input_channel = l
+        
+    model = nn.Sequential(OrderedDict([
+        (make_layers(cfg['E'])),
+        (nn.Linear(512, 4096)),
+        (nn.ReLU(inplace=True)),
+        (nn.Dropout()),
+        (nn.Linear(4096, 4096)),
+        (nn.ReLU(inplace=True)),
+        (nn.Dropout()),
+        (nn.Linear(4096, num_classes)),
+    ]))
+
+
+    def init_weight(m: nn.Module) -> None:
+        if isinstance(m, nn.Conv2d):
+            nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+            return
+
+        if isinstance(m, nn.BatchNorm2d):
+            nn.init.constant_(m.weight, 1)
+            nn.init.constant_(m.bias, 0)
+            return
+
+    return nn.Sequential(*layers)
+
 
 def resnet101(**kwargs: Any) -> nn.Sequential:
     """Constructs a ResNet-101 model."""
     return build_resnet([3, 4, 23, 3], **kwargs)
     # return build_resnet([3, 8, 36, 3], **kwargs)
     # return ResNet(BottleNeck, [3, 4, 6, 3])
+
+def vgg19(**kwargs: Any) -> nn.Sequential:
+    """Constructs a vgg19 model."""
+    return build_vgg(**kwargs)

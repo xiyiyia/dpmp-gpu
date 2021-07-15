@@ -150,7 +150,7 @@ def run(rank, size, model, epochs, args, data):
                           lr=0.01, momentum=0.5)
 
     tick = time.time()
-
+    print(model)
     data_trained = 0
     for epoch in range(epochs):
         throughputs = []
