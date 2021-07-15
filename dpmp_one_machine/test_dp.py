@@ -20,7 +20,7 @@ import torchvision
 import torchvision.transforms as transforms
 import time
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
 loss_function = nn.CrossEntropyLoss()
 
