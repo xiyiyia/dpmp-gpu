@@ -102,15 +102,16 @@ class Experiments:
         batch_size = 5400
         chunks = 150
         
-        partitions = 8
-        sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
-        model = GPipe(model, balance, chunks=chunks)
+        # partitions = 8
+        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
+        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        # model = GPipe(model, balance, chunks=chunks)
 
+        balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
-        # # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
-        # model = cast(nn.Sequential, model)
-        # model = GPipe(model, balance, devices=devices, chunks=chunks)
+        # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
+        model = cast(nn.Sequential, model)
+        model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
 
 
@@ -261,7 +262,7 @@ def cli(ctx: click.Context,
 
     global BASE_TIME
     BASE_TIME = time.time()
-
+    print(model)
     def run_epoch(epoch: int) -> Tuple[float, float]:
         # torch.cuda.synchronize(in_device)
         tick = time.time()
