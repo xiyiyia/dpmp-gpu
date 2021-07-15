@@ -64,16 +64,16 @@ class Experiments:
         batch_size = 25000
         chunks = 1667
 
-        partitions = 2
-        sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
-        model = GPipe(model, balance, chunks=chunks)
+        # partitions = 2
+        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
+        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        # model = GPipe(model, balance, chunks=chunks)
 
-        balance = [135, 235]  # 101
+        balance = [16, 21]  # vgg
         # balance = [135, 235]  # 101
         # # balance = [67, 116]  # 50
-        # model = cast(nn.Sequential, model)
-        # model = GPipe(model, balance, devices=devices, chunks=chunks)
+        model = cast(nn.Sequential, model)
+        model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
 
     @staticmethod
@@ -81,17 +81,17 @@ class Experiments:
         batch_size = 5632
         chunks = 256
 
-        partitions = 4
-        sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
-        model = GPipe(model, balance, chunks=chunks)
+        # partitions = 4
+        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
+        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        # model = GPipe(model, balance, chunks=chunks)
 
         # # batch_size = 560
         # # chunks = 4
-        # balance = [44, 92, 124, 110] # 101
-        # # balance = [22, 46, 61, 54]  # 50
-        # model = cast(nn.Sequential, model)
-        # model = GPipe(model, balance, devices=devices, chunks=chunks)
+        balance = [8, 9, 9, 10] # vgg
+        # balance = [22, 46, 61, 54]  # 50
+        model = cast(nn.Sequential, model)
+        model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
 
     @staticmethod
@@ -107,7 +107,7 @@ class Experiments:
         # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
         # model = GPipe(model, balance, chunks=chunks)
 
-        balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
+        balance = [4, 4, 4, 4, 4, 4, 4, 9] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
         model = cast(nn.Sequential, model)
