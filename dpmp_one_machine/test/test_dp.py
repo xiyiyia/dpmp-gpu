@@ -204,7 +204,7 @@ def init_process(args,rank, fn, backend='gloo'):
     os.environ['MASTER_PORT'] = '29500'
 
     dataset_size = 50000//args.g
-
+    dist.init_process_group("nccl", rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
     model = resnet.resnet50().to(rank)
@@ -216,7 +216,6 @@ def init_process(args,rank, fn, backend='gloo'):
     target = torch.randint(10, (args.b,), device='cuda:'+str(rank))
     data = [(input, target)] * (dataset_size//args.b)
 
-    dist.init_process_group("nccl", rank=rank, world_size=args.g)
 
     fn(rank, args.g, model, data, args.e)
 
