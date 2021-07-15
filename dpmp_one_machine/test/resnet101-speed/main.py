@@ -8,7 +8,8 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 from torch.optim import SGD
-
+import torchvision
+import torchvision.transforms as transforms
 import resnet
 from resnet import resnet101
 import torchgpipe
@@ -164,23 +165,38 @@ def cli(ctx: click.Context,
 
     optimizer = SGD(model.parameters(), lr=0.1)
 
-    in_device = _devices[0]
-    out_device = _devices[-1]
-    torch.cuda.set_device(in_device)
+    # in_device = _devices[0]
+    # out_device = _devices[-1]
+    # torch.cuda.set_device(in_device)
 
     # This experiment cares about only training speed, rather than accuracy.
     # To eliminate any overhead due to data loading, we use fake random 224x224
     # images over 1000 labels.
     dataset_size = 50000
 
-    input = torch.rand(batch_size, 3, 224, 224, device=in_device)
-    target = torch.randint(10, (batch_size,), device=out_device)
-    data = [(input, target)] * (dataset_size//batch_size)
+    # input = torch.rand(batch_size, 3, 224, 224, device=in_device)
+    # target = torch.randint(10, (batch_size,), device=out_device)
+    # data = [(input, target)] * (dataset_size//batch_size)
 
-    if dataset_size % batch_size != 0:
-        last_input = input[:dataset_size % batch_size]
-        last_target = target[:dataset_size % batch_size]
-        data.append((last_input, last_target))
+    dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
+                             transform=transforms.Compose([
+                                # transforms.Resize([32, 32]),
+                                transforms.ToTensor(),
+                                transforms.Normalize((0.1307,), (0.3081,))
+                             ]))
+    # size = dist.get_world_size()
+    # bsz = args.b
+    # partition_sizes = [1.0 / size for _ in range(size)]
+    # partition = DataPartitioner(dataset, partition_sizes)
+    # partition = partition.use(dist.get_rank())
+    data = torch.utils.data.DataLoader(dataset,
+                                         batch_size=batch_size,
+                                         shuffle=True)
+
+    # if dataset_size % batch_size != 0:
+    #     last_input = input[:dataset_size % batch_size]
+    #     last_target = target[:dataset_size % batch_size]
+    #     data.append((last_input, last_target))
 
     # HEADER ======================================================================================
 
@@ -192,13 +208,14 @@ def cli(ctx: click.Context,
     else:
         click.echo(f'batch size: {batch_size}')
 
-    click.echo('torchgpipe: %s, python: %s, torch: %s, cudnn: %s, cuda: %s, gpu: %s' % (
+    click.echo('torchgpipe: %s, python: %s, torch: %s, cudnn: %s, cuda: %s' % (
         torchgpipe.__version__,
         platform.python_version(),
         torch.__version__,
         torch.backends.cudnn.version(),
-        torch.version.cuda,
-        torch.cuda.get_device_name(in_device)))
+        torch.version.cuda
+        )
+        )
 
     # TRAIN =======================================================================================
 
@@ -206,13 +223,15 @@ def cli(ctx: click.Context,
     BASE_TIME = time.time()
 
     def run_epoch(epoch: int) -> Tuple[float, float]:
-        torch.cuda.synchronize(in_device)
+        # torch.cuda.synchronize(in_device)
         tick = time.time()
 
         data_trained = 0
         for i, (input, target) in enumerate(data):
+            input = input.cuda()
+            target = target.cuda()
             data_trained += input.size(0)
-            print(len(data),len(input))
+            # print(len(data),len(input))
             output = model(input)
             loss = F.cross_entropy(output, target)
             loss.backward()
@@ -226,7 +245,7 @@ def cli(ctx: click.Context,
             log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
                 '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
 
-        torch.cuda.synchronize(in_device)
+        # torch.cuda.synchronize(in_device)
         tock = time.time()
 
         # 00:02:03 | 1/20 epoch | 200.000 samples/sec, 123.456 sec/epoch
