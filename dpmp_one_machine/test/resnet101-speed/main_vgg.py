@@ -30,7 +30,7 @@ class Experiments:
         # balance = balance_by_time(partitions, resnet152(), sample, device=torch.device('cuda'))
         # model = GPipe(resnet152(), balance, chunks=args.c)
 
-        batch_size = 128
+        batch_size = 118
         device = devices[0]
         model.to(device)
         return model, batch_size, [torch.device(device)]
@@ -41,8 +41,8 @@ class Experiments:
         # batch_size = 256
         # chunks = 2
 
-        batch_size = 128
-        chunks = 1
+        batch_size = 220
+        chunks = 2
 
 
         # partitions = 1
@@ -61,14 +61,15 @@ class Experiments:
         # batch_size = 512
         # chunks = 8
 
-        batch_size = 220
-        chunks = 2
+        batch_size = 25000
+        chunks = 1667
 
         partitions = 2
         sample = torch.empty(batch_size, 3, 224, 224).cuda()
         balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
         model = GPipe(model, balance, chunks=chunks)
 
+        balance = [135, 235]  # 101
         # balance = [135, 235]  # 101
         # # balance = [67, 116]  # 50
         # model = cast(nn.Sequential, model)
@@ -77,8 +78,8 @@ class Experiments:
 
     @staticmethod
     def pipeline4(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 512
-        chunks = 12
+        batch_size = 5632
+        chunks = 256
 
         partitions = 4
         sample = torch.empty(batch_size, 3, 224, 224).cuda()
@@ -98,8 +99,8 @@ class Experiments:
         # batch_size = 512
         # chunks = 16
 
-        batch_size = 720
-        chunks = 8
+        batch_size = 5400
+        chunks = 150
         
         partitions = 8
         sample = torch.empty(batch_size, 3, 224, 224).cuda()
