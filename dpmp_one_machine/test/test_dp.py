@@ -156,6 +156,8 @@ def run(rank, size, model, data, epochs):
         # name = [i for i in range(len(train_set))]
         tick = time.time()
         for i, (input, target) in enumerate(data):
+            input.cuda()
+            target.cuda()
             data_trained += input.size(0)
             output = model(input)
             loss = F.cross_entropy(output, target)
@@ -194,10 +196,16 @@ def run(rank, size, model, data, epochs):
         click.echo('%.3f samples/sec, %.3f sec/epoch (average)'
                 '' % (throughput*size, elapsed_time))
 
-def init_process(args,rank, data, fn, backend='gloo'):
+def init_process(args,rank, fn, backend='gloo'):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
+
+    dataset_size = 50000//args_1.g
+
+    input = torch.rand(args_1.b, 3, 224, 224, device='cuda:'+str(rank))
+    target = torch.randint(10, (args_1.b,), device='cuda:'+str(rank))
+    data = [(input, target)] * (dataset_size//args_1.b)
 
     dist.init_process_group("nccl", rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
@@ -206,7 +214,7 @@ def init_process(args,rank, data, fn, backend='gloo'):
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
-    fn(rank, args.g, model, data.cuda(), args_1.e)
+    fn(rank, args.g, model, data, args_1.e)
 
 if __name__ == "__main__":
     # torchvision.datasets.CIFAR10('./data', train=True, download=True,
@@ -221,17 +229,13 @@ if __name__ == "__main__":
     parser.add_argument('-e', type=int, default=1, help='epoch')
     args_1 = parser.parse_args()
 
-    dataset_size = 50000
 
-    input = torch.rand(args_1.b, 3, 224, 224)
-    target = torch.randint(10, (args_1.b,))
-    data = [[(input, target) * (dataset_size//args_1.g//args_1.b)]] * (dataset_size//args_1.g)
     
     processes = []
     mp.set_start_method("spawn")
 
     for rank in range(args_1.g):
-        p = mp.Process(target=init_process, args=(args_1, rank, data[rank], run))
+        p = mp.Process(target=init_process, args=(args_1, rank, run))
         p.start()
         processes.append(p)
     for p in processes:
