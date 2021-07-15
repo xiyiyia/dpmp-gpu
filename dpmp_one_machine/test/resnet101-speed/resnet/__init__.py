@@ -111,22 +111,20 @@ def build_vgg( num_classes: int = 10 ) -> nn.Sequential:
 
             layers += [nn.ReLU(inplace=True)]
             input_channel = l
-        print(nn.Sequential(*layers))
         return nn.Sequential(*layers)
         
-    model = nn.Sequential(OrderedDict([
-        (make_layers(cfg['A'])),
-        (nn.Linear(25088, 4096)),
-        (nn.ReLU(inplace=True)),
-        (nn.Dropout()),
-        (nn.Linear(4096, 4096)),
-        (nn.ReLU(inplace=True)),
-        (nn.Dropout()),
-        (nn.Linear(4096, num_classes)),
-    ]))
-
+    
+    model = nn.Sequential(*(list(make_layers(cfg['A']))),             
+            nn.Linear(25088, 4096),
+            nn.ReLU(inplace=True),
+            nn.Dropout(),
+            nn.Linear(4096, 4096),
+            nn.ReLU(inplace=True),
+            nn.Dropout(),
+            nn.Linear(4096, 10))
+    print(model)
     model = flatten_sequential(model)
-
+    print(model)
 
     def init_weight(m: nn.Module) -> None:
         if isinstance(m, nn.Conv2d):
@@ -139,7 +137,6 @@ def build_vgg( num_classes: int = 10 ) -> nn.Sequential:
             return
 
     model.apply(init_weight)
-    print(model)
     return model
 
 
