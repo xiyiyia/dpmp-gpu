@@ -207,7 +207,7 @@ def init_process(args,rank, fn, backend='gloo'):
     dist.init_process_group("nccl", rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
-    model = resnet.resnet50().to(rank)
+    model = resnet.resnet18().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
@@ -215,6 +215,7 @@ def init_process(args,rank, fn, backend='gloo'):
     input = torch.rand(args.b, 3, 224, 224, device='cuda:'+str(rank))
     target = torch.randint(10, (args.b,), device='cuda:'+str(rank))
     data = [(input, target)] * (dataset_size//args.b)
+    print(dataset_size)
     print(len(data),print(len(data[0])))
 
     fn(rank, args.g, model, data, args.e)
