@@ -40,8 +40,8 @@ class Experiments:
 
     @staticmethod
     def pipeline2(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 25000
-        chunks = 1667
+        batch_size = 1024
+        chunks = 8
         # batch_size = 220
         # chunks = 2
         balance = [135, 235]  # 101
@@ -52,8 +52,8 @@ class Experiments:
 
     @staticmethod
     def pipeline4(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 5632
-        chunks = 256
+        batch_size = 1024
+        chunks = 8
         # batch_size = 560
         # chunks = 4
         balance = [44, 92, 124, 110] # 101
@@ -64,8 +64,8 @@ class Experiments:
 
     @staticmethod
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 5400
-        chunks = 150
+        batch_size = 1024
+        chunks = 8
         # batch_size = 720
         # chunks = 8
         balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
