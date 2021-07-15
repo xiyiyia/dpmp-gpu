@@ -200,11 +200,14 @@ def init_process(args,rank, fn, backend='gloo'):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
+    
+    torch.cuda.set_device(rank)
     model = resnet.resnet50().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
     
+
     dataset_size = 50000//args.g
 
     input = torch.rand(args.b, 3, 224, 224, device='cuda:'+str(rank))
@@ -213,7 +216,7 @@ def init_process(args,rank, fn, backend='gloo'):
 
     dist.init_process_group("nccl", rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
-    torch.cuda.set_device(rank)
+
     fn(rank, args.g, model, data, args.e)
 
 if __name__ == "__main__":
