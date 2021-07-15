@@ -161,7 +161,7 @@ def run(rank, size, model, data, epochs):
             # target.cuda()
             data_trained += input.size(0)
             output = model(input)
-            # print(len(output), len(target))
+            print(len(output), len(target))
             loss = loss_function(output, target)
             loss.backward()
             average_gradients(model)
@@ -216,7 +216,7 @@ def init_process(args,rank, fn, backend='gloo'):
     target = torch.randint(10, (args.b,), device='cuda:'+str(rank))
     data = [(input, target)] * (dataset_size//args.b)
     print(dataset_size)
-    print(len(data),print(len(data[0])))
+    print(data[0])
 
     fn(rank, args.g, model, data, args.e)
 
