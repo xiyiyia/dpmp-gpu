@@ -161,6 +161,7 @@ def run(rank, size, model, data, epochs):
             target.cuda()
             data_trained += input.size(0)
             output = model(input)
+            print(len(output), len(target))
             loss = F.cross_entropy(output, target)
             loss.backward()
             average_gradients(model)
