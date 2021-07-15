@@ -113,17 +113,18 @@ def build_vgg(layers: List[int],
 
             layers += [nn.ReLU(inplace=True)]
             input_channel = l
+        print(nn.Sequential(*layers))
         return nn.Sequential(*layers)
         
     model = nn.Sequential(OrderedDict([
-        ('layer1',make_layers(cfg['A'])),
-        ('ln',nn.Linear(25088, 4096)),
-        ('rl',nn.ReLU(inplace=True)),
-        ('drop',nn.Dropout()),
-        ('lnn', nn.Linear(4096, 4096)),
-        ('rll', nn.ReLU(inplace=True)),
-        ('dp',nn.Dropout()),
-        ('lnnn',nn.Linear(4096, num_classes)),
+        (make_layers(cfg['A'])),
+        (nn.Linear(25088, 4096)),
+        (nn.ReLU(inplace=True)),
+        (nn.Dropout()),
+        (nn.Linear(4096, 4096)),
+        (nn.ReLU(inplace=True)),
+        (nn.Dropout()),
+        (nn.Linear(4096, num_classes)),
     ]))
 
     model = flatten_sequential(model)
@@ -140,7 +141,7 @@ def build_vgg(layers: List[int],
             return
 
     model.apply(init_weight)
-
+    print(model)
     return model
 
 
