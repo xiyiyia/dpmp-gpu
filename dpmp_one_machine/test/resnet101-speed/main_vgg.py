@@ -41,7 +41,7 @@ class Experiments:
         # batch_size = 256
         # chunks = 2
 
-        batch_size = 64
+        batch_size = 1
         chunks = 1
 
 
