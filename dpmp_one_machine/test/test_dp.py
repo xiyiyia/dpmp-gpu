@@ -144,7 +144,8 @@ def average_gradients(model):
 def run(rank, size, model, data, epochs):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
-    
+    data, bsz = partition_dataset()
+
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
 
@@ -206,32 +207,32 @@ def init_process(args,rank, fn, backend='gloo'):
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
 
-    dataset_size = 50000//args.g
+    # dataset_size = 50000//args.g
     dist.init_process_group("nccl", rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
     # model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
-    model = resnet.resnet34().to(rank)
+    model = resnet.resnet101().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
 
-    input = torch.rand(args.b, 3, 224, 224, device='cuda:'+str(rank))
-    target = torch.randint(10, (args.b,), device='cuda:'+str(rank))
-    data = [(input, target)] * (dataset_size//args.b)
+    # input = torch.rand(args.b, 3, 224, 224, device='cuda:'+str(rank))
+    # target = torch.randint(10, (args.b,), device='cuda:'+str(rank))
+    # data = [(input, target)] * (dataset_size//args.b)
     # print(dataset_size)
     # print(data[0])
 
-    fn(rank, args.g, model, data, args.e)
+    fn(rank, args.g, model, args.e)
 
 if __name__ == "__main__":
-    # torchvision.datasets.CIFAR10('./data', train=True, download=True,
-    #                          transform=transforms.Compose([
-    #                             # transforms.Resize([32, 32]),
-    #                             transforms.ToTensor(),
-    #                             transforms.Normalize((0.1307,), (0.3081,))
-    #                          ]))
+    torchvision.datasets.CIFAR10('./data', train=True, download=True,
+                             transform=transforms.Compose([
+                                # transforms.Resize([32, 32]),
+                                transforms.ToTensor(),
+                                transforms.Normalize((0.1307,), (0.3081,))
+                             ]))
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
     parser.add_argument('-b', type=int, default=128, help='batchsize')
