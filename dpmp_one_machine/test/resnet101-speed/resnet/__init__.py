@@ -113,6 +113,7 @@ def build_vgg(layers: List[int],
 
             layers += [nn.ReLU(inplace=True)]
             input_channel = l
+        return nn.Sequential(*layers)
         
     model = nn.Sequential(OrderedDict([
         ('feature',make_layers(cfg['A'])),
