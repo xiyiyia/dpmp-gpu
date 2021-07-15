@@ -161,8 +161,8 @@ def run(rank, size, model, epochs, args, data):
         if(rank ==0):
             tick = time.time()
         for i, (input, target) in enumerate(data):
-            # input = input.cuda()
-            # target = target.cuda()
+            input = input.cuda()
+            target = target.cuda()
             data_trained += input.size(0)
             # print(input(0).shape)
             output = model(input)
