@@ -22,7 +22,10 @@ import time
 import click
 from torch.utils.data import DataLoader
 # from torch.utils.tensorboard import SummaryWriter
-from models import inceptionv3,resnet
+# from models import inceptionv3,resnet
+import resnet
+from typing import cast
+
 loss_function = nn.CrossEntropyLoss()
 
 
@@ -207,7 +210,9 @@ def init_process(args,rank, fn, backend='gloo'):
     dist.init_process_group("nccl", rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
-    model = resnet.resnet50().to(rank)
+    model = resnet.resnet101(num_classes=10)
+    model = cast(nn.Sequential, model)
+    # model = resnet.resnet50().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
