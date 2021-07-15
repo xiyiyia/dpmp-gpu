@@ -88,7 +88,7 @@ class Experiments:
         # # balance = [22, 46, 61, 54]  # 50
         # model = cast(nn.Sequential, model)
         # model = GPipe(model, balance, devices=devices, chunks=chunks)
-        # return model, batch_size, list(model.devices)
+        return model, batch_size, list(model.devices)
 
     @staticmethod
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
