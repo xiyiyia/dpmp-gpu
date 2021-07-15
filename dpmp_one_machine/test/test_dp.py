@@ -219,7 +219,7 @@ def init_process(args,rank, fn, backend='gloo'):
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
-    dataset_size = 50000
+    dataset_size = 50000//args.g
     input = torch.rand(args.b, 3, 224, 224)#, device='cuda:'+str(rank))
     target = torch.randint(10, (args.b,))#, device='cuda:'+str(rank))
     data = [(input, target)] * (dataset_size//args.b)
