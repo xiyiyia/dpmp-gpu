@@ -260,7 +260,7 @@ def cli(ctx: click.Context,
     def run_epoch(epoch: int) -> Tuple[float, float]:
         # torch.cuda.synchronize(in_device)
         tick = time.time()
-
+        print(model)
         data_trained = 0
         for i, (input, target) in enumerate(data):
             # input = input.to(in_device)
