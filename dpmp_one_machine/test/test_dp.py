@@ -23,7 +23,7 @@ import click
 from torch.utils.data import DataLoader
 # from torch.utils.tensorboard import SummaryWriter
 from models import inceptionv3,resnet
-# loss_function = nn.CrossEntropyLoss()
+loss_function = nn.CrossEntropyLoss()
 
 
 def hr() -> None:
@@ -161,8 +161,8 @@ def run(rank, size, model, data, epochs):
             target.cuda()
             data_trained += input.size(0)
             output = model(input)
-            print(len(output), len(target))
-            loss = F.cross_entropy(output, target)
+            # print(len(output), len(target))
+            loss = loss_function(output, target)
             loss.backward()
             average_gradients(model)
             optimizer.step()
