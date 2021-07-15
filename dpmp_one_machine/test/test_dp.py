@@ -168,7 +168,7 @@ def run(rank, size, model, epochs, args, data):
             # print(len(output), len(target), rank)
             loss = loss_function(output, target)
             loss.backward()
-            if(i % 128 == 0):
+            if(i % 64 == 0):
                 average_gradients(model)
                 optimizer.step()
                 optimizer.zero_grad()
