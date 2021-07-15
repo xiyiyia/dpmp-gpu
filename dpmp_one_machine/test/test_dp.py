@@ -161,12 +161,12 @@ def run(rank, size, model, epochs, args):
         if(rank ==0):
             tick = time.time()
         for i, (input, target) in enumerate(data):
-            input.cuda()
-            target.cuda()
+            input = input.cuda()
+            target = target.cuda()
             data_trained += input.size(0)
             output = model(input)
             # print(len(output), len(target), rank)
-            loss = loss_function(output, target).cuda()
+            loss = loss_function(output, target)
             loss.backward()
             average_gradients(model)
             optimizer.step()
