@@ -196,7 +196,7 @@ def run(rank, size, model, data, epochs):
         throughput = sum(throughputs) / n
         elapsed_time = sum(elapsed_times) / n
         click.echo('%.3f samples/sec, %.3f sec/epoch (average)'
-                '' % (throughput*size, elapsed_time))
+                '' % (throughput, elapsed_time))
 
 def init_process(args,rank, fn, backend='gloo'):
     """ Initialize the distributed environment. """
