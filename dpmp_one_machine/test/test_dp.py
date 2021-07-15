@@ -5,7 +5,7 @@ import torch.distributed as dist
 import torch.multiprocessing as mp
 import os
 import sys
-import pandas as pd
+# import pandas as pd
 import argparse
 import time
 import math
