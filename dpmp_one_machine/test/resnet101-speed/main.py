@@ -46,8 +46,8 @@ class Experiments:
         # balance = balance_by_time(partitions, resnet101(), sample, device=torch.device('cuda'))
         # model = GPipe(resnet101(), balance, chunks=chunks)
 
-        batch_size = 256
-        chunks = 2
+        batch_size = 122
+        chunks = 1
         balance = [370] # 101
         # balance = [183] # 50
         model = cast(nn.Sequential, model)
@@ -67,7 +67,7 @@ class Experiments:
         batch_size = 220
         chunks = 2
         balance = [135, 235]  # 101
-        balance = [67, 116]  # 50
+        # balance = [67, 116]  # 50
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
@@ -263,8 +263,8 @@ def cli(ctx: click.Context,
 
         data_trained = 0
         for i, (input, target) in enumerate(data):
-            input = input.to(in_device)
-            target = target.to(out_device)
+            # input = input.to(in_device)
+            # target = target.to(out_device)
             data_trained += input.size(0)
             # print(len(data),len(input))
             output = model(input)
