@@ -41,7 +41,7 @@ class VGG(nn.Module):
         output = output.view(output.size(0), -1)
         print(output.shape)
         #print(conv_out.shape)
-        output = torch.randn(512, 512).cuda()
+        output = torch.randn(128, 512).cuda()
         output = self.classifier(output)
 
         return output
