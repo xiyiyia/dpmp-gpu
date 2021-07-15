@@ -210,9 +210,9 @@ def init_process(args,rank, fn, backend='gloo'):
     dist.init_process_group("nccl", rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
-    model = resnet.resnet101(num_classes=10)
-    model = cast(nn.Sequential, model)
-    # model = resnet.resnet50().to(rank)
+    # model = resnet.resnet101(num_classes=10)
+    # model = cast(nn.Sequential, model)
+    model = resnet.resnet34().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
