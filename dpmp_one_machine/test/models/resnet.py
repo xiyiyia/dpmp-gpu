@@ -123,7 +123,7 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        print(len(x))
+        # print(len(x))
         output = self.conv1(x)
         output = self.conv2_x(output)
         output = self.conv3_x(output)
