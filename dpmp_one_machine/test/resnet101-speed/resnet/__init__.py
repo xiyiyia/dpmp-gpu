@@ -93,9 +93,7 @@ def build_resnet(layers: List[int],
 
     return model
 
-def build_vgg(layers: List[int],
-                 num_classes: int = 10
-                 ) -> nn.Sequential:
+def build_vgg( num_classes: int = 10 ) -> nn.Sequential:
     # cfg = cfg['E']
     def make_layers(cfg, batch_norm=True):
         layers = []
