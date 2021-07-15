@@ -21,7 +21,7 @@ import torchvision.transforms as transforms
 import time
 import click
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 from models import inceptionv3,resnet
 # loss_function = nn.CrossEntropyLoss()
 
