@@ -144,7 +144,7 @@ def average_gradients(model):
 def run(rank, size, model, epochs, args, data):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
-    data, bsz = partition_dataset(args)
+    # data, bsz = partition_dataset(args)
 
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
