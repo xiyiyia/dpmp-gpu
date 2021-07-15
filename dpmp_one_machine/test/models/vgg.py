@@ -40,11 +40,11 @@ class VGG(nn.Module):
         #print(output.shape)
         output = output.view(output.size(0), -1)
         #print(output.shape)
-        print(output.shape)
+        # print(output.shape)
         # output = torch.randn(128, 512).cuda()
         # output = torch.randn(128, 128).cuda()
         output = self.classifier(output)
-        print(output.shape)
+        # print(output.shape)
 
         return output
 
