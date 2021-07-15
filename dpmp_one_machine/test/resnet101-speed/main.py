@@ -230,7 +230,7 @@ def cli(ctx: click.Context,
         data_trained = 0
         for i, (input, target) in enumerate(data):
             input = input.cuda()
-            target = target.to('cuda:'+str(len(devices)))
+            target = target.to('cuda:'+str(len(devices) - 1))
             data_trained += input.size(0)
             # print(len(data),len(input))
             output = model(input)
