@@ -144,7 +144,7 @@ def average_gradients(model):
 def run(rank, size, model, epochs, args, data):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
-    data, bsz = partition_dataset(args)
+    # data, bsz = partition_dataset(args)
 
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
@@ -161,9 +161,10 @@ def run(rank, size, model, epochs, args, data):
         if(rank ==0):
             tick = time.time()
         for i, (input, target) in enumerate(data):
-            input = input.cuda()
-            target = target.cuda()
+            # input = input.cuda()
+            # target = target.cuda()
             data_trained += input.size(0)
+            print(input(0).shape)
             output = model(input)
             # print(len(output), len(target), rank)
             loss = loss_function(output, target)
@@ -173,7 +174,7 @@ def run(rank, size, model, epochs, args, data):
                 optimizer.step()
                 optimizer.zero_grad()
             if(rank == 0):
-                print("why")
+                # print("why")
                 percent = (i+1) / len(data) * 100
                 throughput = data_trained / (time.time()-tick)
                 log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
@@ -221,8 +222,8 @@ def init_process(args,rank, fn, backend='gloo'):
         model, device_ids=[rank], output_device=rank
     )
     dataset_size = 50000//args.g
-    input = torch.rand(args.b, 3, 224, 224)#, device='cuda:'+str(rank))
-    target = torch.randint(10, (args.b,))#, device='cuda:'+str(rank))
+    input = torch.rand(args.b, 3, 224, 224, device='cuda:'+str(rank))
+    target = torch.randint(10, (args.b,), device='cuda:'+str(rank))
     data = [(input, target)] * (dataset_size//args.b)
     # print(dataset_size)
     # print(data[0])
