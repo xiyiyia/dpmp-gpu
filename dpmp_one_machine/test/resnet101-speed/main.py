@@ -29,6 +29,8 @@ class Experiments:
 
     @staticmethod
     def pipeline1(model: nn.Module, devices: List[int]) -> Stuffs:
+        print(sum(1 for _ in model))
+        print(model)
         batch_size = 220
         chunks = 2
         balance = [370]
