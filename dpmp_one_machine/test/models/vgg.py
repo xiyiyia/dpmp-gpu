@@ -36,10 +36,10 @@ class VGG(nn.Module):
 
     def forward(self, x):
         # print(len(x))
-        output = self.features(x)
+        # output = self.features(x)
         print(output.shape)
-        output = output.view(output.size()[0], -1)
-        print(output.shape)
+        # output = output.view(output.size()[0], -1)
+        # print(output.shape)
         #print(conv_out.shape)
         output = self.classifier(output)
 
