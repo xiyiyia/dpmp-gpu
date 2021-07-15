@@ -215,7 +215,7 @@ def init_process(args,rank, fn, backend='gloo'):
     input = torch.rand(args.b, 3, 224, 224, device='cuda:'+str(rank))
     target = torch.randint(10, (args.b,), device='cuda:'+str(rank))
     data = [(input, target)] * (dataset_size//args.b)
-
+    print(len(data),print(len(data[0])))
 
     fn(rank, args.g, model, data, args.e)
 
