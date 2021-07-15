@@ -161,7 +161,7 @@ def run(rank, size, model, data, epochs):
             # target.cuda()
             data_trained += input.size(0)
             output = model(input)
-            print(len(output), len(target))
+            print(len(output), len(target), rank)
             loss = loss_function(output, target)
             loss.backward()
             average_gradients(model)
@@ -207,7 +207,7 @@ def init_process(args,rank, fn, backend='gloo'):
     dist.init_process_group("nccl", rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=size)
     torch.cuda.set_device(rank)
-    model = resnet.resnet18().to(rank)
+    model = resnet.resnet50().to(rank)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
