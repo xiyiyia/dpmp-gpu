@@ -22,8 +22,8 @@ import time
 import click
 from torch.utils.data import DataLoader
 # from torch.utils.tensorboard import SummaryWriter
-# from models import inceptionv3,resnet
-import resnet
+from models import inceptionv3,resnet
+# import resnet
 from typing import cast
 
 loss_function = nn.CrossEntropyLoss()
