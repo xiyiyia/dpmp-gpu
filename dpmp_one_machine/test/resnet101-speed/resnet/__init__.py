@@ -109,12 +109,14 @@ def build_vgg( num_classes: int = 10 ) -> nn.Sequential:
             if batch_norm:
                 layers += [nn.BatchNorm2d(l)]
 
-            layers += [nn.ReLU(inplace=True)]
+            # layers += [nn.ReLU(inplace=True)]
+            layers += [nn.ReLU()]
             input_channel = l
         return nn.Sequential(*layers)
         
     
-    model = nn.Sequential(*(list(make_layers(cfg['A']))),             
+    model = nn.Sequential(*(list(make_layers(cfg['A']))), 
+            nn.Flatten(),            
             nn.Linear(25088, 4096),
             nn.ReLU(inplace=True),
             nn.Dropout(),
