@@ -143,6 +143,7 @@ def parse_devices(ctx: Any, param: Any, value: Optional[str]) -> List[int]:
     callback=parse_devices,
     help='Device IDs to use (default: all CUDA devices)',
 )
+
 def cli(ctx: click.Context,
         experiment: str,
         epochs: int,
@@ -229,7 +230,7 @@ def cli(ctx: click.Context,
         data_trained = 0
         for i, (input, target) in enumerate(data):
             input = input.cuda()
-            target = target.cuda()
+            target = target.to('cuda:'+str(len(devices))))
             data_trained += input.size(0)
             # print(len(data),len(input))
             output = model(input)
