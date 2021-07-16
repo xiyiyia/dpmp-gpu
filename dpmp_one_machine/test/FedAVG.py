@@ -17,7 +17,7 @@ import networkx as nx
 import argparse
 import time
 
-from utils import progress_bar
+# from utils import progress_bar
 from tqdm import tqdm, trange
 from models import *
 
