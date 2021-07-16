@@ -63,7 +63,7 @@ class Experiments:
         # chunks = 8
 
         batch_size = 4096
-        chunks = 400
+        chunks = 40
 
         # partitions = 2
         # sample = torch.empty(batch_size, 3, 224, 224).cuda()
