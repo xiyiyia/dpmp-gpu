@@ -383,7 +383,7 @@ def cli(ctx: click.Context,
         throughput = dataset_size / elapsed_time
         log('%d/%d epoch | %.3f samples/sec, %.3f sec/epoch'
             '' % (epoch+1, epochs, throughput, elapsed_time), clear=True)
-
+        print(data_trained)
         return throughput, elapsed_time
 
     throughputs = []
@@ -401,7 +401,7 @@ def cli(ctx: click.Context,
     hr()
 
     # RESULT ======================================================================================
-
+    
     # pipeline-4, 2-10 epochs | 200.000 samples/sec, 123.456 sec/epoch (average)
     n = len(throughputs)
     throughput = sum(throughputs) / n
