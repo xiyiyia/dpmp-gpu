@@ -188,7 +188,7 @@ def cli(ctx: click.Context,
     if skip_epochs >= epochs:
         ctx.fail('--skip-epochs=%d must be less than --epochs=%d' % (skip_epochs, epochs))
 
-    model: nn.Module = resnet101(num_classes=1000)
+    model: nn.Module = resnet101(num_classes=10)
     print(model)
     f = EXPERIMENTS[experiment]
     try:

@@ -23,7 +23,7 @@ cfg = {
 
 
 def build_resnet(layers: List[int],
-                 num_classes: int = 1000,
+                 num_classes: int = 10,
                  inplace: bool = False
                  ) -> nn.Sequential:
     """Builds a ResNet as a simple sequential model.
