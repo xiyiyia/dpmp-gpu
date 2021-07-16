@@ -163,7 +163,7 @@ class Experiments:
         # batch_size = 2048  #best
         # chunks = 100
         batch_size = 2048
-        chunks = 100
+        chunks = 200
         # partitions = 8
         # sample = torch.empty(batch_size, 3, 224, 224).cuda()
         # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
