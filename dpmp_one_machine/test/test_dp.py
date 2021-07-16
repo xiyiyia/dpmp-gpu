@@ -164,6 +164,7 @@ def run(rank, size, model, epochs, args, data):
         if(rank ==0):
             tick = time.time()
         for i, (input, target) in enumerate(data):
+            print(i)
             # input = input.cuda()
             # target = target.cuda()
             data_trained += input.size(0)
@@ -199,6 +200,8 @@ def run(rank, size, model, epochs, args, data):
                     '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
                 tte = time.time()
                 trainings.append(tte-tts)
+                tock = time.time()
+                print('trainings', tock-tick)
 
         # training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         # communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
