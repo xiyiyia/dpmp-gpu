@@ -150,7 +150,7 @@ def run(rank, size, model, epochs, args, data):
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
     len_data = len(data)//50
-    # tick = time.time()
+    base_time = time.time()
     # print(model)
     data_trained = 0
     for epoch in range(epochs):
@@ -175,7 +175,7 @@ def run(rank, size, model, epochs, args, data):
             if(rank == 0):
                 print("print")
                 percent = (i+1) / len(data) * 100
-                throughput = data_trained / (time.time()-tick)
+                throughput = data_trained / sum(elapsed_times)
                 log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
                     '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
                 tock = time.time()
