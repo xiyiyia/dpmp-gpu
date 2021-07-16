@@ -157,18 +157,22 @@ def run(rank, size, model, epochs, args, data):
         throughputs = []
         elapsed_times = []
         communications = []
+        trainings = []
         # training_time_list = []
         # communication_time_list = []
         # name = [i for i in range(len(train_set))]
         if(rank ==0):
             tick = time.time()
         for i, (input, target) in enumerate(data):
-            input = input.cuda()
-            target = target.cuda()
+            # input = input.cuda()
+            # target = target.cuda()
             data_trained += input.size(0)
-            # print(input(0).shape)
+            if(rank == 0):
+                tts = time.time()
             output = model(input)
-            # print(len(output), len(target), rank)
+            if(rank == 0):
+                tte = time.time()
+                trainings.append(tte-tts)
             loss = loss_function(output, target)
             loss.backward()
             #if(i % size == 0):
@@ -212,8 +216,9 @@ def run(rank, size, model, epochs, args, data):
         throughput = sum(throughputs) / n
         elapsed_time = sum(elapsed_times) / n
         communication = sum(communications) / n
-        click.echo('%.3f samples/sec, total: %.3f sec/epoch, communication: %.3f sec/epoch (average)'
-                '' % (throughput, elapsed_time, communication))
+        training = sum(trainings) / n
+        click.echo('%.3f samples/sec, total: %.3f sec/epoch, communication: %.3f sec/epoch, training: %.3f sec/epoch (average)'
+                '' % (throughput, elapsed_time, communication,training))
 
 def init_process(args,rank, fn, backend='gloo'):
     """ Initialize the distributed environment. """
@@ -233,8 +238,8 @@ def init_process(args,rank, fn, backend='gloo'):
         model, device_ids=[rank], output_device=rank
     )
     dataset_size = 50000//args.g
-    input = torch.rand(args.b, 3, 224, 224)#, device='cuda:'+str(rank))  ## remove args.g
-    target = torch.randint(1000, (args.b,))#, device='cuda:'+str(rank))  ## remove args.g
+    input = torch.rand(args.b, 3, 224, 224, device='cuda:'+str(rank))  ## remove args.g
+    target = torch.randint(1000, (args.b,), device='cuda:'+str(rank))  ## remove args.g
     data = [(input, target)] * (dataset_size//args.b)
     # print(dataset_size)
     # print(data[0])
