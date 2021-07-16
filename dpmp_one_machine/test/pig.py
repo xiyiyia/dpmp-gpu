@@ -36,6 +36,15 @@ plt.savefig('./time.png')
 # 7 :     57.512 samples/sec, total: 124.182 sec/epoch, communication: 64.768 sec/epoch (average)
 # 8 :     49.422 samples/sec, total: 126.463 sec/epoch, communication: 62.934 sec/epoch (average)
 
+##          random dataset 3x224x224  128/devices      gloo
+# 2 :     183.789 samples/sec, total: 272.051 sec/epoch, communication: 148.089 sec/epoch (average)
+# 3 :     261.211 samples/sec, total: 191.416 sec/epoch, communication: 105.979 sec/epoch (average)
+# 4 :     325.373 samples/sec, total: 153.670 sec/epoch, communication: 84.616 sec/epoch (average)
+# 5 :     68.727*5  samples/sec, total: 145.503 sec/epoch, communication: 76.094 sec/epoch (average
+# 6 :     54.686*6    samples/sec, total: 152.378 sec/epoch, communication: 77.905 sec/epoch (average)
+# 7 :     57.512 samples/sec, total: 124.182 sec/epoch, communication: 64.768 sec/epoch (average)
+# 8 :     49.422 samples/sec, total: 126.463 sec/epoch, communication: 62.934 sec/epoch (average)
+
 ##                                   resnet18
 ##         cifar 10  gloo   128/device
 # 2 :  602.280 samples/sec, total: 83.018 sec/epoch, communication: 38.650 sec/epoch (average)
@@ -50,7 +59,7 @@ plt.savefig('./time.png')
 # 2 :  1025.661 samples/sec, total: 48.749 sec/epoch, communication: 21.684 sec/epoch (average)
 # 3 :  1373.801 samples/sec, total: 36.395 sec/epoch, communication: 17.953 sec/epoch (average)
 # 4 :  1396.486 samples/sec, total: 35.804 sec/epoch, communication: 18.470 sec/epoch (average)
-# 5 :  1589.967 samples/sec, total: 31.447 sec/epoch, communication: 16.428 sec/epoch (average
+# 5 :  1589.967 samples/sec, total: 31.447 sec/epoch, communication: 16.428 sec/epoch (average)
 # 6 :  1612.644 samples/sec, total: 31.005 sec/epoch, communication: 16.224 sec/epoch (average)
 # 7 :  1853.545 samples/sec, total: 26.975 sec/epoch, communication: 15.061 sec/epoch (average)
 # 8 :  1886.617 samples/sec, total: 26.502 sec/epoch, communication: 14.867 sec/epoch (average)
