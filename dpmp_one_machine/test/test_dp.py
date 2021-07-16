@@ -174,6 +174,7 @@ def run(rank, size, model, epochs, args, data):
             if(rank == 0):
                 tte = time.time()
                 trainings.append(tte-tts)
+                print(tte-tts)
             loss = loss_function(output, target)
             loss.backward()
             #if(i % size == 0):
