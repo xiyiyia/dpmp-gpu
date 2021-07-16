@@ -80,8 +80,8 @@ class Experiments:
     def pipeline3(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 4096
-        chunks = 400
+        batch_size = 2048
+        chunks = 100
         # batch_size = 1048
         # chunks = 100
         
@@ -119,8 +119,8 @@ class Experiments:
     def pipeline5(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 4096
-        chunks = 400
+        batch_size = 2048
+        chunks = 200
         # batch_size = 1048
         # chunks = 100
         
@@ -139,8 +139,8 @@ class Experiments:
     def pipeline6(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 1024
-        chunks = 24
+        batch_size = 4096
+        chunks = 100
         # batch_size = 1024
         # chunks = 100
         
@@ -159,8 +159,8 @@ class Experiments:
     def pipeline7(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 4096
-        chunks = 100
+        batch_size = 1024
+        chunks = 24
         # batch_size = 2048  #best
         # chunks = 100
         # batch_size = 1024
@@ -181,7 +181,7 @@ class Experiments:
         # batch_size = 512
         # chunks = 16
         batch_size = 4096
-        chunks = 20
+        chunks = 200
         # batch_size = 2048
         # chunks = 200
         
