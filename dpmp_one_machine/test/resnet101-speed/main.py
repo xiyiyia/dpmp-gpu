@@ -190,6 +190,7 @@ def cli(ctx: click.Context,
 
     model: nn.Module = resnet101(num_classes=10)
     print(model)
+    print(sum(1 for _ in model))
     f = EXPERIMENTS[experiment]
     try:
         model, batch_size, _devices = f(model, devices)
