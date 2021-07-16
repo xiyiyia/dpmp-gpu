@@ -188,8 +188,8 @@ def cli(ctx: click.Context,
     if skip_epochs >= epochs:
         ctx.fail('--skip-epochs=%d must be less than --epochs=%d' % (skip_epochs, epochs))
 
-    model: nn.Module = resnet101(num_classes=10)
-
+    model: nn.Module = resnet101(num_classes=1000)
+    print(model)
     f = EXPERIMENTS[experiment]
     try:
         model, batch_size, _devices = f(model, devices)
@@ -199,7 +199,7 @@ def cli(ctx: click.Context,
         ctx.fail(str(exc))
 
     optimizer = SGD(model.parameters(), lr=0.1)
-
+    
     in_device = _devices[0]
     out_device = _devices[-1]
     # torch.cuda.set_device(in_device)
@@ -210,7 +210,7 @@ def cli(ctx: click.Context,
     dataset_size = 50000
 
     input = torch.rand(batch_size, 3, 224, 224, device=in_device)
-    target = torch.randint(10, (batch_size,), device=out_device)
+    target = torch.randint(1000, (batch_size,), device=out_device)
     data = [(input, target)] * (dataset_size//batch_size)
 
     # dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
