@@ -19,7 +19,7 @@ import time
 
 # from utils import progress_bar
 from tqdm import tqdm, trange
-from models import *
+from models import vgg
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -110,10 +110,10 @@ def Set_model(net, client, args):
         return Model, global_model, Optimizer
     elif net == 'MobileNet':
         for i in range (client):
-            Model[i] = vgg11_bn()
+            Model[i] =  vgg.vgg11_bn()
             Optimizer[i] = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
                         momentum=0.9, weight_decay=5e-4)
-        global_model = vgg11_bn()
+        global_model =  vgg.vgg11_bn()
         return Model, global_model, Optimizer
     elif net == 'ResNet18':
         for i in range (client):
