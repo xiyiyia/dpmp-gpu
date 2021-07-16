@@ -155,7 +155,7 @@ def Train(model, optimizer, client, trainloader):
                 train_loss[idx] += Loss[idx].item()
                 _, predicted = outputs.max(1)
                 total[idx] += targets.size(0)
-                correct[idx] += predicted.eq(targets).sum().item()
+                correct[idx] += predicted.eq(targets.cuda()).sum().item()
 
                 batch_end = time.time()
                 Batch_time.append(batch_end - batch_start)
