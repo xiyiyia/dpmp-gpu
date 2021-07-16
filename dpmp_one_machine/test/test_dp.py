@@ -171,10 +171,12 @@ def run(rank, size, model, epochs, args, data):
             loss = loss_function(output, target)
             loss.backward()
             # if(i % 32 == 0):
-            cts = time.time()
+            if(rank == 0):
+                cts = time.time()
             average_gradients(model)
-            cte = time.time()
-            communications.append(cte - cts)
+            if(rank == 0):
+                cte = time.time()
+                communications.append(cte - cts)
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
@@ -197,7 +199,7 @@ def run(rank, size, model, epochs, args, data):
             tock = time.time()
 
             elapsed_time = tock - tick
-            throughput = 50000 / elapsed_time
+            throughput = (50000//args.g) / elapsed_time
             log('%d/%d epoch | %.3f samples/sec, %.3f sec/epoch'
                 '' % (epoch+1, epochs, throughput, elapsed_time), clear=True)
             throughputs.append(throughput)
@@ -213,7 +215,7 @@ def run(rank, size, model, epochs, args, data):
 def init_process(args,rank, fn, backend='gloo'):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
-    os.environ['MASTER_PORT'] = '29502'
+    os.environ['MASTER_PORT'] = '29500'
 
     # dataset_size = 50000//args.g
     dist.init_process_group(args.ben, rank=rank, world_size=args.g)
