@@ -61,7 +61,7 @@ class Experiments:
         # batch_size = 512
         # chunks = 8
 
-        batch_size = 25000
+        batch_size = 20000
         chunks = 1667
 
         # partitions = 2
