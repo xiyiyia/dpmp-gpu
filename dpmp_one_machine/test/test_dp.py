@@ -149,12 +149,13 @@ def run(rank, size, model, epochs, args, data):
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
 
-    tick = time.time()
+    # tick = time.time()
     # print(model)
     data_trained = 0
     for epoch in range(epochs):
         throughputs = []
         elapsed_times = []
+        communications = []
         # training_time_list = []
         # communication_time_list = []
         # name = [i for i in range(len(train_set))]
@@ -170,7 +171,10 @@ def run(rank, size, model, epochs, args, data):
             loss = loss_function(output, target)
             loss.backward()
             # if(i % 32 == 0):
+            cts = time.time()
             average_gradients(model)
+            cte = time.time()
+            communications.append(cte - cts)
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
@@ -202,8 +206,9 @@ def run(rank, size, model, epochs, args, data):
         n = len(throughputs)
         throughput = sum(throughputs) / n
         elapsed_time = sum(elapsed_times) / n
-        click.echo('%.3f samples/sec, %.3f sec/epoch (average)'
-                '' % (throughput, elapsed_time))
+        communication = sum(communications) / n
+        click.echo('%.3f samples/sec, total: %.3f sec/epoch, communication: %.3f sec/epoch (average)'
+                '' % (throughput, elapsed_time, communication))
 
 def init_process(args,rank, fn, backend='gloo'):
     """ Initialize the distributed environment. """
