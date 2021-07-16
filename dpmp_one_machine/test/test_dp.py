@@ -146,7 +146,7 @@ def average_gradients(model):
 def run(rank, size, model, epochs, args, data):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
-    # data, bsz = partition_dataset(args)
+    data, bsz = partition_dataset(args)
 
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
@@ -232,7 +232,7 @@ def init_process(args,rank, fn, backend='gloo'):
     # model = cast(nn.Sequential, model)
     if(args.n == 'resnet'):
         model = resnet.resnet101().to(rank)
-    # model = resnet.resnet18().to(rank)
+        # model = resnet.resnet18().to(rank)
     # print(model)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
@@ -252,12 +252,12 @@ def init_process(args,rank, fn, backend='gloo'):
     fn(rank, args.g, model, args.e, args, data)
 
 if __name__ == "__main__":
-    # torchvision.datasets.CIFAR10('./data', train=True, download=True,
-    #                          transform=transforms.Compose([
-    #                             # transforms.Resize([32, 32]),
-    #                             transforms.ToTensor(),
-    #                             transforms.Normalize((0.1307,), (0.3081,))
-    #                          ]))
+    torchvision.datasets.CIFAR10('./data', train=True, download=True,
+                             transform=transforms.Compose([
+                                # transforms.Resize([32, 32]),
+                                transforms.ToTensor(),
+                                transforms.Normalize((0.1307,), (0.3081,))
+                             ]))
     parser = argparse.ArgumentParser()
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
     parser.add_argument('-b', type=int, default=128, help='batchsize')
