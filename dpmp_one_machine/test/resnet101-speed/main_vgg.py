@@ -78,10 +78,10 @@ class Experiments:
 
     @staticmethod
     def pipeline4(model: nn.Module, devices: List[int]) -> Stuffs:
-        # batch_size = 1024
-        # chunks = 128
-        batch_size = 4096
-        chunks = 400
+        batch_size = 2048
+        chunks = 100
+        # batch_size = 4096
+        # chunks = 400
 
         # partitions = 4
         # sample = torch.empty(batch_size, 3, 224, 224).cuda()
@@ -100,10 +100,10 @@ class Experiments:
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 4096
-        chunks = 400
-        # batch_size = 2048
-        # chunks = 100
+        # batch_size = 4096
+        # chunks = 400
+        batch_size = 2048
+        chunks = 100
         
         # partitions = 8
         # sample = torch.empty(batch_size, 3, 224, 224).cuda()

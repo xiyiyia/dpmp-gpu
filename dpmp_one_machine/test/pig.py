@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 num_gpu = [2, 4, 8]
 # dp_nccl = [43.40,34.77,28.41]
-dp = [128,99,73]  #gloo
-mp = [115.932,120,86] # chunks = 8
+dp = [131,99,73]  #gloo
+mp = [143.932,108,86] # chunks = 8
 # Plot Average Accuracy vs Communication rounds
 plt.figure()
 plt.title('batchsize=640, chunks=6')
