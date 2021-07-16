@@ -15,6 +15,7 @@ from resnet import resnet101,vgg11
 import torchgpipe
 from torchgpipe import GPipe
 from torchgpipe.balance import balance_by_time
+import shutil
 
 Stuffs = Tuple[nn.Module, int, List[torch.device]]  # (model, batch_size, devices)
 Experiment = Callable[[nn.Module, List[int]], Stuffs]
@@ -215,7 +216,7 @@ BASE_TIME: float = 0
 
 def hr() -> None:
     """Prints a horizontal line."""
-    width, _ = click.get_terminal_size()
+    width, _ = shutil.get_terminal_size()
     click.echo('-' * width)
 
 
@@ -223,7 +224,7 @@ def log(msg: str, clear: bool = False, nl: bool = True) -> None:
     """Prints a message with elapsed time."""
     if clear:
         # Clear the output line to overwrite.
-        width, _ = click.get_terminal_size()
+        width, _ = shutil.get_terminal_size()
         click.echo('\b\r', nl=False)
         click.echo(' ' * width, nl=False)
         click.echo('\b\r', nl=False)
