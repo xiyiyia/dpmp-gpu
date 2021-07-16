@@ -161,6 +161,7 @@ def run(rank, size, model, epochs, args, data):
         # training_time_list = []
         # communication_time_list = []
         # name = [i for i in range(len(train_set))]
+        tte = 0
         if(rank ==0):
             tick = time.time()
         for i, (input, target) in enumerate(data):
@@ -170,6 +171,7 @@ def run(rank, size, model, epochs, args, data):
             data_trained += input.size(0)
             if(rank == 0):
                 tts = time.time()
+                print(tte-tts)
             output = model(input)
             if(rank == 0):
                 tte = time.time()
@@ -185,6 +187,7 @@ def run(rank, size, model, epochs, args, data):
             if(rank == 0):
                 cte = time.time()
                 communications.append(cte - cts)
+                print(cte - cts)
             if(rank == 0):
                 tts = time.time()
             optimizer.step()
@@ -192,6 +195,7 @@ def run(rank, size, model, epochs, args, data):
             if(rank == 0):
                 tte = time.time()
                 trainings.append(tte-tts)
+                print(tte-tts)
             if(rank == 0):
                 print("print")
                 tts = time.time()
@@ -201,8 +205,7 @@ def run(rank, size, model, epochs, args, data):
                     '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
                 tte = time.time()
                 trainings.append(tte-tts)
-                tock = time.time()
-                print('trainings', tock-tick)
+                print('trainings', print(tte-tts))
 
         # training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         # communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
