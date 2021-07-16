@@ -5,7 +5,7 @@ dp = [131,99,73]  #gloo
 mp = [143.932,88,85] # chunks = 8
 # Plot Average Accuracy vs Communication rounds
 plt.figure()
-plt.title('batchsize=640, chunks=6')
+plt.title('vgg11,class=1000')
 # plt.plot(num_gpu, dp_nccl, "x-", color='m', label = "data_parrallel_in_nccl")
 plt.plot(num_gpu, dp, "+-", color='r', label = "data_parrallel")
 plt.plot(num_gpu, mp, "x-", color='m', label = "model_parrallel")

@@ -93,7 +93,7 @@ def build_resnet(layers: List[int],
 
     return model
 
-def build_vgg( num_classes: int = 10 ) -> nn.Sequential:
+def build_vgg() -> nn.Sequential:
     # cfg = cfg['E']
     def make_layers(cfg, batch_norm=True):
         layers = []
@@ -144,8 +144,10 @@ def build_vgg( num_classes: int = 10 ) -> nn.Sequential:
 
 def resnet101(**kwargs: Any) -> nn.Sequential:
     """Constructs a ResNet-101 model."""
-    return build_resnet([3, 4, 23, 3], **kwargs)
-    # return build_resnet([3, 8, 36, 3], **kwargs)
+    # ResNet(BasicBlock, [2, 2, 2, 2])
+    return build_resnet([2, 2, 2, 2], **kwargs) # resnet18
+    # return build_resnet([3, 4, 23, 3], **kwargs) # 101
+    # return build_resnet([3, 8, 36, 3], **kwargs) 
     # return ResNet(BottleNeck, [3, 4, 6, 3])
 
 def vgg11(**kwargs: Any) -> nn.Sequential:
