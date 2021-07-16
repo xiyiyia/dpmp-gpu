@@ -165,22 +165,27 @@ def run(rank, size, model, epochs, args, data):
             if(rank ==0):
                 tick = time.time()
             data_trained += input.size(0)
+            if(rank == 0):
+                tts = time.time()
             output = model(input)
             loss = loss_function(output, target)
             loss.backward()
+            if(rank == 0):
+                tte = time.time()
+                trainings.append(tte-tts)
             if(i <= 50):
                 average_gradients(model)
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
+                elapsed_time = tock - tick
+                elapsed_times.append(elapsed_time)
                 print("print")
                 percent = (i+1) / len(data) * 100
                 throughput = data_trained / sum(elapsed_times)
                 log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
                     '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
                 tock = time.time()
-                elapsed_time = tock - tick
-                elapsed_times.append(elapsed_time)
 
         # training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         # communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
