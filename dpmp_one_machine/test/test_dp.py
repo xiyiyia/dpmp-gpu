@@ -201,8 +201,8 @@ def run(rank, size, model, epochs, args, data):
                 '' % (epoch+1, epochs, throughput, sum(elapsed_times)/(epoch+1)), clear=True)
             throughputs.append(throughput)
 
-            training_time = pd.DataFrame(columns=name_,data=trainings)
-            communication_time = pd.DataFrame(columns=name_,data=communications)
+            training_time = pd.DataFrame(columns=name_,data=np.array(trainings).reshape(1,len(data)))
+            communication_time = pd.DataFrame(columns=name_,data=np.array(communications).reshape(1,len(data)))
             training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
             communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
     # print(data_trained)
