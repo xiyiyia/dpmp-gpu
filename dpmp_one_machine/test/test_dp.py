@@ -192,11 +192,13 @@ def run(rank, size, model, epochs, args, data):
                 trainings.append(tte-tts)
             if(rank == 0):
                 print("print")
+                tts = time.time()
                 percent = (i+1) / len(data) * 100
                 throughput = data_trained / (time.time()-tick)
                 log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
                     '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
-
+                tte = time.time()
+                trainings.append(tte-tts)
 
         # training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         # communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
