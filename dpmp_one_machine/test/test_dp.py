@@ -205,8 +205,8 @@ def run(rank, size, model, epochs, args, data):
 
             training_time = pd.DataFrame(columns=name_,data=np.array(trainings).reshape(1,len(data)))
             communication_time = pd.DataFrame(columns=name_,data=np.array(communications).reshape(1,len(data)))
-            training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
-            communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
+            training_time.to_csv('./training_time'+args.n+'.csv',encoding='gbk')
+            communication_time.to_csv('./communication_time'+args.n+'.csv',encoding='gbk')
     # print(data_trained)
     if(rank == 0):
         n = len(throughputs)
@@ -226,9 +226,12 @@ def init_process(args,rank, fn, backend='gloo'):
     dist.init_process_group(args.ben, rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
-    model = vgg.vgg19_bn().to(rank)
+    if(args.n == 'vgg'):
+        model = vgg.vgg19_bn().to(rank)
     # model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
+    if(args.n == 'resnet'):
+        model = resnet.resnet101(num_classes=10)
     # model = resnet.resnet18().to(rank)
     # print(model)
     model = torch.nn.parallel.DistributedDataParallel(
@@ -260,6 +263,7 @@ if __name__ == "__main__":
     parser.add_argument('-b', type=int, default=128, help='batchsize')
     parser.add_argument('-e', type=int, default=1, help='epoch')
     parser.add_argument('-ben', type=str, default='nccl')
+    parser.add_argument('-n', type=str, default='vgg')
     args_1 = parser.parse_args()
 
 

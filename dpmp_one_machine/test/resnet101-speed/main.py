@@ -75,8 +75,8 @@ class Experiments:
     def pipeline3(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 4096
-        chunks = 400
+        batch_size = 512
+        chunks = 25
         # batch_size = 1048
         # chunks = 100
         
@@ -93,9 +93,10 @@ class Experiments:
         return model, batch_size, list(model.devices)
     @staticmethod
     def pipeline4(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 512
-        chunks = 12
-
+        # batch_size = 512
+        # chunks = 12
+        batch_size = 4096
+        chunks = 400
         # partitions = 4
         # sample = torch.empty(batch_size, 3, 224, 224).cuda()
         # balance = balance_by_time(partitions, resnet101(), sample, device=torch.device('cuda'))
