@@ -348,7 +348,7 @@ def cli(ctx: click.Context,
 
     global BASE_TIME
     BASE_TIME = time.time()
-    print(model)
+    # print(model)
     def run_epoch(epoch: int) -> Tuple[float, float]:
         # torch.cuda.synchronize(in_device)
         tick = time.time()
@@ -370,6 +370,7 @@ def cli(ctx: click.Context,
             # 00:01:02 | 1/20 epoch (42%) | 200.000 samples/sec (estimated)
             percent = (i+1) / len(data) * 100
             throughput = data_trained / (time.time()-tick)
+            print('?')
             log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
                 '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
 
