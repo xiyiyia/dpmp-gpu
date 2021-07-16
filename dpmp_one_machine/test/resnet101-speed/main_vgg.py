@@ -180,8 +180,8 @@ class Experiments:
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 1024
-        chunks = 24
+        batch_size = 2048
+        chunks = 48
         # batch_size = 2048
         # chunks = 200
         
