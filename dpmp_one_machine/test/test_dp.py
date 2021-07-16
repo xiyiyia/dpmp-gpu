@@ -216,7 +216,7 @@ def init_process(args,rank, fn, backend='gloo'):
     os.environ['MASTER_PORT'] = '29502'
 
     # dataset_size = 50000//args.g
-    dist.init_process_group("nccl", rank=rank, world_size=args.g)
+    dist.init_process_group(args.ben, rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
     model = vgg.vgg11_bn().to(rank)
@@ -252,6 +252,7 @@ if __name__ == "__main__":
     parser.add_argument('-g', type=int, default=1, help='number of gpus')
     parser.add_argument('-b', type=int, default=128, help='batchsize')
     parser.add_argument('-e', type=int, default=1, help='epoch')
+    parser.add_argument('-ben', type=str, default='nccl')
     args_1 = parser.parse_args()
 
 
