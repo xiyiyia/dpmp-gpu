@@ -13,7 +13,7 @@ from datetime import datetime
 import torch.nn.functional as F
 import random
 import numpy as np
-import panda as pd
+import pandas as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -202,7 +202,7 @@ def run(rank, size, model, epochs, args, data):
             log('%d/%d epoch | %.3f samples/sec, %.3f sec/epoch'
                 '' % (epoch+1, epochs, throughput, sum(elapsed_times)/(epoch+1)), clear=True)
             throughputs.append(throughput)
-            
+
             training_time = pd.DataFrame(columns=name,data=trainings)
             communication_time = pd.DataFrame(columns=name,data=communications)
             training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
