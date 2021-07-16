@@ -234,7 +234,7 @@ def init_process(args,rank, fn, backend='gloo'):
     dataset_size = 50000//args.g
     input = torch.rand(args.b//args.g, 3, 224, 224)#, device='cuda:'+str(rank))  ## remove args.g
     target = torch.randint(1000, (args.b//args.g,))#, device='cuda:'+str(rank))  ## remove args.g
-    data = [(input, target)] * (dataset_size//args.b)
+    data = [(input, target)] * (dataset_size//(args.b//args.g))
     # print(dataset_size)
     # print(data[0])
 
