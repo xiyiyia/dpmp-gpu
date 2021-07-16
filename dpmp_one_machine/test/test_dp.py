@@ -178,6 +178,7 @@ def run(rank, size, model, epochs, args, data):
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
+                tock = time.time()
                 elapsed_time = tock - tick
                 elapsed_times.append(elapsed_time)
                 print("print")
@@ -185,7 +186,7 @@ def run(rank, size, model, epochs, args, data):
                 throughput = data_trained / sum(elapsed_times)
                 log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
                     '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
-                tock = time.time()
+                
 
         # training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         # communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
