@@ -144,11 +144,13 @@ def Train(model, optimizer, client, trainloader):
                 batch_start = time.time()
 
                 idx = (batch_idx % client)
+
                 model[idx].train()
                 optimizer[idx].zero_grad()
                 outputs = model[idx](inputs)
                 Loss[idx] = criterion(outputs, targets)
                 Loss[idx].backward()
+                
                 optimizer[idx].step()
                 train_loss[idx] += Loss[idx].item()
                 _, predicted = outputs.max(1)
