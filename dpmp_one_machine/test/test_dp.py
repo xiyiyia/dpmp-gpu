@@ -231,7 +231,7 @@ def init_process(args,rank, fn, backend='gloo'):
     # model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
     if(args.n == 'resnet'):
-        model = resnet.resnet101()
+        model = resnet.resnet101().to(rank)
     # model = resnet.resnet18().to(rank)
     # print(model)
     model = torch.nn.parallel.DistributedDataParallel(
