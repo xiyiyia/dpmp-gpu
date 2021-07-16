@@ -99,6 +99,7 @@ def partition_dataset(args):
     size = dist.get_world_size()
     bsz = args.b
     partition_sizes = [1.0 / size for _ in range(size)]
+    print(partition)
     partition = DataPartitioner(dataset, partition_sizes)
     partition = partition.use(dist.get_rank())
     train_set = torch.utils.data.DataLoader(partition,
