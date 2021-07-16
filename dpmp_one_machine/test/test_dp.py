@@ -183,8 +183,13 @@ def run(rank, size, model, epochs, args, data):
             if(rank == 0):
                 cte = time.time()
                 communications.append(cte - cts)
+            if(rank == 0):
+                tts = time.time()
             optimizer.step()
             optimizer.zero_grad()
+            if(rank == 0):
+                tte = time.time()
+                trainings.append(tte-tts)
             if(rank == 0):
                 print("print")
                 percent = (i+1) / len(data) * 100
