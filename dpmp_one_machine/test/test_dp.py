@@ -220,7 +220,7 @@ def run(rank, size, model, epochs, args, data):
 def init_process(args,rank, fn, backend='gloo'):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
-    os.environ['MASTER_PORT'] = '29505'
+    os.environ['MASTER_PORT'] = '29500'
 
     # dataset_size = 50000//args.g
     dist.init_process_group(args.ben, rank=rank, world_size=args.g)
