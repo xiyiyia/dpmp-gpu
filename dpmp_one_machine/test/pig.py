@@ -17,7 +17,8 @@ plt.savefig('./time.png')
 
 ########################################################################################
 ###########                            VGG11                                   #########
-###############        DP:             
+###############        DP:   
+#        random dataset          
 ##                    ncll
 # 8GPU : 2466.979 samples/sec, total: 20.268 sec/epoch, communication: 0.105 sec/epoch (average)
 # 7:     1979.460 samples/sec, total: 25.259 sec/epoch, communication: 0.130 sec/epoch (average)
@@ -32,6 +33,13 @@ plt.savefig('./time.png')
 # 4 :     66.461*4  samples/sec, total: 188.081 sec/epoch, communication: 95.250 sec/epoch (average)
 # 5 :     68.727*5  samples/sec, total: 145.503 sec/epoch, communication: 76.094 sec/epoch (average
 # 6 :     54.686*6    samples/sec, total: 152.378 sec/epoch, communication: 77.905 sec/epoch (average)
-# 3 :     57.512 samples/sec, total: 124.182 sec/epoch, communication: 64.768 sec/epoch (average)
-# 2 :     49.422 samples/sec, total: 126.463 sec/epoch, communication: 62.934 sec/epoch (average)
-
+# 7 :     57.512 samples/sec, total: 124.182 sec/epoch, communication: 64.768 sec/epoch (average)
+# 8 :     49.422 samples/sec, total: 126.463 sec/epoch, communication: 62.934 sec/epoch (average)
+#         cifar 10  gloo
+# 2 :  806.687 samples/sec, total: 61.982 sec/epoch, communication: 19.195 sec/epoch (average)
+# 3 :  811.002 samples/sec, total: 61.652 sec/epoch, communication: 19.387 sec/epoch (average)
+# 4 :  831.916 samples/sec, total: 60.102 sec/epoch, communication: 17.298 sec/epoch (average)
+# 5 :  813.038 samples/sec, total: 61.498 sec/epoch, communication: 16.533 sec/epoch (average)
+# 6 :  714.844 samples/sec, total: 69.945 sec/epoch, communication: 16.370 sec/epoch (average)
+# 7 :  736.280 samples/sec, total: 67.909 sec/epoch, communication: 14.787 sec/epoch (average)
+# 8 :  632.884 samples/sec, total: 79.003 sec/epoch, communication: 18.466 sec/epoch (average)
