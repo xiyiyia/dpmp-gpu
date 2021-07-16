@@ -89,7 +89,7 @@ class Experiments:
         # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
         # model = GPipe(model, balance, chunks=chunks)
 
-        balance = [4, 4, 4, 4, 4, 4, 4, 9] #vgg
+        balance = [10, 12, 15] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
         model = cast(nn.Sequential, model)
@@ -128,7 +128,7 @@ class Experiments:
         # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
         # model = GPipe(model, balance, chunks=chunks)
 
-        balance = [4, 4, 4, 4, 4, 4, 4, 9] #vgg
+        balance = [7, 7, 7, 7, 9] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
         model = cast(nn.Sequential, model)
@@ -148,7 +148,7 @@ class Experiments:
         # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
         # model = GPipe(model, balance, chunks=chunks)
 
-        balance = [4, 4, 4, 4, 4, 4, 4, 9] #vgg
+        balance = [4, 4, 5, 8, 8, 8] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
         model = cast(nn.Sequential, model)
@@ -160,15 +160,16 @@ class Experiments:
         # chunks = 16
         # batch_size = 4096
         # chunks = 400
+        # batch_size = 2048  #best
+        # chunks = 100
         batch_size = 2048
         chunks = 100
-        
         # partitions = 8
         # sample = torch.empty(batch_size, 3, 224, 224).cuda()
         # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
         # model = GPipe(model, balance, chunks=chunks)
 
-        balance = [4, 4, 4, 4, 4, 4, 4, 9] #vgg
+        balance = [4, 4, 4, 5, 5, 6, 9] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
         model = cast(nn.Sequential, model)
@@ -181,7 +182,7 @@ class Experiments:
         # batch_size = 4096
         # chunks = 400
         batch_size = 3048
-        chunks = 200
+        chunks = 300
         
         # partitions = 8
         # sample = torch.empty(batch_size, 3, 224, 224).cuda()
