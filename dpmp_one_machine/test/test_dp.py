@@ -170,13 +170,13 @@ def run(rank, size, model, epochs, args, data):
             # print(len(output), len(target), rank)
             loss = loss_function(output, target)
             loss.backward()
-            # if(i % 32 == 0):
-            if(rank == 0):
-                cts = time.time()
-            average_gradients(model)
-            if(rank == 0):
-                cte = time.time()
-                communications.append(cte - cts)
+            if(i % size == 0):
+                if(rank == 0):
+                    cts = time.time()
+                average_gradients(model)
+                if(rank == 0):
+                    cte = time.time()
+                    communications.append(cte - cts)
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
