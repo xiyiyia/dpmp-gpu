@@ -103,7 +103,7 @@ def partition_dataset(args):
     partition = DataPartitioner(dataset, partition_sizes)
     partition = partition.use(dist.get_rank())
     train_set = torch.utils.data.DataLoader(partition,
-                                         batch_size=int(bsz),
+                                         batch_size=int(bsz/size),
                                          shuffle=True)
     return train_set, bsz
 
