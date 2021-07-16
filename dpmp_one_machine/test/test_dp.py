@@ -146,7 +146,7 @@ def average_gradients(model):
 def run(rank, size, model, epochs, args, data):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
-    # data, bsz = partition_dataset(args)
+    data, bsz = partition_dataset(args)
 
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
@@ -163,6 +163,8 @@ def run(rank, size, model, epochs, args, data):
         # communication_time_list = []
         name_ = [i for i in range(len(data))]
         for i, (input, target) in enumerate(data):
+            input = input.cuda()
+            target = target.cuda()
             if(rank ==0):
                 tick = time.time()
             data_trained += input.size(0)
@@ -202,7 +204,7 @@ def run(rank, size, model, epochs, args, data):
             throughputs.append(throughput)
 
             training_time = pd.DataFrame(columns=name_,data=np.array(trainings).reshape(1,len(data)))
-            communication_time = pd.DataFrame(columns=name_,data=np.array(communications).reshape(1,len(data)))
+            communication_time = pd.DataFrame(columns=name_,data=np.array(communications.reshape(1,len(data))))
             training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
             communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
     # print(data_trained)
