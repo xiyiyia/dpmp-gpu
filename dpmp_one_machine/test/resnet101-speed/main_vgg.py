@@ -180,8 +180,8 @@ class Experiments:
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 4096
-        chunks = 200
+        batch_size = 1024
+        chunks = 24
         # batch_size = 2048
         # chunks = 200
         
@@ -190,7 +190,7 @@ class Experiments:
         # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
         # model = GPipe(model, balance, chunks=chunks)
 
-        balance = [4, 4, 4, 4, 4, 4, 4, 9] #vgg
+        balance = [3, 4, 4, 4, 4, 5, 5, 8] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
         model = cast(nn.Sequential, model)
