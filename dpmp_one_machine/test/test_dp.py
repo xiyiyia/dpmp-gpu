@@ -13,6 +13,7 @@ from datetime import datetime
 import torch.nn.functional as F
 import random
 import numpy as np
+import panda as pd
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -153,6 +154,7 @@ def run(rank, size, model, epochs, args, data):
     base_time = time.time()
     # print(model)
     data_trained = 0
+    name = []
     for epoch in range(epochs):
         throughputs = []
         elapsed_times = []
@@ -173,8 +175,16 @@ def run(rank, size, model, epochs, args, data):
             if(rank == 0):
                 tte = time.time()
                 trainings.append(tte-tts)
-            if(i <= 50):
-                average_gradients(model)
+            # if(i <= 50):
+            #     average_gradients(model)
+
+            if(rank == 0):
+                cts = time.time()
+            average_gradients(model)
+            if(rank == 0):
+                cte = time.time()
+                communications.append(cte-cts)
+                name.append[i]
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
@@ -186,22 +196,18 @@ def run(rank, size, model, epochs, args, data):
                 throughput = data_trained / sum(elapsed_times)
                 log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
                     '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
-                
 
-        # training_time_list = np.array(training_time_list).reshape(1,len(train_set))
-        # communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
-        # training_time = pd.DataFrame(columns=name,data=training_time_list)
-        # communication_time = pd.DataFrame(columns=name,data=communication_time_list)
-        # training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
-        # communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
-
-        # torch.cuda.synchronize(in_device)
         if(rank == 0):
             throughput = 50000 / (sum(elapsed_times)/(epoch+1))
             log('%d/%d epoch | %.3f samples/sec, %.3f sec/epoch'
                 '' % (epoch+1, epochs, throughput, sum(elapsed_times)/(epoch+1)), clear=True)
             throughputs.append(throughput)
-    print(data_trained)
+            
+            training_time = pd.DataFrame(columns=name,data=trainings)
+            communication_time = pd.DataFrame(columns=name,data=communications)
+            training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
+            communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
+    # print(data_trained)
     if(rank == 0):
         n = len(throughputs)
         throughput = sum(throughputs) / n
@@ -220,7 +226,7 @@ def init_process(args,rank, fn, backend='gloo'):
     dist.init_process_group(args.ben, rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
-    model = vgg.vgg11_bn().to(rank)
+    model = vgg.vgg19_bn().to(rank)
     # model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
     # model = resnet.resnet18().to(rank)
@@ -229,8 +235,8 @@ def init_process(args,rank, fn, backend='gloo'):
         model, device_ids=[rank], output_device=rank
     )
     dataset_size = 50000//args.g
-    input = torch.rand(args.b, 3, 224, 224, device='cuda:'+str(rank))  ## remove args.g
-    target = torch.randint(1000, (args.b,), device='cuda:'+str(rank))  ## remove args.g
+    input = torch.rand(args.b, 3, 32, 32, device='cuda:'+str(rank))  ## remove args.g
+    target = torch.randint(10, (args.b,), device='cuda:'+str(rank))  ## remove args.g
     data = [(input, target)] * (dataset_size//args.b)
     # print(dataset_size)
     # print(data[0])
