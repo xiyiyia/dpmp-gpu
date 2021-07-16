@@ -174,7 +174,7 @@ def run(rank, size, model, epochs, args, data):
             #if(i % size == 0):
             if(rank == 0):
                 cts = time.time()
-            if(len_data % i == 0):
+            if(len_data % (i+1) == 0):
                 average_gradients(model)
             if(rank == 0):
                 cte = time.time()
