@@ -158,10 +158,10 @@ def run(rank, size, model, epochs, args, data):
         throughputs = []
         elapsed_times = []
         communications = []
-        trainings = []
+        trainings = [0 for in range(len(data))]
         # training_time_list = []
         # communication_time_list = []
-        name = [i for i in range(len(data))]
+        name_ = [i for i in range(len(data))]
         for i, (input, target) in enumerate(data):
             if(rank ==0):
                 tick = time.time()
@@ -173,7 +173,7 @@ def run(rank, size, model, epochs, args, data):
             loss.backward()
             if(rank == 0):
                 tte = time.time()
-                trainings.append(tte-tts)
+                trainings = tte - tts
             # if(i <= 50):
             #     average_gradients(model)
 
@@ -183,7 +183,6 @@ def run(rank, size, model, epochs, args, data):
             if(rank == 0):
                 cte = time.time()
                 communications.append(cte-cts)
-                name[i] = i
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
@@ -202,8 +201,8 @@ def run(rank, size, model, epochs, args, data):
                 '' % (epoch+1, epochs, throughput, sum(elapsed_times)/(epoch+1)), clear=True)
             throughputs.append(throughput)
 
-            training_time = pd.DataFrame(columns=name,data=trainings)
-            communication_time = pd.DataFrame(columns=name,data=communications)
+            training_time = pd.DataFrame(columns=name_,data=trainings)
+            communication_time = pd.DataFrame(columns=name_,data=communications)
             training_time.to_csv('./training_time'+str(dist.get_rank())+'.csv',encoding='gbk')
             communication_time.to_csv('./communication_time'+str(dist.get_rank())+'.csv',encoding='gbk')
     # print(data_trained)
