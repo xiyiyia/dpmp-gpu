@@ -223,24 +223,24 @@ def init_process(args,rank, fn, backend='gloo'):
     dist.init_process_group(args.ben, rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
-    # model = vgg.vgg11_bn().to(rank)
+    model = vgg.vgg11_bn().to(rank)
     # model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
-    model = resnet.resnet18().to(rank)
+    # model = resnet.resnet18().to(rank)
     # print(model)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
     dataset_size = 50000//args.g
-    input = torch.rand(args.b, 3, 32, 32)#, device='cuda:'+str(rank))
-    target = torch.randint(1000, (args.b,))#, device='cuda:'+str(rank))
+    input = torch.rand(args.b//args.g, 3, 224, 224)#, device='cuda:'+str(rank))  ## remove args.g
+    target = torch.randint(1000, (args.b//args.g,))#, device='cuda:'+str(rank))  ## remove args.g
     data = [(input, target)] * (dataset_size//args.b)
     # print(dataset_size)
     # print(data[0])
 
-    if dataset_size % args.b != 0:
-        last_input = input[:dataset_size % args.b]
-        last_target = target[:dataset_size % args.b]
+    if dataset_size % args.b//args.g != 0:       ## remove args.g
+        last_input = input[:dataset_size % args.b//args.g]  ## remove args.g
+        last_target = target[:dataset_size % args.b//args.g]   ## remove args.g
         data.append((last_input, last_target))
 
     fn(rank, args.g, model, args.e, args, data)

@@ -210,7 +210,7 @@ def cli(ctx: click.Context,
     # images over 1000 labels.
     dataset_size = 50000
 
-    input = torch.rand(batch_size, 3, 28, 28, device=in_device)
+    input = torch.rand(batch_size, 3, 32, 32, device=in_device)
     target = torch.randint(1000, (batch_size,), device=out_device)
     data = [(input, target)] * (dataset_size//batch_size)
 
