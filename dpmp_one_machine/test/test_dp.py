@@ -203,10 +203,6 @@ def run(rank, size, model, epochs, args, data):
                 '' % (epoch+1, epochs, throughput, sum(elapsed_times)/(epoch+1)), clear=True)
             throughputs.append(throughput)
 
-            training_time = pd.DataFrame(columns=name_,data=np.array(trainings).reshape(1,len(data)))
-            communication_time = pd.DataFrame(columns=name_,data=np.array(communications).reshape(1,len(data)))
-            training_time.to_csv('./training_time'+args.n+'.csv',encoding='gbk')
-            communication_time.to_csv('./communication_time'+args.n+'.csv',encoding='gbk')
     # print(data_trained)
     if(rank == 0):
         n = len(throughputs)
@@ -216,6 +212,11 @@ def run(rank, size, model, epochs, args, data):
         training = sum(trainings) / n
         click.echo('%.3f samples/sec, total: %.3f sec/epoch, communication: %.3f sec/epoch, training: %.3f sec/epoch (average)'
                 '' % (throughput, elapsed_time, communication,training))
+                
+        training_time = pd.DataFrame(columns=name_,data=np.array(trainings).reshape(1,len(data)))
+        communication_time = pd.DataFrame(columns=name_,data=np.array(communications).reshape(1,len(data)))
+        training_time.to_csv('./training_time'+args.n+'.csv',encoding='gbk')
+        communication_time.to_csv('./communication_time'+args.n+'.csv',encoding='gbk')
 
 def init_process(args,rank, fn, backend='gloo'):
     """ Initialize the distributed environment. """
