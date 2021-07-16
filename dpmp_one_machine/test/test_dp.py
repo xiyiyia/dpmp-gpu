@@ -154,7 +154,6 @@ def run(rank, size, model, epochs, args, data):
     base_time = time.time()
     # print(model)
     data_trained = 0
-    name = []
     for epoch in range(epochs):
         throughputs = []
         elapsed_times = []
@@ -162,7 +161,7 @@ def run(rank, size, model, epochs, args, data):
         trainings = []
         # training_time_list = []
         # communication_time_list = []
-        # name = [i for i in range(len(train_set))]
+        name = [i for i in range(len(data))]
         for i, (input, target) in enumerate(data):
             if(rank ==0):
                 tick = time.time()
@@ -184,7 +183,7 @@ def run(rank, size, model, epochs, args, data):
             if(rank == 0):
                 cte = time.time()
                 communications.append(cte-cts)
-                name.append[i]
+                name[i] = i
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
