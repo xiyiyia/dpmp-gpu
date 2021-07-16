@@ -181,7 +181,7 @@ class Experiments:
         # chunks = 16
         # batch_size = 4096
         # chunks = 400
-        batch_size = 1024
+        batch_size = 2048
         chunks = 100
         
         # partitions = 8
