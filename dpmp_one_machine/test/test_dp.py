@@ -154,11 +154,11 @@ def run(rank, size, model, epochs, args, data):
     base_time = time.time()
     # print(model)
     data_trained = 0
+    communications = []
+    trainings = [0 for i in range(len(data))]
     for epoch in range(epochs):
         throughputs = []
         elapsed_times = []
-        communications = []
-        trainings = [0 for i in range(len(data))]
         # training_time_list = []
         # communication_time_list = []
         name_ = [i for i in range(len(data))]
