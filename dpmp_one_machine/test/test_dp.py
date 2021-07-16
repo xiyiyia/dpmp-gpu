@@ -161,9 +161,9 @@ def run(rank, size, model, epochs, args, data):
         # training_time_list = []
         # communication_time_list = []
         # name = [i for i in range(len(train_set))]
-        if(rank ==0):
-            tick = time.time()
         for i, (input, target) in enumerate(data):
+            if(rank ==0):
+                tick = time.time()
             data_trained += input.size(0)
             output = model(input)
             loss = loss_function(output, target)
