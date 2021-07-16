@@ -158,7 +158,7 @@ def run(rank, size, model, epochs, args, data):
         throughputs = []
         elapsed_times = []
         communications = []
-        trainings = [0 for in range(len(data))]
+        trainings = [0 for i in range(len(data))]
         # training_time_list = []
         # communication_time_list = []
         name_ = [i for i in range(len(data))]
