@@ -145,7 +145,7 @@ def average_gradients(model):
 def run(rank, size, model, epochs, args, data):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
-    data, bsz = partition_dataset(args)
+    # data, bsz = partition_dataset(args)
 
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
@@ -232,7 +232,7 @@ def init_process(args,rank, fn, backend='gloo'):
         model, device_ids=[rank], output_device=rank
     )
     dataset_size = 50000//args.g
-    input = torch.rand(args.b, 3, 224, 224)#, device='cuda:'+str(rank))
+    input = torch.rand(args.b, 3, 32, 32)#, device='cuda:'+str(rank))
     target = torch.randint(1000, (args.b,))#, device='cuda:'+str(rank))
     data = [(input, target)] * (dataset_size//args.b)
     # print(dataset_size)

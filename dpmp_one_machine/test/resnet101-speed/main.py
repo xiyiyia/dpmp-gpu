@@ -48,7 +48,7 @@ class Experiments:
 
         batch_size = 118
         chunks = 1
-        balance = [370] # 101
+        balance = [71] # 101
         # balance = [183] # 50
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
@@ -66,7 +66,7 @@ class Experiments:
 
         batch_size = 220
         chunks = 2
-        balance = [135, 235]  # 101
+        balance = [23, 48]  # 101
         # balance = [67, 116]  # 50
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
@@ -84,7 +84,7 @@ class Experiments:
 
         # batch_size = 560
         # chunks = 4
-        balance = [44, 92, 124, 110] # 101
+        balance = [13, 17, 17, 29] # 101
         # balance = [22, 46, 61, 54]  # 50
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
@@ -102,7 +102,7 @@ class Experiments:
 
         batch_size = 720
         chunks = 8
-        balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
+        balance = [6, 7, 8, 8, 9, 9, 9, 9] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
@@ -210,7 +210,7 @@ def cli(ctx: click.Context,
     # images over 1000 labels.
     dataset_size = 50000
 
-    input = torch.rand(batch_size, 3, 224, 224, device=in_device)
+    input = torch.rand(batch_size, 3, 28, 28, device=in_device)
     target = torch.randint(1000, (batch_size,), device=out_device)
     data = [(input, target)] * (dataset_size//batch_size)
 
