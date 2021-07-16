@@ -216,8 +216,8 @@ def init_process(args,rank, fn, backend='gloo'):
     os.environ['MASTER_PORT'] = '29500'
 
     # dataset_size = 50000//args.g
-    # dist.init_process_group("nccl", rank=rank, world_size=args.g)
-    dist.init_process_group("gloo", rank=rank, world_size=args.g)
+    dist.init_process_group("nccl", rank=rank, world_size=args.g)
+    # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
     model = vgg.vgg11_bn().to(rank)
     #model = resnet.resnet101(num_classes=10)
