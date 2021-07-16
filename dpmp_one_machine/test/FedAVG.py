@@ -147,8 +147,8 @@ def Train(model, optimizer, client, trainloader):
 
                 model[idx].train()
                 optimizer[idx].zero_grad()
-                outputs = model[idx](inputs)
-                Loss[idx] = criterion(outputs, targets)
+                outputs = model[idx](inputs.cuda())
+                Loss[idx] = criterion(outputs, targets.cuda())
                 Loss[idx].backward()
 
                 optimizer[idx].step()
