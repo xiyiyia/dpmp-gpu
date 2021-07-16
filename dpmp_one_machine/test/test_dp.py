@@ -103,7 +103,7 @@ def partition_dataset(args):
     partition = DataPartitioner(dataset, partition_sizes)
     partition = partition.use(dist.get_rank())
     train_set = torch.utils.data.DataLoader(partition,
-                                         batch_size=int(bsz/args.g),
+                                         batch_size=int(bsz),
                                          shuffle=True)
     return train_set, bsz
 
@@ -171,13 +171,13 @@ def run(rank, size, model, epochs, args, data):
             # print(len(output), len(target), rank)
             loss = loss_function(output, target)
             loss.backward()
-            if(i % size == 0):
-                if(rank == 0):
-                    cts = time.time()
-                average_gradients(model)
-                if(rank == 0):
-                    cte = time.time()
-                    communications.append(cte - cts)
+            #if(i % size == 0):
+            if(rank == 0):
+                cts = time.time()
+            average_gradients(model)
+            if(rank == 0):
+                cte = time.time()
+                communications.append(cte - cts)
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
