@@ -155,7 +155,7 @@ def run(rank, size, model, epochs, args, data):
     # print(model)
     data_trained = 0
     communications = []
-    trainings = [0 for i in range(len(data))]
+    trainings = []
     for epoch in range(epochs):
         throughputs = []
         elapsed_times = []
@@ -175,7 +175,7 @@ def run(rank, size, model, epochs, args, data):
             loss.backward()
             if(rank == 0):
                 tte = time.time()
-                trainings[i] = tte - tts
+                trainings.append(tte - tts)
             # if(i <= 50):
             #     average_gradients(model)
 
