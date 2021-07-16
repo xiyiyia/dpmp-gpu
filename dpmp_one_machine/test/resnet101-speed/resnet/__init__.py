@@ -123,7 +123,7 @@ def build_vgg( num_classes: int = 10 ) -> nn.Sequential:
             nn.Linear(4096, 4096),
             nn.ReLU(),
             nn.Dropout(),
-            nn.Linear(4096, 10))
+            nn.Linear(4096, 1000))
     # print(model)
     model = flatten_sequential(model)
     # print(model)

@@ -61,8 +61,8 @@ class Experiments:
         # batch_size = 512
         # chunks = 8
 
-        batch_size = 1024
-        chunks = 64
+        batch_size = 25000
+        chunks = 1667
 
         # partitions = 2
         # sample = torch.empty(batch_size, 3, 224, 224).cuda()
@@ -216,7 +216,7 @@ def cli(ctx: click.Context,
     dataset_size = 50000
 
     input = torch.rand(batch_size, 3, 224, 224, device=in_device)
-    target = torch.randint(10, (batch_size,), device=out_device)
+    target = torch.randint(1000, (batch_size,), device=out_device)
     data = [(input, target)] * (dataset_size//batch_size)
 
     # dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,
