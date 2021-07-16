@@ -149,7 +149,7 @@ def run(rank, size, model, epochs, args, data):
 
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
-
+    len_data = len(data)//50
     # tick = time.time()
     # print(model)
     data_trained = 0
@@ -174,7 +174,8 @@ def run(rank, size, model, epochs, args, data):
             #if(i % size == 0):
             if(rank == 0):
                 cts = time.time()
-            average_gradients(model)
+            if(len_data % i == 0):
+                average_gradients(model)
             if(rank == 0):
                 cte = time.time()
                 communications.append(cte - cts)
@@ -232,15 +233,15 @@ def init_process(args,rank, fn, backend='gloo'):
         model, device_ids=[rank], output_device=rank
     )
     dataset_size = 50000//args.g
-    input = torch.rand(args.b//args.g, 3, 224, 224)#, device='cuda:'+str(rank))  ## remove args.g
-    target = torch.randint(1000, (args.b//args.g,))#, device='cuda:'+str(rank))  ## remove args.g
-    data = [(input, target)] * (dataset_size//(args.b//args.g))
+    input = torch.rand(args.b, 3, 224, 224)#, device='cuda:'+str(rank))  ## remove args.g
+    target = torch.randint(1000, (args.b,))#, device='cuda:'+str(rank))  ## remove args.g
+    data = [(input, target)] * (dataset_size//(args.b))
     # print(dataset_size)
     # print(data[0])
 
-    if dataset_size % args.b//args.g != 0:       ## remove args.g
-        last_input = input[:dataset_size % args.b//args.g]  ## remove args.g
-        last_target = target[:dataset_size % args.b//args.g]   ## remove args.g
+    if dataset_size % args.b != 0:       ## remove args.g
+        last_input = input[:dataset_size % args.b]  ## remove args.g
+        last_target = target[:dataset_size % args.b]   ## remove args.g
         data.append((last_input, last_target))
 
     fn(rank, args.g, model, args.e, args, data)

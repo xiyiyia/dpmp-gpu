@@ -119,8 +119,8 @@ class Experiments:
     def pipeline5(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 5096
-        chunks = 500
+        batch_size = 4096
+        chunks = 400
         # batch_size = 1048
         # chunks = 100
         
