@@ -150,7 +150,7 @@ def Train(model, optimizer, client, trainloader):
                 outputs = model[idx](inputs)
                 Loss[idx] = criterion(outputs, targets)
                 Loss[idx].backward()
-                
+
                 optimizer[idx].step()
                 train_loss[idx] += Loss[idx].item()
                 _, predicted = outputs.max(1)
@@ -233,4 +233,4 @@ def run(dataset, net, client):
     dataframe.to_csv(location_loss,mode = 'w', header = False,index=False,sep=',')
 
 if __name__ == '__main__':
-    run(dataset = 'CIFAR10', net = 'MobileNet', client = 10)
+    run(dataset = 'CIFAR10', net = 'MobileNet', client = 1)
