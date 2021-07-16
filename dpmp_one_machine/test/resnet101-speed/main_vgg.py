@@ -169,7 +169,7 @@ class Experiments:
         # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
         # model = GPipe(model, balance, chunks=chunks)
 
-        balance = [4, 4, 4, 5, 5, 6, 9] #vgg
+        balance = [5, 5, 5, 5, 5, 6, 6] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
         model = cast(nn.Sequential, model)
