@@ -161,51 +161,26 @@ def run(rank, size, model, epochs, args, data):
         # training_time_list = []
         # communication_time_list = []
         # name = [i for i in range(len(train_set))]
-        tte = 0
         if(rank ==0):
             tick = time.time()
         for i, (input, target) in enumerate(data):
-            print(i)
-            # input = input.cuda()
-            # target = target.cuda()
             data_trained += input.size(0)
-            if(rank == 0):
-                tts = time.time()
-                print(tte-tts)
             output = model(input)
-            if(rank == 0):
-                tte = time.time()
-                trainings.append(tte-tts)
-                print(tte-tts)
             loss = loss_function(output, target)
             loss.backward()
-            #if(i % size == 0):
-            if(rank == 0):
-                cts = time.time()
             if(i <= 50):
                 average_gradients(model)
-            if(rank == 0):
-                cte = time.time()
-                communications.append(cte - cts)
-                print(cte - cts)
-            if(rank == 0):
-                tts = time.time()
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
-                tte = time.time()
-                trainings.append(tte-tts)
-                print(tte-tts)
-            if(rank == 0):
                 print("print")
-                tts = time.time()
                 percent = (i+1) / len(data) * 100
                 throughput = data_trained / (time.time()-tick)
                 log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
                     '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
-                tte = time.time()
-                trainings.append(tte-tts)
-                print('trainings', print(tte-tts))
+                tock = time.time()
+                elapsed_time = tock - tick
+                elapsed_times.append(elapsed_time)
 
         # training_time_list = np.array(training_time_list).reshape(1,len(train_set))
         # communication_time_list = np.array(communication_time_list).reshape(1,len(train_set))
@@ -216,14 +191,10 @@ def run(rank, size, model, epochs, args, data):
 
         # torch.cuda.synchronize(in_device)
         if(rank == 0):
-            tock = time.time()
-
-            elapsed_time = tock - tick
-            throughput = 50000 / elapsed_time
+            throughput = 50000 / (sum(elapsed_times)/(epoch+1))
             log('%d/%d epoch | %.3f samples/sec, %.3f sec/epoch'
-                '' % (epoch+1, epochs, throughput, elapsed_time), clear=True)
+                '' % (epoch+1, epochs, throughput, sum(elapsed_times)/(epoch+1)), clear=True)
             throughputs.append(throughput)
-            elapsed_times.append(elapsed_time)
     print(data_trained)
     if(rank == 0):
         n = len(throughputs)
