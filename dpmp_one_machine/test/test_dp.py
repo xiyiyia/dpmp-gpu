@@ -173,7 +173,7 @@ def run(rank, size, model, epochs, args, data):
             loss.backward()
             if(rank == 0):
                 tte = time.time()
-                trainings = tte - tts
+                trainings[i] = tte - tts
             # if(i <= 50):
             #     average_gradients(model)
 
