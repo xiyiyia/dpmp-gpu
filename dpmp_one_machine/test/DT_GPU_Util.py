@@ -197,6 +197,7 @@ def run(rank, size, model, epochs, args, data):
                     throughput = data_trained / sum(elapsed_times)
                     log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
                         '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
+            else: break
             len_ = i+1
         if(rank == 0):
             throughput = 50000 / (sum(elapsed_times)/(epoch+1))
