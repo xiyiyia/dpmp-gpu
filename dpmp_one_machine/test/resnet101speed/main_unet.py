@@ -53,7 +53,7 @@ class Experiments:
         # batch_size = 512
         # chunks = 16
         batch_size = 256
-        chunks = 16
+        chunks = 8
         balance = [30, 66, 84, 61]
 
         model = cast(nn.Sequential, model)
@@ -65,7 +65,7 @@ class Experiments:
         # batch_size = 1000
         # chunks = 10
         batch_size = 256
-        chunks = 16
+        chunks = 8
         balance = [16, 27, 31, 44, 22, 57, 27, 17]
 
         model = cast(nn.Sequential, model)
