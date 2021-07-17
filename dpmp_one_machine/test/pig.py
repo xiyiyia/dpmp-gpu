@@ -76,12 +76,12 @@ plt.savefig('./time.png')
 
 
 #####     unet     random 3x32x32   dp gloo
-### 8 : 165.299 samples/sec, total: 302.482 sec/epoch, communication: 148.163 sec/epoch, training: 154.241 sec/epoch (average)  b 20
-### 4 : 140.807 samples/sec, total: 355.096 sec/epoch, communication: 174.692 sec/epoch, training: 180.261 sec/epoch (average)  b 20
-### 2 : 110.124 samples/sec, total: 454.032 sec/epoch, communication: 223.487 sec/epoch, training: 230.244 sec/epoch (average)  b 20
+### 8 : 6635.770 samples/sec,  total: 7.535 sec/epoch,  communication: 4.711 sec/epoch, training: 2.822 sec/epoch (average)
+### 4 : 15391.552 samples/sec, total: 3.249 sec/epoch, communication: 1.638 sec/epoch, training: 1.609 sec/epoch (average)
+### 2 : 19950.355 samples/sec, total: 2.506 sec/epoch, communication: 1.232 sec/epoch, training: 1.273 sec/epoch (average)
 
 
 #####unet random 3x32x32 gpipe
-### 8: pipeline-8, 1-1 epochs | 47.570 samples/sec, 210.215 sec/epoch (average)
-### 4: pipeline-4, 1-1 epochs | 47.318 samples/sec, 211.336 sec/epoch (average)
-### 2: pipeline-2, 1-1 epochs | 26.632 samples/sec, 375.492 sec/epoch (average)
+### 8: pipeline-8, 1-1 epochs | 1021.756 samples/sec, 9.787 sec/epoch (average)
+### 4: pipeline-4, 1-1 epochs | 921.686 samples/sec, 10.850 sec/epoch (average)
+### 2: pipeline-2, 1-1 epochs | 525.619 samples/sec, 19.025 sec/epoch (average)

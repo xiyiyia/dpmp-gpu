@@ -38,8 +38,10 @@ class Experiments:
 
     @staticmethod
     def pipeline2(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 512
-        chunks = 32
+        # batch_size = 512
+        # chunks = 32
+        batch_size = 256
+        chunks = 8
         balance = [104, 137]
 
         model = cast(nn.Sequential, model)
@@ -48,7 +50,9 @@ class Experiments:
 
     @staticmethod
     def pipeline4(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 512
+        # batch_size = 512
+        # chunks = 16
+        batch_size = 256
         chunks = 16
         balance = [30, 66, 84, 61]
 
@@ -58,8 +62,10 @@ class Experiments:
 
     @staticmethod
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
-        batch_size = 1000
-        chunks = 10
+        # batch_size = 1000
+        # chunks = 10
+        batch_size = 256
+        chunks = 16
         balance = [16, 27, 31, 44, 22, 57, 27, 17]
 
         model = cast(nn.Sequential, model)
