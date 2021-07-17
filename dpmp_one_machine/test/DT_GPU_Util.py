@@ -97,12 +97,14 @@ def partition_dataset(args):
                                 transforms.ToTensor(),
                                 transforms.Normalize((0.1307,), (0.3081,))
                              ]))
-    size = dist.get_world_size()
+    # size = dist.get_world_size()
+    size = args.g
     bsz = args.b
     partition_sizes = [1.0 / size for _ in range(size)]
     print(partition_sizes)
     partition = DataPartitioner(dataset, partition_sizes)
-    partition = partition.use(dist.get_rank())
+    # partition = partition.use(dist.get_rank())
+    partition = partition.use(0)
     train_set = torch.utils.data.DataLoader(partition,
                                          batch_size=int(bsz/size),
                                          shuffle=True)
