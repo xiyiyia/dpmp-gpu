@@ -156,7 +156,6 @@ def run(rank, size, model, epochs, args, data):
     data_trained = 0
     communications = []
     trainings = []
-    name_ = [i for i in range(len(data)*epochs)]
     len_ = 0
     for epoch in range(epochs):
         throughputs = []
@@ -215,6 +214,7 @@ def run(rank, size, model, epochs, args, data):
         click.echo('%.3f samples/sec, total: %.3f sec/epoch, communication: %.3f sec/epoch, training: %.3f sec/epoch (average)'
                 '' % (throughput, elapsed_time, communication,training))
         print(len(trainings),len(communications))
+        name_ = [i for i in range(len_*epochs)]
         training_time = pd.DataFrame(columns=name_,data=np.array(trainings).reshape(1,len_*epochs))
         communication_time = pd.DataFrame(columns=name_,data=np.array(communications).reshape(1,len_*epochs))
         training_time.to_csv('./training_time'+args.n+'.csv',encoding='gbk')
