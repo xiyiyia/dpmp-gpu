@@ -122,15 +122,15 @@ class Experiments:
         # chunks = 32
         batch_size = 256
         chunks = 8
-        # balance = [40, 40, 40, 40, 40, 41]
+        balance = [40, 40, 40, 40, 40, 41]
 
-        # model = cast(nn.Sequential, model)
-        # model = GPipe(model, balance, devices=devices, chunks=chunks)
-
-        partitions = len(devices)
-        sample = torch.rand(int(batch_size/chunks), 3, 224, 224)
-        balance = balance_by_time(6, model, sample)
+        model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
+
+        # partitions = len(devices)
+        # sample = torch.rand(int(batch_size/chunks), 3, 224, 224)
+        # balance = balance_by_time(6, model, sample)
+        # model = GPipe(model, balance, devices=devices, chunks=chunks)
 
         return model, batch_size, list(model.devices)
     @staticmethod
