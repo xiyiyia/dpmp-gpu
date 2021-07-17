@@ -7,7 +7,7 @@ from torch import Tensor, nn
 import torch.nn.functional as F
 
 from torchgpipe.skip import Namespace, pop, skippable, stash
-from flatten_sequential import flatten_sequential
+from unet.flatten_sequential import flatten_sequential
 # import flatten_sequential
 
 if TYPE_CHECKING:

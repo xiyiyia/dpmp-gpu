@@ -22,8 +22,8 @@ import torchvision.transforms as transforms
 import time
 import click
 from torch.utils.data import DataLoader, dataset
-from resnet101speed.resnet import resnet101
-from resnet101speed.unet import unet
+from resnet import resnet101
+from unet import unet
 from models import inceptionv3, vgg
 # import resnet
 from typing import cast
