@@ -223,7 +223,7 @@ def run(rank, size, model, epochs, args, data):
         training_time.to_csv('./training_time'+args.n+'.csv',encoding='gbk')
         communication_time.to_csv('./communication_time'+args.n+'.csv',encoding='gbk')
 
-def init_process(args,rank, fn, backend='gloo'):
+def init_process(args,rank, fn):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
