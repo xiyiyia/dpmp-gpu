@@ -295,7 +295,7 @@ def cli(ctx: click.Context,
     dataset_size = 50000
 
     input = torch.rand(batch_size, 3, 32, 32, device=in_device)
-    target = torch.randint(1000, (batch_size,), device=out_device)
+    target = torch.randint(10, (batch_size,), device=out_device)
     data = [(input, target)] * (dataset_size//batch_size)
 
     # dataset = torchvision.datasets.CIFAR10('./data', train=True, download=True,

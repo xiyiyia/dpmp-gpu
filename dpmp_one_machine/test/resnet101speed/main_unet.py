@@ -230,7 +230,7 @@ def cli(ctx: click.Context,
             # print(len(data),len(input))
             output = model(input)
             #if(len(output) == len(target)):
-            loss = F.cross_entropy(output, target)
+            loss = F.cross_entropy(output, target.long())
             loss.backward()
 
             optimizer.step()

@@ -22,7 +22,8 @@ import torchvision.transforms as transforms
 import time
 import click
 from torch.utils.data import DataLoader, dataset
-from resnet101spped import resnet,unet
+from resnet101spped.resnet import resnet101
+from resnet101spped.unet import unet
 from models import inceptionv3, vgg
 # import resnet
 from typing import cast
@@ -232,16 +233,24 @@ def init_process(args,rank, fn, backend='gloo'):
     # model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
     if(args.n == 'resnet'):
-        model = resnet.resnet101().to(rank)
+        model = resnet101().to(rank)
         # model = resnet.resnet18().to(rank)
-    # print(model)
+        dataset_size = 50000//args.g
+        input = torch.rand(args.b, 3, 32, 32)#, device='cuda:'+str(rank))  ## remove args.g
+        target = torch.randint(10, (args.b,))#, device='cuda:'+str(rank))  ## remove args.g
+        data = [(input, target)] * (dataset_size//args.b)
+    if(args.n == 'unet'):
+        model = unet().to(rank)
+        dataset_size = 10000
+        input = torch.rand(args.b, 3, 32, 32)#, device=in_device)
+        target = torch.ones(args.b, 1, 32, 32)#, device=out_device)
+        # target = torch.randint(1000, (args.b,), device=out_device)
+        data = [(input, target)] * (dataset_size//args.b)
+        
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
-    dataset_size = 50000//args.g
-    input = torch.rand(args.b, 3, 32, 32)#, device='cuda:'+str(rank))  ## remove args.g
-    target = torch.randint(10, (args.b,))#, device='cuda:'+str(rank))  ## remove args.g
-    data = [(input, target)] * (dataset_size//args.b)
+
     # print(dataset_size)
     # print(data[0])
 
