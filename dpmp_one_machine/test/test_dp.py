@@ -173,6 +173,7 @@ def run(rank, size, model, epochs, args, data):
             data_trained += input.size(0)
             #if(rank == 0):
             tts = time.time()
+            print(input.shape)
             output = model(input)
             if(args.n == 'unet'):
                 loss = F.binary_cross_entropy_with_logits(output, target)
