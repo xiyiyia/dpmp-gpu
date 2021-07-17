@@ -172,7 +172,7 @@ def run(rank, size, model, epochs, args, data):
             #if(rank == 0):
             tts = time.time()
             output = model(input)
-            if(args.n == unet):
+            if(args.n == 'unet'):
                 loss = F.binary_cross_entropy_with_logits(output, target)
             else:
                 loss = loss_function_classify(output, target)
