@@ -141,7 +141,7 @@ class Experiments:
         batch_size = 256
         chunks = 8
         # balance = [34,34,34,34,34,34,37]
-        balance = [25, 25, 30, 45, 39, 47, 30]
+        balance = [22, 25, 30, 45, 45, 44, 30]
         # [14, 17, 30, 54, 52, 44, 30] #fast
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
