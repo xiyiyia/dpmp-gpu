@@ -22,8 +22,8 @@ import torchvision.transforms as transforms
 import time
 import click
 from torch.utils.data import DataLoader, dataset
-# from torch.utils.tensorboard import SummaryWriter
-from models import inceptionv3, resnet, vgg
+from resnet101spped import resnet,unet
+from models import inceptionv3, vgg
 # import resnet
 from typing import cast
 
