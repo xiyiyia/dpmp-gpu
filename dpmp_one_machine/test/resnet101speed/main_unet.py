@@ -162,7 +162,7 @@ def cli(ctx: click.Context,
     
     in_device = _devices[0]
     out_device = _devices[-1]
-    # torch.cuda.set_device(in_device)
+    torch.cuda.set_device(in_device)
 
     # This experiment cares about only training speed, rather than accuracy.
     # To eliminate any overhead due to data loading, we use fake random 224x224
@@ -219,7 +219,7 @@ def cli(ctx: click.Context,
     BASE_TIME = time.time()
 
     def run_epoch(epoch: int) -> Tuple[float, float]:
-        # torch.cuda.synchronize(in_device)
+        torch.cuda.synchronize(in_device)
         print(model)
         tick = time.time()
         data_trained = 0
@@ -230,7 +230,7 @@ def cli(ctx: click.Context,
             # print(len(data),len(input))
             output = model(input)
             #if(len(output) == len(target)):
-            loss = F.cross_entropy(output, target.long())
+            loss = F.binary_cross_entropy_with_logits(output, target)
             loss.backward()
 
             optimizer.step()
@@ -242,7 +242,7 @@ def cli(ctx: click.Context,
             log('%d/%d epoch (%d%%) | %.3f samples/sec (estimated)'
                 '' % (epoch+1, epochs, percent, throughput), clear=True, nl=False)
 
-        # torch.cuda.synchronize(in_device)
+        torch.cuda.synchronize(in_device)
         tock = time.time()
 
         # 00:02:03 | 1/20 epoch | 200.000 samples/sec, 123.456 sec/epoch

@@ -295,7 +295,7 @@ def cli(ctx: click.Context,
 
     in_device = _devices[0]
     out_device = _devices[-1]
-    # torch.cuda.set_device(in_device)
+    torch.cuda.set_device(in_device)
 
     # This experiment cares about only training speed, rather than accuracy.
     # To eliminate any overhead due to data loading, we use fake random 224x224
