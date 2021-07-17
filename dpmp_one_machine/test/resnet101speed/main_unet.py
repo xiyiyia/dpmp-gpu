@@ -49,6 +49,17 @@ class Experiments:
         return model, batch_size, list(model.devices)
 
     @staticmethod
+    def pipeline3(model: nn.Module, devices: List[int]) -> Stuffs:
+        # batch_size = 512
+        # chunks = 32
+        batch_size = 256
+        chunks = 8
+        balance = [72, 72, 92]
+
+        model = cast(nn.Sequential, model)
+        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        return model, batch_size, list(model.devices)
+    @staticmethod
     def pipeline4(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
@@ -59,7 +70,39 @@ class Experiments:
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
+    @staticmethod
+    def pipeline5(model: nn.Module, devices: List[int]) -> Stuffs:
+        # batch_size = 512
+        # chunks = 32
+        batch_size = 256
+        chunks = 8
+        balance = [48, 48,48,48, 49]
 
+        model = cast(nn.Sequential, model)
+        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        return model, batch_size, list(model.devices)
+    @staticmethod
+    def pipeline6(model: nn.Module, devices: List[int]) -> Stuffs:
+        # batch_size = 512
+        # chunks = 32
+        batch_size = 256
+        chunks = 8
+        balance = [40, 40, 40, 40, 40, 41]
+
+        model = cast(nn.Sequential, model)
+        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        return model, batch_size, list(model.devices)
+    @staticmethod
+    def pipeline7(model: nn.Module, devices: List[int]) -> Stuffs:
+        # batch_size = 512
+        # chunks = 32
+        batch_size = 256
+        chunks = 8
+        balance = [34,34,34,34,34,34,37]
+
+        model = cast(nn.Sequential, model)
+        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        return model, batch_size, list(model.devices)
     @staticmethod
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 1000
@@ -77,7 +120,11 @@ EXPERIMENTS: Dict[str, Experiment] = {
     'baseline': Experiments.baseline,
     'pipeline-1': Experiments.pipeline1,
     'pipeline-2': Experiments.pipeline2,
+    'pipeline-3': Experiments.pipeline3,
     'pipeline-4': Experiments.pipeline4,
+    'pipeline-5': Experiments.pipeline5,
+    'pipeline-6': Experiments.pipeline6,
+    'pipeline-7': Experiments.pipeline7,
     'pipeline-8': Experiments.pipeline8,
 }
 
