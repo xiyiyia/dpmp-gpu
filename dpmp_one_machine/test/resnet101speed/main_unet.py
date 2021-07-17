@@ -12,6 +12,7 @@ import torchvision.transforms as transforms
 from unet import unet
 import torchgpipe
 from torchgpipe import GPipe
+from torchgpipe.balance import balance_by_time
 
 Stuffs = Tuple[nn.Module, int, List[torch.device]]  # (model, batch_size, devices)
 Experiment = Callable[[nn.Module, List[int]], Stuffs]
@@ -34,6 +35,12 @@ class Experiments:
 
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
+
+        # partitions = torch.cuda.device_count()
+        # sample = torch.rand(256, 3, 224, 224)
+        # balance = balance_by_time(partitions, model, sample)
+        # model = GPipe(model, balance, chunks=8)
+
         return model, batch_size, list(model.devices)
 
     @staticmethod
@@ -43,11 +50,16 @@ class Experiments:
         batch_size = 256
         chunks = 8
         #balance = [104, 137]
-        balance = [120, 121]
 
-
-        model = cast(nn.Sequential, model)
+        # balance = [120, 121]
+        # model = cast(nn.Sequential, model)
+        # model = GPipe(model, balance, devices=devices, chunks=chunks)
+        print(len(devices))
+        partitions = len(devices)
+        sample = torch.rand(256/chunks, 3, 224, 224)
+        balance = balance_by_time(partitions, model, sample)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
+
         return model, batch_size, list(model.devices)
 
     @staticmethod
