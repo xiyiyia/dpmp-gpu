@@ -179,12 +179,12 @@ def run(rank, size, model, epochs, args, data):
             # if(i <= 50):
             #     average_gradients(model)
 
-            if(rank == 0):
-                cts = time.time()
+            #if(rank == 0):
+            cts = time.time()
             average_gradients(model)
-            if(rank == 0):
-                cte = time.time()
-                communications.append(cte-cts)
+            #if(rank == 0):
+            cte = time.time()
+            communications.append(cte-cts)
             optimizer.step()
             optimizer.zero_grad()
             if(rank == 0):
