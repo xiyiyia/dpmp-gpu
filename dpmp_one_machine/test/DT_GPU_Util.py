@@ -287,13 +287,13 @@ if __name__ == "__main__":
         elif i% 4 == 3: network = 'vgg'
 
         parser.add_argument('-n', type=str, default=network)
-        # args_1 = parser.parse_args()
+        args_2 = parser.parse_args()
 
         
         processes = []
 
-        for rank in range(args_1.g):
-            p = mp.Process(target=init_process, args=(args_1, rank, run, data))
+        for rank in range(args_2.g):
+            p = mp.Process(target=init_process, args=(args_2, rank, run, data))
             p.start()
             processes.append(p)
         for p in processes:
