@@ -169,8 +169,8 @@ def cli(ctx: click.Context,
     # images over 1000 labels.
     dataset_size = 10000
 
-    input = torch.rand(batch_size, 3, 32, 32, device=in_device)
-    target = torch.ones(batch_size, 1, 32, 32, device=out_device)
+    input = torch.rand(batch_size, 3, 192, 192, device=in_device)
+    target = torch.ones(batch_size, 1, 192, 192, device=out_device)
     # target = torch.randint(1000, (batch_size,), device=out_device)
     data = [(input, target)] * (dataset_size//batch_size)
 
@@ -230,7 +230,7 @@ def cli(ctx: click.Context,
             # print(len(data),len(input))
             output = model(input)
             #if(len(output) == len(target)):
-            loss = F.cross_entropy(output, target.long())
+            loss = F.cross_entropy(output, target)
             loss.backward()
 
             optimizer.step()
