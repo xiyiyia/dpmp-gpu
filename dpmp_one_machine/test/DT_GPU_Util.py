@@ -268,6 +268,7 @@ if __name__ == "__main__":
     #                             transforms.ToTensor(),
     #                             transforms.Normalize((0.1307,), (0.3081,))
     #                          ]))
+    mp.set_start_method("spawn")
     for i in range (10):
         if i % 4 == 0: network = 'resnet101'
         elif i %4 == 1: network = 'resnet18'
@@ -285,7 +286,6 @@ if __name__ == "__main__":
 
         
         processes = []
-        mp.set_start_method("spawn")
 
         for rank in range(args_1.g):
             p = mp.Process(target=init_process, args=(args_1, rank, run))
