@@ -275,10 +275,10 @@ if __name__ == "__main__":
     parser.add_argument('-b', type=int, default=128, help='batchsize')
     parser.add_argument('-e', type=int, default=1, help='epoch')
     parser.add_argument('-ben', type=str, default='nccl')
-    args_2 = parser.parse_args()
+    args_1 = parser.parse_args()
     mp.set_start_method("spawn")
 
-    data, bsz = partition_dataset(args_2)
+    data, bsz = partition_dataset(args_1)
 
     for i in range (10):
         if i % 4 == 0: network = 'resnet101'
@@ -287,7 +287,7 @@ if __name__ == "__main__":
         elif i% 4 == 3: network = 'vgg'
 
         parser.add_argument('-n', type=str, default=network)
-        args_1 = parser.parse_args()
+        # args_1 = parser.parse_args()
 
         
         processes = []
