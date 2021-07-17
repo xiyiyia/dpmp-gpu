@@ -165,17 +165,17 @@ def run(rank, size, model, epochs, args, data):
         for i, (input, target) in enumerate(data):
             input = input.cuda()
             target = target.cuda()
-            if(rank ==0):
-                tick = time.time()
+            #if(rank ==0):
+            tick = time.time()
             data_trained += input.size(0)
-            if(rank == 0):
-                tts = time.time()
+            #if(rank == 0):
+            tts = time.time()
             output = model(input)
             loss = loss_function(output, target)
             loss.backward()
-            if(rank == 0):
-                tte = time.time()
-                trainings.append(tte - tts)
+            #if(rank == 0):
+            tte = time.time()
+            trainings.append(tte - tts)
             # if(i <= 50):
             #     average_gradients(model)
 
