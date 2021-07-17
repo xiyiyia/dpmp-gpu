@@ -29,7 +29,7 @@ from models import inceptionv3, vgg
 from typing import cast
 
 loss_function_classify = nn.CrossEntropyLoss()
-loss_function_segmentation = nn.binary_cross_entropy_with_logits()
+loss_function_segmentation = F.binary_cross_entropy_with_logits()
 
 def hr() -> None:
     """Prints a horizontal line."""
