@@ -285,7 +285,11 @@ if __name__ == "__main__":
         elif i %4 == 1: network = 'resnet18'
         elif i %4 == 2: network = 'resnet50'
         elif i% 4 == 3: network = 'vgg'
-
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-g', type=int, default=1, help='number of gpus')
+        parser.add_argument('-b', type=int, default=128, help='batchsize')
+        parser.add_argument('-e', type=int, default=1, help='epoch')
+        parser.add_argument('-ben', type=str, default='nccl')
         parser.add_argument('-n', type=str, default=network)
         args_2 = parser.parse_args()
 
