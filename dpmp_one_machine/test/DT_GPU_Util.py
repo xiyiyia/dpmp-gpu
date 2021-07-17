@@ -234,6 +234,8 @@ def init_process(args,rank, fn, data, backend='gloo'):
     dist.init_process_group(args.ben, rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
+    if(rank == 0):
+        load_model_ts = time.time()
     if(args.n == 'vgg'):
         model = vgg.vgg19_bn().to(rank)
     # model = resnet.resnet101(num_classes=10)
@@ -246,6 +248,9 @@ def init_process(args,rank, fn, data, backend='gloo'):
         model = resnet.resnet50().to(rank)
         # model = resnet.resnet18().to(rank)
     # print(model)
+    if(rank == 0):
+        load_model_te = time.time()
+        print('model_time', load_model_te-load_model_ts)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
