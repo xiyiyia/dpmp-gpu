@@ -82,6 +82,6 @@ plt.savefig('./time.png')
 
 
 #####unet random 3x32x32 gpipe
-### 8: pipeline-8, 1-1 epochs | 1021.756 samples/sec, 9.787 sec/epoch (average)
-### 4: pipeline-4, 1-1 epochs | 921.686 samples/sec, 10.850 sec/epoch (average)
-### 2: pipeline-2, 1-1 epochs | 525.619 samples/sec, 19.025 sec/epoch (average)
+### 8: pipeline-8, 1-1 epochs | 2456.325 samples/sec, 4.071 sec/epoch (average)
+### 4: pipeline-4, 1-1 epochs | 1777.942 samples/sec, 5.624 sec/epoch (average)
+### 2: pipeline-2, 1-1 epochs | 1724.194 samples/sec, 5.800 sec/epoch (average)
