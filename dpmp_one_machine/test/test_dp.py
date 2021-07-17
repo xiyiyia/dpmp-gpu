@@ -245,7 +245,7 @@ def init_process(args,rank, fn):
         data = [(input, target)] * (dataset_size//args.b)
     if(args.n == 'unet'):
         model = unet().to(rank)
-        dataset_size = 10000
+        dataset_size = 10000//args.g
         input = torch.rand(args.b, 3, 32, 32)#, device=in_device)
         target = torch.ones(args.b, 1, 32, 32)#, device=out_device)
         # target = torch.randint(1000, (args.b,), device=out_device)
