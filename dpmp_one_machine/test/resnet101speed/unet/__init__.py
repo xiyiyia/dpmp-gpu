@@ -7,8 +7,8 @@ from torch import Tensor, nn
 import torch.nn.functional as F
 
 from torchgpipe.skip import Namespace, pop, skippable, stash
-# from unet.flatten_sequential import flatten_sequential
-import flatten_sequential
+from flatten_sequential import flatten_sequential
+# import flatten_sequential
 
 if TYPE_CHECKING:
     NamedModules = OrderedDict[str, nn.Module]

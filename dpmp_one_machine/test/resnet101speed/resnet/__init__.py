@@ -9,10 +9,10 @@ from typing import Any, List
 
 from torch import nn
 
-# from resnet.bottleneck import bottleneck
-# from resnet.flatten_sequential import flatten_sequential
-import bottleneck
-import flatten_sequential
+from bottleneck import bottleneck
+from flatten_sequential import flatten_sequential
+# import bottleneck
+# import flatten_sequential
 __all__ = ['resnet101']
 
 cfg = {
