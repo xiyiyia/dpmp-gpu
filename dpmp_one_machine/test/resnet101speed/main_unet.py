@@ -57,7 +57,7 @@ class Experiments:
         print(len(devices))
         partitions = len(devices)
         sample = torch.rand(int(batch_size/chunks), 3, 224, 224)
-        balance = balance_by_time(partitions, model, sample)
+        balance = balance_by_time(2, model, sample)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
 
         return model, batch_size, list(model.devices)
@@ -76,7 +76,7 @@ class Experiments:
 
         partitions = len(devices)
         sample = torch.rand(int(batch_size/chunks), 3, 224, 224)
-        balance = balance_by_time(partitions, model, sample)
+        balance = balance_by_time(3, model, sample)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
 
         return model, batch_size, list(model.devices)
@@ -95,7 +95,7 @@ class Experiments:
 
         partitions = len(devices)
         sample = torch.rand(int(batch_size/chunks), 3, 224, 224)
-        balance = balance_by_time(partitions, model, sample)
+        balance = balance_by_time(4, model, sample)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
 
         return model, batch_size, list(model.devices)
@@ -112,7 +112,7 @@ class Experiments:
 
         partitions = len(devices)
         sample = torch.rand(int(batch_size/chunks), 3, 224, 224)
-        balance = balance_by_time(partitions, model, sample)
+        balance = balance_by_time(5, model, sample)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
 
         return model, batch_size, list(model.devices)
@@ -129,7 +129,7 @@ class Experiments:
 
         partitions = len(devices)
         sample = torch.rand(int(batch_size/chunks), 3, 224, 224)
-        balance = balance_by_time(partitions, model, sample)
+        balance = balance_by_time(6, model, sample)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
 
         return model, batch_size, list(model.devices)
@@ -146,7 +146,7 @@ class Experiments:
 
         partitions = len(devices)
         sample = torch.rand(int(batch_size/chunks), 3, 224, 224)
-        balance = balance_by_time(partitions, model, sample)
+        balance = balance_by_time(7, model, sample)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
 
         return model, batch_size, list(model.devices)
@@ -163,7 +163,7 @@ class Experiments:
 
         partitions = len(devices)
         sample = torch.rand(int(batch_size/chunks), 3, 224, 224)
-        balance = balance_by_time(partitions, model, sample)
+        balance = balance_by_time(8, model, sample)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
 
         return model, batch_size, list(model.devices)
