@@ -28,8 +28,8 @@ from models import inceptionv3, vgg
 # import resnet
 from typing import cast
 
-loss_function = nn.CrossEntropyLoss()
-
+loss_function_classify = nn.CrossEntropyLoss()
+loss_function_segmentation = nn.binary_cross_entropy_with_logits()
 
 def hr() -> None:
     """Prints a horizontal line."""
@@ -172,7 +172,10 @@ def run(rank, size, model, epochs, args, data):
             #if(rank == 0):
             tts = time.time()
             output = model(input)
-            loss = loss_function(output, target)
+            if(args.n == unet):
+                loss = loss_function_segmentation(output, target)
+            else:
+                loss = loss_function_classify(output, target)
             loss.backward()
             #if(rank == 0):
             tte = time.time()
