@@ -348,6 +348,8 @@ def cli(ctx: click.Context,
         print(model)
         data_trained = 0
         for i, (input, target) in enumerate(data):
+            if(i >= 1):
+                break
             # input = input.to(in_device)
             # target = target.to(out_device)
             data_trained += input.size(0)

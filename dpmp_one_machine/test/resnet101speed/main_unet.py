@@ -226,6 +226,8 @@ def cli(ctx: click.Context,
         for i, (input, target) in enumerate(data):
             # input = input.to(in_device)
             # target = target.to(out_device)
+            if(i >= 1):
+                break
             data_trained += input.size(0)
             # print(len(data),len(input))
             output = model(input)

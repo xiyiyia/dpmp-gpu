@@ -151,8 +151,8 @@ def run(rank, size, model, epochs, args, data):
 
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
-    len_data = len(data)//50
-    base_time = time.time()
+    # len_data = len(data)//50
+    # base_time = time.time()
     # print(model)
     data_trained = 0
     communications = []
@@ -164,8 +164,10 @@ def run(rank, size, model, epochs, args, data):
         # training_time_list = []
         # communication_time_list = []
         for i, (input, target) in enumerate(data):
-            input = input.cuda()
-            target = target.cuda()
+            # input = input.cuda()
+            # target = target.cuda()
+            if(i >= 1):
+                break
             #if(rank ==0):
             tick = time.time()
             data_trained += input.size(0)
@@ -240,14 +242,14 @@ def init_process(args,rank, fn):
         model = resnet101().to(rank)
         # model = resnet.resnet18().to(rank)
         dataset_size = 50000//args.g
-        input = torch.rand(args.b, 3, 32, 32)#, device='cuda:'+str(rank))  ## remove args.g
-        target = torch.randint(10, (args.b,))#, device='cuda:'+str(rank))  ## remove args.g
+        input = torch.rand(args.b, 3, 32, 32, device='cuda:'+str(rank))  ## remove args.g
+        target = torch.randint(10, (args.b,), device='cuda:'+str(rank))  ## remove args.g
         data = [(input, target)] * (dataset_size//args.b)
     if(args.n == 'unet'):
         model = unet().to(rank)
         dataset_size = 10000//args.g
-        input = torch.rand(args.b, 3, 32, 32)#, device=in_device)
-        target = torch.ones(args.b, 1, 32, 32)#, device=out_device)
+        input = torch.rand(args.b, 3, 32, 32, device='cuda:'+str(rank))
+        target = torch.ones(args.b, 1, 32, 32, device='cuda:'+str(rank))
         # target = torch.randint(1000, (args.b,), device=out_device)
         data = [(input, target)] * (dataset_size//args.b)
         
