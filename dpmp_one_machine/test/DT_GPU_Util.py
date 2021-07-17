@@ -150,8 +150,8 @@ def run(rank, size, model, epochs, args, data):
 
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
-    len_data = len(data)//50
-    base_time = time.time()
+    # len_data = len(data)//50
+    # base_time = time.time()
     # print(model)
     data_trained = 0
     communications = []
@@ -223,7 +223,7 @@ def run(rank, size, model, epochs, args, data):
         training_time.to_csv('./training_time'+args.n+'.csv',encoding='gbk')
         communication_time.to_csv('./communication_time'+args.n+'.csv',encoding='gbk')
 
-def init_process(args,rank, fn, backend='gloo'):
+def init_process(args,rank, fn, data, backend='gloo'):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
@@ -247,20 +247,20 @@ def init_process(args,rank, fn, backend='gloo'):
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
-    dataset_size = 50000//args.g
-    input = torch.rand(args.b, 3, 32, 32)#, device='cuda:'+str(rank))  ## remove args.g
-    target = torch.randint(10, (args.b,))#, device='cuda:'+str(rank))  ## remove args.g
-    data = [(input, target)] * (dataset_size//args.b)
-    # print(dataset_size)
-    # print(data[0])
 
-    if dataset_size % args.b != 0:       ## remove args.g
-        last_input = input[:dataset_size % args.b]  ## remove args.g
-        last_target = target[:dataset_size % args.b]   ## remove args.g
-        data.append((last_input, last_target))
+    # dataset_size = 50000//args.g
+    # input = torch.rand(args.b, 3, 32, 32)#, device='cuda:'+str(rank))  ## remove args.g
+    # target = torch.randint(10, (args.b,))#, device='cuda:'+str(rank))  ## remove args.g
+    # data = [(input, target)] * (dataset_size//args.b)
+
+    # if dataset_size % args.b != 0:       ## remove args.g
+    #     last_input = input[:dataset_size % args.b]  ## remove args.g
+    #     last_target = target[:dataset_size % args.b]   ## remove args.g
+    #     data.append((last_input, last_target))                         # random make data
 
     fn(rank, args.g, model, args.e, args, data)
 
+    # fn(rank, args.g, model, args.e, args)
 if __name__ == "__main__":
     # torchvision.datasets.CIFAR10('./data', train=True, download=True,
     #                          transform=transforms.Compose([
@@ -268,27 +268,30 @@ if __name__ == "__main__":
     #                             transforms.ToTensor(),
     #                             transforms.Normalize((0.1307,), (0.3081,))
     #                          ]))
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-g', type=int, default=1, help='number of gpus')
+    parser.add_argument('-b', type=int, default=128, help='batchsize')
+    parser.add_argument('-e', type=int, default=1, help='epoch')
+    parser.add_argument('-ben', type=str, default='nccl')
+    args_1 = parser.parse_args()
     mp.set_start_method("spawn")
+
+    data, bsz = partition_dataset(args_1)
+
     for i in range (10):
         if i % 4 == 0: network = 'resnet101'
         elif i %4 == 1: network = 'resnet18'
         elif i %4 == 2: network = 'resnet50'
         elif i% 4 == 3: network = 'vgg'
 
-        parser = argparse.ArgumentParser()
-        parser.add_argument('-g', type=int, default=1, help='number of gpus')
-        parser.add_argument('-b', type=int, default=128, help='batchsize')
-        parser.add_argument('-e', type=int, default=1, help='epoch')
-        parser.add_argument('-ben', type=str, default='nccl')
         parser.add_argument('-n', type=str, default=network)
         args_1 = parser.parse_args()
-
 
         
         processes = []
 
         for rank in range(args_1.g):
-            p = mp.Process(target=init_process, args=(args_1, rank, run))
+            p = mp.Process(target=init_process, args=(args_1, rank, run, data))
             p.start()
             processes.append(p)
         for p in processes:
