@@ -250,10 +250,10 @@ def init_process(args,rank, fn):
     if(args.n == 'unet'):
         model = unet().to(rank)
         dataset_size = 10000//args.g
-        input = torch.rand(args.b//args.g, 3, 32, 32, device='cuda:'+str(rank))
-        target = torch.ones(args.b//args.g, 1, 32, 32, device='cuda:'+str(rank))
+        input = torch.rand(args.b, 3, 32, 32, device='cuda:'+str(rank))
+        target = torch.ones(args.b, 1, 32, 32, device='cuda:'+str(rank))
         # target = torch.randint(1000, (args.b,), device=out_device)
-        data = [(input, target)] * (dataset_size//(args.b//args.g))
+        data = [(input, target)] * (dataset_size//(args.b))
         
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
