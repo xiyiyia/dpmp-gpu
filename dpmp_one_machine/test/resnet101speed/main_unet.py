@@ -42,7 +42,9 @@ class Experiments:
         # chunks = 32
         batch_size = 256
         chunks = 8
-        balance = [104, 137]
+        #balance = [104, 137]
+        balance = [120, 121]
+
 
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
@@ -55,6 +57,7 @@ class Experiments:
         batch_size = 256
         chunks = 8
         balance = [62, 102, 77]
+        # balance = [72, 72, 97]
 
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
@@ -65,7 +68,8 @@ class Experiments:
         # chunks = 16
         batch_size = 256
         chunks = 8
-        balance = [30, 66, 84, 61]
+        # balance = [30, 66, 84, 61]
+        balance = [60, 60, 60, 61]
 
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
@@ -109,8 +113,8 @@ class Experiments:
         # chunks = 10
         batch_size = 256
         chunks = 8
-        balance = [16, 27, 31, 44, 22, 57, 27, 17]
-
+        # balance = [16, 27, 31, 44, 22, 57, 27, 17]
+        balance = [30, 30, 31, 30, 30, 30, 30, 30]
         model = cast(nn.Sequential, model)
         model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
