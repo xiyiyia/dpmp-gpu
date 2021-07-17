@@ -75,13 +75,39 @@ plt.savefig('./time.png')
 # 8 :  1886.617 samples/sec, total: 26.502 sec/epoch, communication: 14.867 sec/epoch (average)
 
 
-#####     unet     random 3x32x32   dp gloo
-### 8 : 6635.770 samples/sec,  total: 7.535 sec/epoch,  communication: 4.711 sec/epoch, training: 2.822 sec/epoch (average)
-### 4 : 15391.552 samples/sec, total: 3.249 sec/epoch, communication: 1.638 sec/epoch, training: 1.609 sec/epoch (average)
-### 2 : 19950.355 samples/sec, total: 2.506 sec/epoch, communication: 1.232 sec/epoch, training: 1.273 sec/epoch (average)
+#####     unet     random 3x32x32   dp gloo    157 batch     64
+### 8 : 8923.425 samples/sec, total: 5.603 sec/epoch, communication: 2.604 sec/epoch, training: 2.998 sec/epoch (average)    109.958875
+### 7 : 10207.860 samples/sec, total: 4.898 sec/epoch, communication: 2.296 sec/epoch, training: 2.601 sec/epoch (average)
+### 6 : 11310.786 samples/sec, total: 4.421 sec/epoch, communication: 2.145 sec/epoch, training: 2.274 sec/epoch (average)
+### 5 : 11976.932 samples/sec, total: 4.175 sec/epoch, communication: 2.001 sec/epoch, training: 2.172 sec/epoch (average)
+### 4 : 13502.702 samples/sec, total: 3.703 sec/epoch, communication: 1.705 sec/epoch, training: 1.997 sec/epoch (average)   145.3427
+### 3 : 15254.768 samples/sec, total: 3.278 sec/epoch, communication: 1.454 sec/epoch, training: 1.823 sec/epoch (average)   171.548
+### 2 : 16399.163 samples/sec, total: 3.049 sec/epoch, communication: 1.272 sec/epoch, training: 1.776 sec/epoch (average)   239.3465
 
 
-#####unet random 3x32x32 gpipe
-### 8: pipeline-8, 1-1 epochs | 2456.325 samples/sec, 4.071 sec/epoch (average)
-### 4: pipeline-4, 1-1 epochs | 1777.942 samples/sec, 5.624 sec/epoch (average)
-### 2: pipeline-2, 1-1 epochs | 1724.194 samples/sec, 5.800 sec/epoch (average)
+#####unet random 3x32x32 gpipe     39 batch
+# 8: pipeline-8, 1-1 epochs | 2456.325 samples/sec, 4.071 sec/epoch (average) 156       256 batch 8 chunks  
+### 8: pipeline-8, 1-1 epochs | 2372.964 samples/sec, 4.214 sec/epoch (average)
+###8: pipeline-8, 1-1 epochs | 2113.664 samples/sec, 4.731 sec/epoch (average)
+
+### 7: pipeline-7, 1-1 epochs | 2180.280 samples/sec, 4.587 sec/epoch (average) 178.893
+### 7 : pipeline-7, 1-1 epochs | 2491.219 samples/sec, 4.014 sec/epoch (average)
+### 7 : pipeline-7, 1-1 epochs | 2187.510 samples/sec, 4.571 sec/epoch (average)
+
+### 6: pipeline-6, 1-1 epochs | 2390.917 samples/sec, 4.182 sec/epoch (average) 163.098
+### 6: pipeline-6, 1-1 epochs | 2194.957 samples/sec, 4.556 sec/epoch (average)
+# 6 : pipeline-6, 1-1 epochs | 1847.013 samples/sec, 5.414 sec/epoch (average)
+
+### 5: pipeline-5, 1-1 epochs | 1956.042 samples/sec, 5.112 sec/epoch (average) 199.368
+# 5: pipeline-4, 1-1 epochs | 2224.247 samples/sec, 4.496 sec/epoch (average)
+
+### 4: pipeline-4, 1-1 epochs | 1777.942 samples/sec, 5.624 sec/epoch (average) 218
+# 4: pipeline-4, 1-1 epochs | 2246.208 samples/sec, 4.452 sec/epoch (average)
+# 4 : pipeline-4, 1-1 epochs | 1714.046 samples/sec, 5.834 sec/epoch (average)
+
+### 3: pipeline-3, 1-1 epochs | 1709.731 samples/sec, 5.849 sec/epoch (average) 
+# 3 : pipeline-3, 1-1 epochs | 1503.399 samples/sec, 6.652 sec/epoch (average)
+
+# 2: pipeline-2, 1-1 epochs | 1724.194 samples/sec, 5.800 sec/epoch (average) 226
+# 2: pipeline-2, 1-1 epochs | 1899.542 samples/sec, 5.264 sec/epoch (average)
+### 2 : pipeline-2, 1-1 epochs | 1558.216 samples/sec, 6.418 sec/epoch (average)
