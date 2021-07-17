@@ -73,3 +73,7 @@ plt.savefig('./time.png')
 # 6 :  1612.644 samples/sec, total: 31.005 sec/epoch, communication: 16.224 sec/epoch (average)
 # 7 :  1853.545 samples/sec, total: 26.975 sec/epoch, communication: 15.061 sec/epoch (average)
 # 8 :  1886.617 samples/sec, total: 26.502 sec/epoch, communication: 14.867 sec/epoch (average)
+
+
+#####     unet     random 3x32x32
+### 8 : 496.102 samples/sec, total: 100.786 sec/epoch, communication: 2.999 sec/epoch, training: 85.073 sec/epoch (average)

@@ -178,8 +178,7 @@ def run(rank, size, model, epochs, args, data):
                 loss = loss_function_classify(output, target)
             loss.backward()
             #if(rank == 0):
-            tte = time.time()
-            trainings.append(tte - tts)
+
             # if(i <= 50):
             #     average_gradients(model)
 
@@ -190,6 +189,8 @@ def run(rank, size, model, epochs, args, data):
             cte = time.time()
             communications.append(cte-cts)
             optimizer.step()
+            tte = time.time()
+            trainings.append(tte - tts - cte + cts)
             optimizer.zero_grad()
             if(rank == 0):
                 tock = time.time()
