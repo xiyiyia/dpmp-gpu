@@ -176,7 +176,7 @@ def run(rank, size, model, epochs, args, data, Training, Communication, Overhead
                 input = input.cuda()
                 target = target.cuda()
                 if rank == 0:
-                    Overhead_end = time.time()\
+                    Overhead_end = time.time()
                     Overhead.append(Overhead_end - Overhead_start)
                 # if(rank == 0):
                 #     load_data_te = time.time()
