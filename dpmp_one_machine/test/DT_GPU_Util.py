@@ -148,13 +148,10 @@ def average_gradients(model):
 
 
 """ Distributed Synchronous SGD Example """
-def run(rank, size, model, epochs, args, data, Training, Communication, Overhead):
+def run(rank, size, model, optimizer, epochs, args, data, Training, Communication, Overhead):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
     # data, bsz = partition_dataset(args)
-
-    optimizer = optim.SGD(model.parameters(),
-                          lr=0.01, momentum=0.5)
     # len_data = len(data)//50
     # base_time = time.time()
     # print(model)
@@ -247,9 +244,11 @@ def init_model(args):
         model = resnet.resnet18()
     if(args.n == 'resnet50'):
         model = resnet.resnet50()
-    return model
+    optimizer = optim.SGD(model.parameters(),
+                          lr=0.01, momentum=0.5)
+    return model, optimizer
 
-def init_process(args,rank, fn, model, data, Processing, Training, Communication, Overhead, backend='gloo'):
+def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Communication, Overhead, backend='gloo'):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
@@ -289,7 +288,7 @@ def init_process(args,rank, fn, model, data, Processing, Training, Communication
     #     last_target = target[:dataset_size % args.b]   ## remove args.g
     #     data.append((last_input, last_target))                         # random make data
     process_start = time.time()
-    fn(rank, args.g, model, args.e, args, data, Training, Communication, Overhead)
+    fn(rank, args.g, model, optimizer, args.e, args, data, Training, Communication, Overhead)
     if rank == 0:
         process_end = time.time()
         Processing.append(process_end - process_start)
@@ -327,6 +326,7 @@ if __name__ == "__main__":
 
     Args = [[None for i in range (GPUs)] for j in range (scale)]
     Model = [[None for i in range (GPUs)] for j in range (scale)]
+    Optimizer = [[None for i in range (GPUs)] for j in range (scale)]
     Data = [[None for i in range (GPUs)] for j in range (scale)]
     BSZ = [[None for i in range (GPUs)] for j in range (scale)]
     for i in range (scale):
@@ -342,14 +342,14 @@ if __name__ == "__main__":
         parser.add_argument('-n', type=str, default=network)
         for j in range (GPUs):
             Args[i][j] = parser.parse_args()
-            Model[i][j] = init_model(Args[i][j])
+            Model[i][j], Optimizer[i][j] = init_model(Args[i][j])
             Data[i][j], BSZ[i][j] = partition_dataset(Args[i][j])
 
     
     for i in range (scale):
         processes = []
         for rank in range(GPUs):
-            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank], Processing, Training, Communication, Overhead))
+            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Optimizer[i][j], Data[i][rank], Processing, Training, Communication, Overhead))
             p.start()
             processes.append(p)
         for p in processes:
