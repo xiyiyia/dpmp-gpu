@@ -136,7 +136,7 @@ def Train(model, optimizer, client, trainloader):
     time_start = time.time()
     Batch_time = []
     for batch_idx, (inputs, targets) in enumerate(trainloader):
-            if batch_idx < 4:
+            if batch_idx < 8:
                 batch_start = time.time()
                 inputs, targets = inputs.to(device), targets.to(device)
                 idx = (batch_idx % client)
