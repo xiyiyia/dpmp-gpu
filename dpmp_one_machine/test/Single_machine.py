@@ -208,6 +208,6 @@ if __name__ == '__main__':
         elif j == 4: network = 'resnet101'
         elif j == 5: network = 'inception3'
         elif j == 6: network = 'mobilenet'
-        Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = network)
+        Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = network)
         Train(Model, Optimizer, Client, Trainloader)
         torch.cuda.empty_cache()
