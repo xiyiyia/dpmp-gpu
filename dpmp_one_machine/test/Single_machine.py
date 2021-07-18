@@ -136,7 +136,7 @@ def Train(model, optimizer, client, trainloader):
     time_start = time.time()
     Batch_time = []
     for batch_idx, (inputs, targets) in enumerate(trainloader):
-            if batch_idx < 1:
+            if batch_idx < 8:
                 batch_start = time.time()
                 inputs, targets = inputs.to(device), targets.to(device)
                 idx = (batch_idx % client)
@@ -162,7 +162,7 @@ def run(dataset, client, net):
     parser.add_argument('--lr', default=0.01, type=float, help='learning rate')
     parser.add_argument('--resume', '-r', action='store_true',
                         help='resume from checkpoint')
-    parser.add_argument('--b',default=128,type=int,help='batch_size')
+    parser.add_argument('--b',default=16,type=int,help='batch_size')
     parser.add_argument('--e',default=1,type=int,help='epoch')
     parser.add_argument('--net', default=net,type=str,help='Net')
     args = parser.parse_args()
@@ -177,7 +177,7 @@ def run(dataset, client, net):
     return model, optimizer, trainloader, client
 
 if __name__ == '__main__':
-    step = 40
+    step = 10
     # with optimization
 
     Model = [None for i in range (step)]
