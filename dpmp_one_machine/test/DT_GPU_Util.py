@@ -327,10 +327,10 @@ if __name__ == "__main__":
         parser.add_argument('-n', type=str, default=network)
         for j in range (GPUs):
             Args[i][j] = parser.parse_args()
-            Model[i][j] = init_model(Args[i])
-            Data[i][j], BSZ[i][j] = partition_dataset(Args[i])
+            Model[i][j] = init_model(Args[i][j])
+            Data[i][j], BSZ[i][j] = partition_dataset(Args[i][j])
 
-
+    
     for i in range (scale):
         processes = []
         for rank in range(Args[i].g):
