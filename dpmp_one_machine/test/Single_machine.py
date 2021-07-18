@@ -185,7 +185,7 @@ if __name__ == '__main__':
     Optimizer = [None for i in range (step)]
     Client = [None for i in range (step)]
     for i in range (step):
-        j = random.randint(0,6)
+        j = random.randint(1,6)
         if j == 1: network = 'vgg'
         elif j == 2: network = 'resnet18'
         elif j == 3: network = 'resnet50'
