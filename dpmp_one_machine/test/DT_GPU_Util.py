@@ -294,9 +294,9 @@ def init_process(args,rank, fn, model, data, Processing, Training, Communication
 
 def store(Processing, Training, Communication):
     # print(len(name_))
-    dataframe = pd.DataFrame(Processing, columns=['X'])
-    dataframe = pd.concat([dataframe, pd.DataFrame(Training,columns=['Y'])],axis=1)
-    dataframe = pd.concat([dataframe, pd.DataFrame(Communication,columns=['Z'])],axis=1)
+    dataframe = pd.DataFrame(list(Processing), columns=['X'])
+    dataframe = pd.concat([dataframe, pd.DataFrame(list(Training),columns=['Y'])],axis=1)
+    dataframe = pd.concat([dataframe, pd.DataFrame(list(Communication),columns=['Z'])],axis=1)
     dataframe.to_csv("./Time.csv",header = False,index=False,sep=',')
 
 if __name__ == "__main__":
