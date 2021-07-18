@@ -345,4 +345,6 @@ if __name__ == "__main__":
             processes.append(p)
         for p in processes:
             p.join()
+    print(Training)
+    print(Communication)
     store()
