@@ -245,6 +245,7 @@ def init_model(args):
     return model
 
 def init_process(args,rank, fn, model, data, backend='gloo'):
+    process_start = time.time()
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
@@ -285,6 +286,9 @@ def init_process(args,rank, fn, model, data, backend='gloo'):
     #     data.append((last_input, last_target))                         # random make data
 
     fn(rank, args.g, model, args.e, args, data)
+    if rank == 0:
+        process_end = time.time()
+        Processing.append(process_end - process_start)
 
     # fn(rank, args.g, model, args.e, args)
 
@@ -334,14 +338,8 @@ if __name__ == "__main__":
     for i in range (scale):
         processes = []
         for rank in range(GPUs):
-            if rank == 0:
-                process_time_start = time.time()
             p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank]))
             p.start()
-            if rank == 0:
-                process_time_end = time.time()
-                # save the processing time
-                Processing.append(process_time_end - process_time_start)
             processes.append(p)
         for p in processes:
             p.join()
