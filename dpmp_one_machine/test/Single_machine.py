@@ -13,7 +13,6 @@ import pandas as pd
 import numpy as np
 import queue
 import math
-import networkx as nx
 import argparse
 import time
 import sys
