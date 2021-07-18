@@ -148,7 +148,7 @@ def average_gradients(model):
 
 
 """ Distributed Synchronous SGD Example """
-def run(rank, size, model, epochs, args, data, Training, Communication):
+def run(rank, size, model, epochs, args, data, Training, Communication, Overhead):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
     # data, bsz = partition_dataset(args)
@@ -171,8 +171,13 @@ def run(rank, size, model, epochs, args, data, Training, Communication):
             if i < 1:
                 # if(rank == 0):
                 #     load_data_ts = time.time()
+                Overhead_start = time.time()
+                model = model.cuda()
                 input = input.cuda()
                 target = target.cuda()
+                if rank == 0:
+                    Overhead_end = time.time()\
+                    Overhead.append(Overhead_end - Overhead_start)
                 # if(rank == 0):
                 #     load_data_te = time.time()
                     # print('data_time', load_data_te-load_data_ts)
@@ -244,7 +249,7 @@ def init_model(args):
         model = resnet.resnet50()
     return model
 
-def init_process(args,rank, fn, model, data, Processing, Training, Communication, backend='gloo'):
+def init_process(args,rank, fn, model, data, Processing, Training, Communication, Overhead, backend='gloo'):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
@@ -284,7 +289,7 @@ def init_process(args,rank, fn, model, data, Processing, Training, Communication
     #     last_target = target[:dataset_size % args.b]   ## remove args.g
     #     data.append((last_input, last_target))                         # random make data
     process_start = time.time()
-    fn(rank, args.g, model, args.e, args, data, Training, Communication)
+    fn(rank, args.g, model, args.e, args, data, Training, Communication, Overhead)
     if rank == 0:
         process_end = time.time()
         Processing.append(process_end - process_start)
@@ -296,6 +301,7 @@ def store(Processing, Training, Communication):
     dataframe = pd.DataFrame(list(Processing), columns=['X'])
     dataframe = pd.concat([dataframe, pd.DataFrame(list(Training),columns=['Y'])],axis=1)
     dataframe = pd.concat([dataframe, pd.DataFrame(list(Communication),columns=['Z'])],axis=1)
+    dataframe = pd.concat([dataframe, pd.DataFrame(list(Overhead),columns=['W'])],axis=1)
     dataframe.to_csv("./Time.csv",header = False,index=False,sep=',')
 
 if __name__ == "__main__":
@@ -307,6 +313,7 @@ if __name__ == "__main__":
     Processing = mp.Manager().list()   #主进程与子进程共享这个List
     Training = mp.Manager().list()   #主进程与子进程共享这个List
     Communication = mp.Manager().list()   #主进程与子进程共享这个List
+    Overhead = mp.Manager().list()
 
     # parser = argparse.ArgumentParser()
     # parser.add_argument('-g', type=int, default=1, help='number of gpus')
@@ -342,7 +349,7 @@ if __name__ == "__main__":
     for i in range (scale):
         processes = []
         for rank in range(GPUs):
-            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank], Processing, Training, Communication))
+            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank], Processing, Training, Communication, Overhead))
             p.start()
             processes.append(p)
         for p in processes:
