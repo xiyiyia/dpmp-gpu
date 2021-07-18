@@ -305,9 +305,9 @@ if __name__ == "__main__":
     GPUs = 4
 
     with mp.Manager() as MG:   #重命名
-        Processing = mp.Manager().list(range(scale))   #主进程与子进程共享这个List
-        Training = mp.Manager().list(range(scale))   #主进程与子进程共享这个List
-        Communication = mp.Manager().list(range(scale))   #主进程与子进程共享这个List
+        Processing = mp.Manager().list()   #主进程与子进程共享这个List
+        Training = mp.Manager().list()   #主进程与子进程共享这个List
+        Communication = mp.Manager().list()   #主进程与子进程共享这个List
 
     # parser = argparse.ArgumentParser()
     # parser.add_argument('-g', type=int, default=1, help='number of gpus')
