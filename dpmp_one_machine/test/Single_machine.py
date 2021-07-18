@@ -19,7 +19,7 @@ import sys
 
 from models import inceptionv3, resnet, vgg, mobilenet
 
-device = 'cuda0' if torch.cuda.is_available() else 'cpu'
+device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
 def Set_dataset(dataset, args):
     if dataset == 'CIFAR10':
