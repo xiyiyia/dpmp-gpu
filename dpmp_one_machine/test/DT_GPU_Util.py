@@ -28,9 +28,9 @@ from models import inceptionv3, resnet, vgg
 from typing import cast
 
 loss_function = nn.CrossEntropyLoss()
-# Processing = [] # processing time for all tasks on GPU0
-# Training = [] # training time for all tasks on GPU0
-# Communication = [] # communication time for all tasks on GPU0
+Processing = [] # processing time for all tasks on GPU0
+Training = [] # training time for all tasks on GPU0
+Communication = [] # communication time for all tasks on GPU0
 
 
 def hr() -> None:
@@ -301,13 +301,13 @@ def store():
 
 if __name__ == "__main__":
 
-    scale = 4 # num of tasks
+    scale = 1 # num of tasks
     GPUs = 4
     mp.set_start_method("spawn")
 
-    Processing = mp.Manager().list()   #主进程与子进程共享这个List
-    Training = mp.Manager().list()   #主进程与子进程共享这个List
-    Communication = mp.Manager().list()   #主进程与子进程共享这个List
+    # Processing = mp.Manager().list()   #主进程与子进程共享这个List
+    # Training = mp.Manager().list()   #主进程与子进程共享这个List
+    # Communication = mp.Manager().list()   #主进程与子进程共享这个List
 
     # parser = argparse.ArgumentParser()
     # parser.add_argument('-g', type=int, default=1, help='number of gpus')
