@@ -28,6 +28,9 @@ from models import inceptionv3, resnet, vgg
 from typing import cast
 
 loss_function = nn.CrossEntropyLoss()
+Processing = [] # processing time for all tasks on GPU0
+Training = [] # training time for all tasks on GPU0
+Communication = [] # communication time for all tasks on GPU0
 
 
 def hr() -> None:
@@ -156,8 +159,8 @@ def run(rank, size, model, epochs, args, data):
     # base_time = time.time()
     # print(model)
     data_trained = 0
-    communications = []
-    trainings = []
+    # communications = []
+    # trainings = []
     len_ = 0
     for epoch in range(epochs):
         throughputs = []
@@ -166,13 +169,13 @@ def run(rank, size, model, epochs, args, data):
         # communication_time_list = []
         for i, (input, target) in enumerate(data):
             if i < 1:
-                if(rank == 0):
-                    load_data_ts = time.time()
+                # if(rank == 0):
+                #     load_data_ts = time.time()
                 input = input.cuda()
                 target = target.cuda()
-                if(rank == 0):
-                    load_data_te = time.time()
-                    print('data_time', load_data_te-load_data_ts)
+                # if(rank == 0):
+                #     load_data_te = time.time()
+                    # print('data_time', load_data_te-load_data_ts)
                 if(rank ==0):
                     tick = time.time()
                 data_trained += input.size(0)
@@ -183,7 +186,7 @@ def run(rank, size, model, epochs, args, data):
                 loss.backward()
                 if(rank == 0):
                     tte = time.time()
-                    trainings.append(tte - tts)
+                    Training.append(tte - tts)
                 # if(i <= 50):
                 #     average_gradients(model)
 
@@ -192,7 +195,7 @@ def run(rank, size, model, epochs, args, data):
                 average_gradients(model)
                 if(rank == 0):
                     cte = time.time()
-                    communications.append(cte-cts)
+                    Communication.append(cte-cts)
                 optimizer.step()
                 optimizer.zero_grad()
                 if(rank == 0):
@@ -222,15 +225,26 @@ def run(rank, size, model, epochs, args, data):
         click.echo('%.3f samples/sec, total: %.3f sec/epoch, communication: %.3f sec/epoch, training: %.3f sec/epoch (average)'
                 '' % (throughput, elapsed_time, communication,training))
 
-        print(len(trainings),len(communications))
-        name_ = [i for i in range(len_*epochs)]
-        print(len(name_))
-        training_time = pd.DataFrame(columns=name_,data=np.array(trainings).reshape(1,len_*epochs))
-        communication_time = pd.DataFrame(columns=name_,data=np.array(communications).reshape(1,len_*epochs))
-        training_time.to_csv('./training_time'+args.n+'.csv',encoding='gbk')
-        communication_time.to_csv('./communication_time'+args.n+'.csv',encoding='gbk')
+        # # print(len(trainings),len(communications))
+        # name_ = [i for i in range(len_*epochs)]
+        # # print(len(name_))
+        # training_time = pd.DataFrame(columns=name_,data=np.array(trainings).reshape(1,len_*epochs))
+        # communication_time = pd.DataFrame(columns=name_,data=np.array(communications).reshape(1,len_*epochs))
+        # training_time.to_csv('./training_time'+args.n+'.csv',encoding='gbk')
+        # communication_time.to_csv('./communication_time'+args.n+'.csv',encoding='gbk')
 
-def init_process(args,rank, fn, data, backend='gloo'):
+def init_model(args):
+    if(args.n == 'vgg'):
+        model = vgg.vgg19_bn()
+    if(args.n == 'resnet101'):
+        model = resnet.resnet101()
+    if(args.n == 'resnet18'):
+        model = resnet.resnet18()
+    if(args.n == 'resnet50'):
+        model = resnet.resnet50()
+    return model
+
+def init_process(args,rank, fn, model, data, backend='gloo'):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
@@ -239,23 +253,23 @@ def init_process(args,rank, fn, data, backend='gloo'):
     dist.init_process_group(args.ben, rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
-    if(rank == 0):
-        load_model_ts = time.time()
-    if(args.n == 'vgg'):
-        model = vgg.vgg19_bn().to(rank)
-    # model = resnet.resnet101(num_classes=10)
-    # model = cast(nn.Sequential, model)
-    if(args.n == 'resnet101'):
-        model = resnet.resnet101().to(rank)
-    if(args.n == 'resnet18'):
-        model = resnet.resnet18().to(rank)
-    if(args.n == 'resnet50'):
-        model = resnet.resnet50().to(rank)
+    # if(rank == 0):
+    #     load_model_ts = time.time()
+    model = model.to(rank)
+    # if(args.n == 'vgg'):
+    #     model = model.to(rank)
+    # if(args.n == 'resnet101'):
+    #     model = model.to(rank)
+    # if(args.n == 'resnet18'):
+    #     model = model.to(rank)
+    # if(args.n == 'resnet50'):
+    #     model = model.to(rank)
         # model = resnet.resnet18().to(rank)
     # print(model)
-    if(rank == 0):
-        load_model_te = time.time()
-        print('model_time', load_model_te-load_model_ts)
+
+    # if(rank == 0):
+    #     load_model_te = time.time()
+    #     print('model_time', load_model_te-load_model_ts)
     model = torch.nn.parallel.DistributedDataParallel(
         model, device_ids=[rank], output_device=rank
     )
@@ -273,42 +287,61 @@ def init_process(args,rank, fn, data, backend='gloo'):
     fn(rank, args.g, model, args.e, args, data)
 
     # fn(rank, args.g, model, args.e, args)
+
+def store():
+    # print(len(name_))
+    dataframe = pd.DataFrame(Processing, columns=['X'])
+    dataframe = pd.concat([dataframe, pd.DataFrame(Training,columns=['Y'])],axis=1)
+    dataframe = pd.concat([dataframe, pd.DataFrame(Communication,columns=['Z'])],axis=1)
+    dataframe.to_csv("./Time.csv",header = False,index=False,sep=',')
+
 if __name__ == "__main__":
-    # torchvision.datasets.CIFAR10('./data', train=True, download=True,
-    #                          transform=transforms.Compose([
-    #                             # transforms.Resize([32, 32]),
-    #                             transforms.ToTensor(),
-    #                             transforms.Normalize((0.1307,), (0.3081,))
-    #                          ]))
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-g', type=int, default=1, help='number of gpus')
-    parser.add_argument('-b', type=int, default=128, help='batchsize')
-    parser.add_argument('-e', type=int, default=1, help='epoch')
-    parser.add_argument('-ben', type=str, default='nccl')
-    args_1 = parser.parse_args()
+
+    scale = [20] # num of tasks
+
+
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('-g', type=int, default=1, help='number of gpus')
+    # parser.add_argument('-b', type=int, default=128, help='batchsize')
+    # parser.add_argument('-e', type=int, default=1, help='epoch')
+    # parser.add_argument('-ben', type=str, default='nccl')
+    # args_1 = parser.parse_args()
     mp.set_start_method("spawn")
 
-    data, bsz = partition_dataset(args_1)
+    # data, bsz = partition_dataset(args_1)
 
-    for i in range (10):
+    Args = [None for i in range (scale)]
+    Model = [None for i in range (scale)]
+    Data = [None for i in range (scale)]
+    BSZ = [None for i in range (scale)]
+    for i in range (scale):
         if i % 4 == 0: network = 'resnet101'
         elif i %4 == 1: network = 'resnet18'
         elif i %4 == 2: network = 'resnet50'
         elif i% 4 == 3: network = 'vgg'
         parser = argparse.ArgumentParser()
-        parser.add_argument('-g', type=int, default=1, help='number of gpus')
+        parser.add_argument('-g', type=int, default=8, help='number of gpus')
         parser.add_argument('-b', type=int, default=128, help='batchsize')
         parser.add_argument('-e', type=int, default=1, help='epoch')
         parser.add_argument('-ben', type=str, default='nccl')
         parser.add_argument('-n', type=str, default=network)
-        args_2 = parser.parse_args()
+        Args[i] = parser.parse_args()
+        Model[i] = init_model(Args[i])
+        Data[i], BSZ[i] = partition_dataset(Args[i])
 
-        
+
+    for i in range (scale):
         processes = []
-
-        for rank in range(args_2.g):
-            p = mp.Process(target=init_process, args=(args_2, rank, run, data))
+        for rank in range(Args[i].g):
+            if rank == 0:
+                process_time_start = time.time()
+            p = mp.Process(target=init_process, args=(args_2, rank, run, Model[i], Data[i]))
             p.start()
+            if rank == 0:
+                process_time_end = time.time()
+                # save the processing time
+                Processing.append(process_time_end - process_time_start)
             processes.append(p)
         for p in processes:
             p.join()
+    store()
