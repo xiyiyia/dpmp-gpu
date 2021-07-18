@@ -335,7 +335,7 @@ if __name__ == "__main__":
         for rank in range(Args[i].g):
             if rank == 0:
                 process_time_start = time.time()
-            p = mp.Process(target=init_process, args=(args_2, rank, run, Model[i], Data[i]))
+            p = mp.Process(target=init_process, args=(Args[i], rank, run, Model[i], Data[i]))
             p.start()
             if rank == 0:
                 process_time_end = time.time()
