@@ -292,7 +292,7 @@ def init_process(args,rank, fn, model, data, Processing, Training, Communication
 
     # fn(rank, args.g, model, args.e, args)
 
-def store():
+def store(Processing, Training, Communication):
     # print(len(name_))
     dataframe = pd.DataFrame(Processing, columns=['X'])
     dataframe = pd.concat([dataframe, pd.DataFrame(Training,columns=['Y'])],axis=1)
@@ -350,4 +350,4 @@ if __name__ == "__main__":
             p.join()
     print(Training)
     print(Communication)
-    store()
+    store(Processing, Training, Communication)
