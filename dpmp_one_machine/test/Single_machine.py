@@ -177,13 +177,29 @@ def run(dataset, client, net):
     return model, optimizer, trainloader, client
 
 if __name__ == '__main__':
-    step = 200
+    step = 50
     # with optimization
 
-    Model = [None for i in range (step)]
-    Trainloader = [None for i in range (step)]
-    Optimizer = [None for i in range (step)]
-    Client = [None for i in range (step)]
+    # Model = [None for i in range (step)]
+    # Trainloader = [None for i in range (step)]
+    # Optimizer = [None for i in range (step)]
+    # Client = [None for i in range (step)]
+    # for i in range (step):
+    #     j = random.randint(1,6)
+    #     if j == 1: network = 'vgg'
+    #     elif j == 2: network = 'resnet18'
+    #     elif j == 3: network = 'resnet50'
+    #     elif j == 4: network = 'resnet101'
+    #     elif j == 5: network = 'inception3'
+    #     elif j == 6: network = 'mobilenet'
+    #     Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = network)
+
+    # for i in range (step):
+    #     Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
+    #     torch.cuda.empty_cache()
+
+
+    # without optimization
     for i in range (step):
         j = random.randint(1,6)
         if j == 1: network = 'vgg'
@@ -193,27 +209,5 @@ if __name__ == '__main__':
         elif j == 5: network = 'inception3'
         elif j == 6: network = 'mobilenet'
         Model[i], Optimizer[i], Trainloader[i], Client[i] = run(dataset = 'CIFAR10', client = 1, net = network)
-
-    for i in range (step):
-        Train(Model[i], Optimizer[i], Client[i], Trainloader[i])
+        Train(Model, Optimizer, Client, Trainloader)
         torch.cuda.empty_cache()
-
-
-    # without optimization
-    # for i in range (step):
-    #     if i%4 == 0: 
-    #         Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
-    #         Train(Model, Optimizer, Client, Trainloader)
-    #         torch.cuda.empty_cache()
-    #     elif i%4 == 1: 
-    #         Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
-    #         Train(Model, Optimizer, Client, Trainloader)
-    #         torch.cuda.empty_cache()
-    #     elif i%4 == 2: 
-    #         Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'MobileNet')
-    #         Train(Model, Optimizer, Client, Trainloader)
-    #         torch.cuda.empty_cache()
-    #     elif i%4 == 3: 
-    #         Model, Optimizer, Trainloader, Client = run(dataset = 'CIFAR10', client = 1, net = 'ResNet18')
-    #         Train(Model, Optimizer, Client, Trainloader)
-    #         torch.cuda.empty_cache()
