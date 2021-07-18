@@ -148,7 +148,7 @@ def average_gradients(model):
 
 
 """ Distributed Synchronous SGD Example """
-def run(rank, size, model, epochs, args, data):
+def run(rank, size, model, epochs, args, data, Training, Communication):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
     # data, bsz = partition_dataset(args)
@@ -244,7 +244,8 @@ def init_model(args):
         model = resnet.resnet50()
     return model
 
-def init_process(args,rank, fn, model, data, backend='gloo'):
+def init_process(args,rank, fn, model, data, Processing, Training, Communication, backend='gloo'):
+    process_start = time.time()
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
@@ -284,7 +285,10 @@ def init_process(args,rank, fn, model, data, backend='gloo'):
     #     last_target = target[:dataset_size % args.b]   ## remove args.g
     #     data.append((last_input, last_target))                         # random make data
 
-    fn(rank, args.g, model, args.e, args, data)
+    fn(rank, args.g, model, args.e, args, data, Training, Communication)
+    if rank == 0:
+        process_end = time.time()
+        Processing.append(process_end - process_start)
 
     # fn(rank, args.g, model, args.e, args)
 
@@ -297,8 +301,13 @@ def store():
 
 if __name__ == "__main__":
 
-    scale = 4 # num of tasks
+    scale = 1 # num of tasks
     GPUs = 4
+    mp.set_start_method("spawn")
+
+    # Processing = mp.Manager().list()   #主进程与子进程共享这个List
+    # Training = mp.Manager().list()   #主进程与子进程共享这个List
+    # Communication = mp.Manager().list()   #主进程与子进程共享这个List
 
     # parser = argparse.ArgumentParser()
     # parser.add_argument('-g', type=int, default=1, help='number of gpus')
@@ -306,7 +315,7 @@ if __name__ == "__main__":
     # parser.add_argument('-e', type=int, default=1, help='epoch')
     # parser.add_argument('-ben', type=str, default='nccl')
     # args_1 = parser.parse_args()
-    mp.set_start_method("spawn")
+
 
     # data, bsz = partition_dataset(args_1)
 
@@ -334,14 +343,8 @@ if __name__ == "__main__":
     for i in range (scale):
         processes = []
         for rank in range(GPUs):
-            if rank == 0:
-                process_time_start = time.time()
-            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank]))
+            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank], Processing, Training, Communication))
             p.start()
-            if rank == 0:
-                process_time_end = time.time()
-                # save the processing time
-                Processing.append(process_time_end - process_time_start)
             processes.append(p)
         for p in processes:
             p.join()
