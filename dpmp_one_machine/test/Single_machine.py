@@ -177,7 +177,7 @@ def run(dataset, client, net):
     return model, optimizer, trainloader, client
 
 if __name__ == '__main__':
-    step = 40
+    step = 200
     # with optimization
 
     Model = [None for i in range (step)]
