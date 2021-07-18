@@ -89,32 +89,32 @@ def Set_model(client, args):
     # Optimizer = [None for i in range (client)]
     if(args.net == 'vgg'):
         model = vgg.vgg19_bn()
-        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                             momentum=0.9, weight_decay=5e-4)
         return model, optimizer
     if(args.net == 'resnet101'):
         model = resnet.resnet101()
-        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                             momentum=0.9, weight_decay=5e-4)
         return model, optimizer
     if(args.net == 'resnet18'):
         model = resnet.resnet18()
-        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                             momentum=0.9, weight_decay=5e-4)
         return model, optimizer
     if(args.net == 'resnet50'):
         model = resnet.resnet50()
-        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                             momentum=0.9, weight_decay=5e-4)
         return model, optimizer
     if(args.net == 'inception3'):
         model = inceptionv3.inceptionv3()
-        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                             momentum=0.9, weight_decay=5e-4)
         return model, optimizer
     if(args.net == 'mobilenet'):
         model = mobilenet.mobilenet()
-        optimizer = torch.optim.SGD(Model[i].parameters(), lr=args.lr,
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                             momentum=0.9, weight_decay=5e-4)
         return model, optimizer
 
