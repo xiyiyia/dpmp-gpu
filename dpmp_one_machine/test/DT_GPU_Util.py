@@ -216,14 +216,14 @@ def run(rank, size, model, epochs, args, data):
             throughputs.append(throughput)
 
     # print(data_trained)
-    if(rank == 0):
-        n = len(throughputs)
-        throughput = sum(throughputs) / n
-        elapsed_time = sum(elapsed_times) / n
-        communication = sum(communications) / n
-        training = sum(trainings) / n
-        click.echo('%.3f samples/sec, total: %.3f sec/epoch, communication: %.3f sec/epoch, training: %.3f sec/epoch (average)'
-                '' % (throughput, elapsed_time, communication,training))
+    # if(rank == 0):
+    #     n = len(throughputs)
+    #     throughput = sum(throughputs) / n
+    #     elapsed_time = sum(elapsed_times) / n
+    #     communication = sum(communications) / n
+    #     training = sum(trainings) / n
+    #     click.echo('%.3f samples/sec, total: %.3f sec/epoch, communication: %.3f sec/epoch, training: %.3f sec/epoch (average)'
+    #             '' % (throughput, elapsed_time, communication,training))
 
         # # print(len(trainings),len(communications))
         # name_ = [i for i in range(len_*epochs)]
