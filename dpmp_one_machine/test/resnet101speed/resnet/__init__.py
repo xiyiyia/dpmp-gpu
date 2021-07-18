@@ -147,9 +147,9 @@ def resnet101(**kwargs: Any) -> nn.Sequential:
     """Constructs a ResNet-101 model."""
     # ResNet(BasicBlock, [2, 2, 2, 2])
     # return build_resnet([2, 2, 2, 2], **kwargs) # resnet18
-    # return build_resnet([3, 4, 23, 3], **kwargs) # 101
+    return build_resnet([3, 4, 23, 3], **kwargs) # 101
     # return build_resnet([3, 8, 36, 3], **kwargs) 
-    return build_resnet([3, 4, 6, 3], **kwargs) 
+    # return build_resnet([3, 4, 6, 3], **kwargs) 
 
 def vgg11(**kwargs: Any) -> nn.Sequential:
     """Constructs a vgg11 model."""
