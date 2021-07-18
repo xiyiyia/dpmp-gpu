@@ -23,7 +23,7 @@ import time
 import click
 from torch.utils.data import DataLoader, dataset
 # from torch.utils.tensorboard import SummaryWriter
-from models import inceptionv3, resnet, vgg
+from models import inceptionv3, resnet, vgg, mobilenet, 
 # import resnet
 from typing import cast
 
@@ -244,6 +244,12 @@ def init_model(args):
         model = resnet.resnet18()
     if(args.n == 'resnet50'):
         model = resnet.resnet50()
+    if(args.n == 'inception3'):
+        model = inceptionv3.inceptionv3()
+    if(args.n == 'mobilenet'):
+        model = mobilenet.mobilenet()
+    
+
     optimizer = optim.SGD(model.parameters(),
                           lr=0.01, momentum=0.5)
     return model, optimizer
@@ -305,7 +311,7 @@ def store(Processing, Training, Communication):
 
 if __name__ == "__main__":
 
-    scale = 4 # num of tasks
+    scale = 20 # num of tasks
     GPUs = 4
     mp.set_start_method("spawn")
 
@@ -330,10 +336,14 @@ if __name__ == "__main__":
     Data = [[None for i in range (GPUs)] for j in range (scale)]
     BSZ = [[None for i in range (GPUs)] for j in range (scale)]
     for i in range (scale):
-        if i % 4 == 0: network = 'resnet101'
-        elif i %4 == 1: network = 'resnet18'
-        elif i %4 == 2: network = 'resnet50'
-        elif i% 4 == 3: network = 'vgg'
+        j = random.randint(0,6)
+        if j == 1: network = 'vgg'
+        elif j == 2: network = 'resnet18'
+        elif j == 3: network = 'resnet50'
+        elif j == 4: network = 'resnet101'
+        elif j == 5: network = 'inception3'
+        elif j == 6: network = 'mobilenet'
+
         parser = argparse.ArgumentParser()
         parser.add_argument('-g', type=int, default=GPUs, help='number of gpus')
         parser.add_argument('-b', type=int, default=128, help='batchsize')
