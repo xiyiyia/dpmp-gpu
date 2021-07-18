@@ -23,7 +23,7 @@ import time
 import click
 from torch.utils.data import DataLoader, dataset
 # from torch.utils.tensorboard import SummaryWriter
-from models import inceptionv3, resnet, vgg, mobilenet, 
+from models import inceptionv3, resnet, vgg, mobilenet
 # import resnet
 from typing import cast
 
