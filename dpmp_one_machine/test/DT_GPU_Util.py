@@ -245,7 +245,6 @@ def init_model(args):
     return model
 
 def init_process(args,rank, fn, model, data, Processing, Training, Communication, backend='gloo'):
-    process_start = time.time()
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
@@ -284,7 +283,7 @@ def init_process(args,rank, fn, model, data, Processing, Training, Communication
     #     last_input = input[:dataset_size % args.b]  ## remove args.g
     #     last_target = target[:dataset_size % args.b]   ## remove args.g
     #     data.append((last_input, last_target))                         # random make data
-
+    process_start = time.time()
     fn(rank, args.g, model, args.e, args, data, Training, Communication)
     if rank == 0:
         process_end = time.time()
