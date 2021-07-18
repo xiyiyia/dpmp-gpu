@@ -297,7 +297,7 @@ def store():
 
 if __name__ == "__main__":
 
-    scale = 8 # num of tasks
+    scale = 4 # num of tasks
     GPUs = 4
 
     # parser = argparse.ArgumentParser()
@@ -333,7 +333,7 @@ if __name__ == "__main__":
     
     for i in range (scale):
         processes = []
-        for rank in range(Args[i].g):
+        for rank in range(Args[i][rank].g):
             if rank == 0:
                 process_time_start = time.time()
             p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank]))
