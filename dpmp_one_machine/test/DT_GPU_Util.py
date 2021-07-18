@@ -303,7 +303,8 @@ if __name__ == "__main__":
 
     scale = 4 # num of tasks
     GPUs = 4
-
+    mp.set_start_method("spawn")
+    
     with mp.Manager() as MG:   #重命名
         Processing = mp.Manager().list()   #主进程与子进程共享这个List
         Training = mp.Manager().list()   #主进程与子进程共享这个List
@@ -315,7 +316,7 @@ if __name__ == "__main__":
     # parser.add_argument('-e', type=int, default=1, help='epoch')
     # parser.add_argument('-ben', type=str, default='nccl')
     # args_1 = parser.parse_args()
-    mp.set_start_method("spawn")
+
 
     # data, bsz = partition_dataset(args_1)
 
