@@ -298,7 +298,7 @@ def store():
 if __name__ == "__main__":
 
     scale = 20 # num of tasks
-
+    GPUs = 4
 
     # parser = argparse.ArgumentParser()
     # parser.add_argument('-g', type=int, default=1, help='number of gpus')
@@ -310,24 +310,25 @@ if __name__ == "__main__":
 
     # data, bsz = partition_dataset(args_1)
 
-    Args = [None for i in range (scale)]
-    Model = [None for i in range (scale)]
-    Data = [None for i in range (scale)]
-    BSZ = [None for i in range (scale)]
+    Args = [[None for i in range (scale)] for j in range (GPUs)]
+    Model = [[None for i in range (scale)] for j in range (GPUs)]
+    Data = [[None for i in range (scale)] for j in range (GPUs)]
+    BSZ = [[None for i in range (scale)] for j in range (GPUs)]
     for i in range (scale):
         if i % 4 == 0: network = 'resnet101'
         elif i %4 == 1: network = 'resnet18'
         elif i %4 == 2: network = 'resnet50'
         elif i% 4 == 3: network = 'vgg'
         parser = argparse.ArgumentParser()
-        parser.add_argument('-g', type=int, default=4, help='number of gpus')
+        parser.add_argument('-g', type=int, default=GPUs, help='number of gpus')
         parser.add_argument('-b', type=int, default=128, help='batchsize')
         parser.add_argument('-e', type=int, default=1, help='epoch')
         parser.add_argument('-ben', type=str, default='nccl')
         parser.add_argument('-n', type=str, default=network)
-        Args[i] = parser.parse_args()
-        Model[i] = init_model(Args[i])
-        Data[i], BSZ[i] = partition_dataset(Args[i])
+        for j in range (GPUs):
+            Args[i][j] = parser.parse_args()
+            Model[i][j] = init_model(Args[i])
+            Data[i][j], BSZ[i][j] = partition_dataset(Args[i])
 
 
     for i in range (scale):
@@ -335,7 +336,7 @@ if __name__ == "__main__":
         for rank in range(Args[i].g):
             if rank == 0:
                 process_time_start = time.time()
-            p = mp.Process(target=init_process, args=(Args[i], rank, run, Model[i], Data[i]))
+            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank]))
             p.start()
             if rank == 0:
                 process_time_end = time.time()
