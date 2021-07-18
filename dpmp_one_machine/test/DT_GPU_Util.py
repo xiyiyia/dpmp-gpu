@@ -304,10 +304,10 @@ if __name__ == "__main__":
     scale = 4 # num of tasks
     GPUs = 4
 
-    with multiprocessing.Manager() as MG:   #重命名
-        Processing = multiprocessing.Manager().list(range(scale))   #主进程与子进程共享这个List
-        Training = multiprocessing.Manager().list(range(scale))   #主进程与子进程共享这个List
-        Communication = multiprocessing.Manager().list(range(scale))   #主进程与子进程共享这个List
+    with mp.Manager() as MG:   #重命名
+        Processing = mp.Manager().list(range(scale))   #主进程与子进程共享这个List
+        Training = mp.Manager().list(range(scale))   #主进程与子进程共享这个List
+        Communication = mp.Manager().list(range(scale))   #主进程与子进程共享这个List
 
     # parser = argparse.ArgumentParser()
     # parser.add_argument('-g', type=int, default=1, help='number of gpus')
