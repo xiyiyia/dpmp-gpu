@@ -310,10 +310,10 @@ if __name__ == "__main__":
 
     # data, bsz = partition_dataset(args_1)
 
-    Args = [[None for i in range (scale)] for j in range (GPUs)]
-    Model = [[None for i in range (scale)] for j in range (GPUs)]
-    Data = [[None for i in range (scale)] for j in range (GPUs)]
-    BSZ = [[None for i in range (scale)] for j in range (GPUs)]
+    Args = [[None for i in range (GPUs)] for j in range (scale)]
+    Model = [[None for i in range (GPUs)] for j in range (scale)]
+    Data = [[None for i in range (GPUs)] for j in range (scale)]
+    BSZ = [[None for i in range (GPUs)] for j in range (scale)]
     for i in range (scale):
         if i % 4 == 0: network = 'resnet101'
         elif i %4 == 1: network = 'resnet18'
