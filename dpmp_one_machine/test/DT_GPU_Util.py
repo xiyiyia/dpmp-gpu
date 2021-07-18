@@ -297,7 +297,7 @@ def store():
 
 if __name__ == "__main__":
 
-    scale = [20] # num of tasks
+    scale = 20 # num of tasks
 
 
     # parser = argparse.ArgumentParser()
