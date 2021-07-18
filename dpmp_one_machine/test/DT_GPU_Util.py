@@ -333,7 +333,7 @@ if __name__ == "__main__":
     
     for i in range (scale):
         processes = []
-        for rank in range(Args[i][rank].g):
+        for rank in range(GPUs):
             if rank == 0:
                 process_time_start = time.time()
             p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank]))
