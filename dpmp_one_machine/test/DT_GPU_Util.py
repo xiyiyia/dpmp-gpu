@@ -28,9 +28,9 @@ from models import inceptionv3, resnet, vgg
 from typing import cast
 
 loss_function = nn.CrossEntropyLoss()
-Processing = [] # processing time for all tasks on GPU0
-Training = [] # training time for all tasks on GPU0
-Communication = [] # communication time for all tasks on GPU0
+# Processing = [] # processing time for all tasks on GPU0
+# Training = [] # training time for all tasks on GPU0
+# Communication = [] # communication time for all tasks on GPU0
 
 
 def hr() -> None:
@@ -168,7 +168,7 @@ def run(rank, size, model, epochs, args, data):
         # training_time_list = []
         # communication_time_list = []
         for i, (input, target) in enumerate(data):
-            if i <= 1:
+            if i < 1:
                 # if(rank == 0):
                 #     load_data_ts = time.time()
                 input = input.cuda()
@@ -244,7 +244,7 @@ def init_model(args):
         model = resnet.resnet50()
     return model
 
-def init_process(args,rank, fn, model, data, backend='gloo'):
+def init_process(args,rank, fn, model, data, Processing, Training, Communication, backend='gloo'):
     process_start = time.time()
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
@@ -285,7 +285,7 @@ def init_process(args,rank, fn, model, data, backend='gloo'):
     #     last_target = target[:dataset_size % args.b]   ## remove args.g
     #     data.append((last_input, last_target))                         # random make data
 
-    fn(rank, args.g, model, args.e, args, data)
+    fn(rank, args.g, model, args.e, args, data, Training, Communication)
     if rank == 0:
         process_end = time.time()
         Processing.append(process_end - process_start)
@@ -303,6 +303,11 @@ if __name__ == "__main__":
 
     scale = 4 # num of tasks
     GPUs = 4
+
+    with multiprocessing.Manager() as MG:   #重命名
+        Processing = multiprocessing.Manager().list(range(scale))   #主进程与子进程共享这个List
+        Training = multiprocessing.Manager().list(range(scale))   #主进程与子进程共享这个List
+        Communication = multiprocessing.Manager().list(range(scale))   #主进程与子进程共享这个List
 
     # parser = argparse.ArgumentParser()
     # parser.add_argument('-g', type=int, default=1, help='number of gpus')
@@ -338,7 +343,7 @@ if __name__ == "__main__":
     for i in range (scale):
         processes = []
         for rank in range(GPUs):
-            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank]))
+            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank], Processing, Training, Communication))
             p.start()
             processes.append(p)
         for p in processes:
