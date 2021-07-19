@@ -312,8 +312,11 @@ if __name__ == "__main__":
     mp.set_start_method("spawn")
 
     for rank in range(args_1.g):
+        start = time.time()
         p = mp.Process(target=init_process, args=(args_1, rank, run))
-        p.start()
+        end = time.time()
+        print(end-start)
+        # p.start()
         processes.append(p)
     for p in processes:
         p.join()
