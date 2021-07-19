@@ -267,7 +267,7 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     
     # if(rank == 0):
     #     load_model_ts = time.time()
-    model = model.to(rank)
+    # model = model.to(rank)
     # if(args.n == 'vgg'):
     #     model = model.to(rank)
     # if(args.n == 'resnet101'):
