@@ -268,7 +268,7 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     print('connect')
     # dataset_size = 50000//args.g
     print(torch.cuda.device_count())
-    host_addr_full = 'tcp://172.17.0.2:29500'
+    host_addr_full = 'tcp://172.17.0.2'
     dist.init_process_group(args.ben, host_addr_full, rank=rank, world_size=args.g)
     print('intl')
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
