@@ -45,7 +45,7 @@ if __name__ == '__main__':
     # if len(sys.argv) == 3:
     #     out_path = sys.argv[2]
     # else:
-    out_path = "GPU_stat"+".txt"
+    out_path = "./GPU_stat"+".txt"
 
     # 监控的时间间隔，如果没有输入，就默认0.5秒记录一次
     if len(sys.argv) == 3:

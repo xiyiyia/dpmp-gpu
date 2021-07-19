@@ -23,14 +23,14 @@ import time
 import click
 from torch.utils.data import DataLoader, dataset
 # from torch.utils.tensorboard import SummaryWriter
-from models import inceptionv3, resnet, vgg
+from models import inceptionv3, resnet, vgg, mobilenet
 # import resnet
 from typing import cast
 
 loss_function = nn.CrossEntropyLoss()
-Processing = [] # processing time for all tasks on GPU0
-Training = [] # training time for all tasks on GPU0
-Communication = [] # communication time for all tasks on GPU0
+# Processing = [] # processing time for all tasks on GPU0
+# Training = [] # training time for all tasks on GPU0
+# Communication = [] # communication time for all tasks on GPU0
 
 
 def hr() -> None:
@@ -148,13 +148,10 @@ def average_gradients(model):
 
 
 """ Distributed Synchronous SGD Example """
-def run(rank, size, model, epochs, args, data, Training, Communication):
+def run(rank, size, model, optimizer, epochs, args, data, Training, Communication, Overhead):
     # torch.manual_seed(1234)
     # train_set, bsz = partition_dataset(args)
     # data, bsz = partition_dataset(args)
-
-    optimizer = optim.SGD(model.parameters(),
-                          lr=0.01, momentum=0.5)
     # len_data = len(data)//50
     # base_time = time.time()
     # print(model)
@@ -171,8 +168,13 @@ def run(rank, size, model, epochs, args, data, Training, Communication):
             if i < 1:
                 # if(rank == 0):
                 #     load_data_ts = time.time()
+                Overhead_start = time.time()
+                model = model.cuda()
                 input = input.cuda()
                 target = target.cuda()
+                if rank == 0:
+                    Overhead_end = time.time()
+                    Overhead.append(Overhead_end - Overhead_start)
                 # if(rank == 0):
                 #     load_data_te = time.time()
                     # print('data_time', load_data_te-load_data_ts)
@@ -242,10 +244,17 @@ def init_model(args):
         model = resnet.resnet18()
     if(args.n == 'resnet50'):
         model = resnet.resnet50()
-    return model
+    if(args.n == 'inception3'):
+        model = inceptionv3.inceptionv3()
+    if(args.n == 'mobilenet'):
+        model = mobilenet.mobilenet()
+    
 
-def init_process(args,rank, fn, model, data, Processing, Training, Communication, backend='gloo'):
-    process_start = time.time()
+    optimizer = optim.SGD(model.parameters(),
+                          lr=0.01, momentum=0.5)
+    return model, optimizer
+
+def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Communication, Overhead, backend='gloo'):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
@@ -284,30 +293,32 @@ def init_process(args,rank, fn, model, data, Processing, Training, Communication
     #     last_input = input[:dataset_size % args.b]  ## remove args.g
     #     last_target = target[:dataset_size % args.b]   ## remove args.g
     #     data.append((last_input, last_target))                         # random make data
-
-    fn(rank, args.g, model, args.e, args, data, Training, Communication)
+    process_start = time.time()
+    fn(rank, args.g, model, optimizer, args.e, args, data, Training, Communication, Overhead)
     if rank == 0:
         process_end = time.time()
         Processing.append(process_end - process_start)
 
     # fn(rank, args.g, model, args.e, args)
 
-def store():
+def store(Processing, Training, Communication):
     # print(len(name_))
-    dataframe = pd.DataFrame(Processing, columns=['X'])
-    dataframe = pd.concat([dataframe, pd.DataFrame(Training,columns=['Y'])],axis=1)
-    dataframe = pd.concat([dataframe, pd.DataFrame(Communication,columns=['Z'])],axis=1)
+    dataframe = pd.DataFrame(list(Processing), columns=['X'])
+    dataframe = pd.concat([dataframe, pd.DataFrame(list(Training),columns=['Y'])],axis=1)
+    dataframe = pd.concat([dataframe, pd.DataFrame(list(Communication),columns=['Z'])],axis=1)
+    dataframe = pd.concat([dataframe, pd.DataFrame(list(Overhead),columns=['W'])],axis=1)
     dataframe.to_csv("./Time.csv",header = False,index=False,sep=',')
 
 if __name__ == "__main__":
 
-    scale = 1 # num of tasks
+    scale = 200 # num of tasks
     GPUs = 4
     mp.set_start_method("spawn")
 
-    # Processing = mp.Manager().list()   #主进程与子进程共享这个List
-    # Training = mp.Manager().list()   #主进程与子进程共享这个List
-    # Communication = mp.Manager().list()   #主进程与子进程共享这个List
+    Processing = mp.Manager().list()   #主进程与子进程共享这个List
+    Training = mp.Manager().list()   #主进程与子进程共享这个List
+    Communication = mp.Manager().list()   #主进程与子进程共享这个List
+    Overhead = mp.Manager().list()
 
     # parser = argparse.ArgumentParser()
     # parser.add_argument('-g', type=int, default=1, help='number of gpus')
@@ -321,13 +332,18 @@ if __name__ == "__main__":
 
     Args = [[None for i in range (GPUs)] for j in range (scale)]
     Model = [[None for i in range (GPUs)] for j in range (scale)]
+    Optimizer = [[None for i in range (GPUs)] for j in range (scale)]
     Data = [[None for i in range (GPUs)] for j in range (scale)]
     BSZ = [[None for i in range (GPUs)] for j in range (scale)]
     for i in range (scale):
-        if i % 4 == 0: network = 'resnet101'
-        elif i %4 == 1: network = 'resnet18'
-        elif i %4 == 2: network = 'resnet50'
-        elif i% 4 == 3: network = 'vgg'
+        j = random.randint(0,6)
+        if j == 1: network = 'vgg'
+        elif j == 2: network = 'resnet18'
+        elif j == 3: network = 'resnet50'
+        elif j == 4: network = 'resnet101'
+        elif j == 5: network = 'inception3'
+        elif j == 6: network = 'mobilenet'
+
         parser = argparse.ArgumentParser()
         parser.add_argument('-g', type=int, default=GPUs, help='number of gpus')
         parser.add_argument('-b', type=int, default=128, help='batchsize')
@@ -336,18 +352,18 @@ if __name__ == "__main__":
         parser.add_argument('-n', type=str, default=network)
         for j in range (GPUs):
             Args[i][j] = parser.parse_args()
-            Model[i][j] = init_model(Args[i][j])
+            Model[i][j], Optimizer[i][j] = init_model(Args[i][j])
             Data[i][j], BSZ[i][j] = partition_dataset(Args[i][j])
 
     
     for i in range (scale):
         processes = []
         for rank in range(GPUs):
-            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Data[i][rank], Processing, Training, Communication))
+            p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Optimizer[i][j], Data[i][rank], Processing, Training, Communication, Overhead))
             p.start()
             processes.append(p)
         for p in processes:
             p.join()
     print(Training)
     print(Communication)
-    store()
+    store(Processing, Training, Communication)
