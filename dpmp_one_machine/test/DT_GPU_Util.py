@@ -171,9 +171,9 @@ def run(rank, size, model, optimizer, epochs, args, data, Training, Communicatio
                 Overhead_start = time.time()
                 input = input.to(rank)
                 target = target.to(rank)
-                if rank == 0:
-                    Overhead_end = time.time()
-                    Overhead.append(Overhead_end - Overhead_start)
+                # if rank == 0:
+                #     Overhead_end = time.time()
+                #     Overhead.append(Overhead_end - Overhead_start)
                 # if(rank == 0):
                 #     load_data_te = time.time()
                     # print('data_time', load_data_te-load_data_ts)
@@ -263,9 +263,10 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
     Overhead_start = time.time()
-    model = model.to(rank)
-    Overhead_end = time.time()
-    Overhead.append(Overhead_end - Overhead_start)
+    model = model.cuda()
+    if rank == 0:
+        Overhead_end = time.time()
+        Overhead.append(Overhead_end - Overhead_start)
     # if(rank == 0):
     #     load_model_ts = time.time()
     # model = model.to(rank)
@@ -370,4 +371,5 @@ if __name__ == "__main__":
             p.join()
     print(Training)
     print(Communication)
+    print(Overhead)
     store(Processing, Training, Communication)
