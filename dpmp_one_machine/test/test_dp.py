@@ -238,9 +238,9 @@ def init_process(args,rank, fn):
     torch.cuda.set_device(rank)
     if(args.n == 'vgg'):
         start = time.time()
-        model = vgg.vgg19_bn()
+        model = resnet101()()
         end = time.time()
-        print('model = vgg.vgg19_bn():',end-start)
+        print('model = resnet101():',end-start)
         model = model.to(rank)
         start = time.time()
         print('model = model.to(rank):', start - end)
