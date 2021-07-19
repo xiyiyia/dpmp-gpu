@@ -267,6 +267,7 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     os.environ['MASTER_PORT'] = '29500'
     print('connect')
     # dataset_size = 50000//args.g
+    print(torch.cuda.device_count())
     host_addr_full = 'tcp://172.17.0.2:29500'
     dist.init_process_group(args.ben, host_addr_full, rank=rank, world_size=args.g)
     print('intl')
