@@ -159,10 +159,6 @@ def run(rank, size, model, optimizer, epochs, args, data, Training, Communicatio
     # communications = []
     # trainings = []
     len_ = 0
-    Overhead_start = time.time()
-    model = model.to(rank)
-    Overhead_end = time.time()
-    Overhead.append(Overhead_end - Overhead_start)
     for epoch in range(epochs):
         throughputs = []
         elapsed_times = []
@@ -266,7 +262,10 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     dist.init_process_group(args.ben, rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
-    
+    Overhead_start = time.time()
+    model = model.to(rank)
+    Overhead_end = time.time()
+    Overhead.append(Overhead_end - Overhead_start)
     # if(rank == 0):
     #     load_model_ts = time.time()
     # model = model.to(rank)
