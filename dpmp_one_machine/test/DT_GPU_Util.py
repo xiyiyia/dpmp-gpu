@@ -311,7 +311,7 @@ def store(Processing, Training, Communication):
 
 if __name__ == "__main__":
 
-    scale = 200 # num of tasks
+    scale = 1 # num of tasks
     GPUs = 2
     mp.set_start_method("spawn")
 
