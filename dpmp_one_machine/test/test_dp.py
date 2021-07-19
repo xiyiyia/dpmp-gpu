@@ -229,7 +229,7 @@ def run(rank, size, model, epochs, args, data):
 
 def init_process(args,rank, fn):
     """ Initialize the distributed environment. """
-    os.environ['MASTER_ADDR'] = '172.17.0.2'
+    os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
 
     # dataset_size = 50000//args.g
@@ -237,7 +237,26 @@ def init_process(args,rank, fn):
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
     if(args.n == 'vgg'):
-        model = vgg.vgg19_bn().to(rank)
+        start = time.time()
+        model = vgg.vgg19_bn()
+        end = time.time()
+        print('model = vgg.vgg19_bn():',end-start)
+        model = model.to(rank)
+        start = time.time()
+        print('model = model.to(rank):', start - end)
+        a = model.state_dict().copy()
+        end = time.time()
+        print('a = model.state_dict().copy():',end-start)
+        model.load_state_dict(a)
+        start = time.time()
+        print('model.load_state_dict(a):', start - end)
+        b = model.save()
+        end = time.time()
+        print('b = model.save():',end-start)
+        model.load(b)
+        start = time.time()
+        print('model.load(b):', start - end)
+
     # model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
     if(args.n == 'resnet'):
