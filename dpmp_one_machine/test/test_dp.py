@@ -24,7 +24,7 @@ import click
 from torch.utils.data import DataLoader, dataset
 from resnet import resnet101
 from unet import unet
-from models import inceptionv3, vgg
+from models import inceptionv3, vgg, resnet
 # import resnet
 from typing import cast
 
@@ -238,9 +238,9 @@ def init_process(args,rank, fn):
     torch.cuda.set_device(rank)
     if(args.n == 'vgg'):
         start = time.time()
-        model = inceptionv3.inceptionv3()
+        model = resnet.resnet152()
         end = time.time()
-        print('model = inceptionv3.inceptionv3():',end-start)
+        print('model = resnet.resnet152():',end-start)
         model = model.to(rank)
         start = time.time()
         print('model = model.to(rank):', start - end)
