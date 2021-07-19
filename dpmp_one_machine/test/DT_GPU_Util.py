@@ -256,7 +256,7 @@ def init_model(args):
 
 def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Communication, Overhead, backend='gloo'):
     """ Initialize the distributed environment. """
-    os.environ['MASTER_ADDR'] = '127.0.0.1'
+    os.environ['MASTER_ADDR'] = '172.17.0.2'
     os.environ['MASTER_PORT'] = '29500'
 
     # dataset_size = 50000//args.g
@@ -312,7 +312,7 @@ def store(Processing, Training, Communication):
 if __name__ == "__main__":
 
     scale = 200 # num of tasks
-    GPUs = 4
+    GPUs = 2
     mp.set_start_method("spawn")
 
     Processing = mp.Manager().list()   #主进程与子进程共享这个List
