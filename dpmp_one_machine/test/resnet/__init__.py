@@ -116,7 +116,7 @@ def build_vgg() -> nn.Sequential:
         return nn.Sequential(*layers)
         
     
-    model = nn.Sequential(*(list(make_layers(cfg['A']))), 
+    model = nn.Sequential(*(list(make_layers(cfg['E']))), 
             nn.Flatten(),            
             nn.Linear(25088, 4096),
             nn.ReLU(),

@@ -22,7 +22,7 @@ import torchvision.transforms as transforms
 import time
 import click
 from torch.utils.data import DataLoader, dataset
-from resnet import resnet101
+from resnet import resnet101, vgg11
 from unet import unet
 from models import inceptionv3, vgg, resnet
 # import resnet
@@ -237,29 +237,11 @@ def init_process(args,rank, fn):
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
     if(args.n == 'vgg'):
-        start = time.time()
-        model = resnet.resnet152()
-        end = time.time()
-        print('model = resnet.resnet152():',end-start)
-        model = model.to(rank)
-        start = time.time()
-        print('model = model.to(rank):', start - end)
-        a = model.state_dict().copy()
-        end = time.time()
-        print('a = model.state_dict().copy():',end-start)
-        model.load_state_dict(a)
-        start = time.time()
-        print('model.load_state_dict(a):', start - end)
-        torch.cuda.empty_cache()
-        end = time.time()
-        print('torch.cuda.empty_cache():',end-start)
-        # b = model.save()
-        # end = time.time()
-        # print('b = model.save():',end-start)
-        # model.load(b)
-        # start = time.time()
-        # print('model.load(b):', start - end)
-
+        model = vgg11().to(rank)
+        dataset_size = 50000//args.g
+        input = torch.rand(args.b, 3, 32, 32, device='cuda:'+str(rank))  ## remove args.g
+        target = torch.randint(1000, (args.b,), device='cuda:'+str(rank))  ## remove args.g
+        data = [(input, target)] * (dataset_size//args.b)
     # model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
     if(args.n == 'resnet'):

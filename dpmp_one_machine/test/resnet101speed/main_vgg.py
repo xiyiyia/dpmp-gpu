@@ -46,11 +46,11 @@ class Experiments:
         chunks = 2
 
 
-        # partitions = 1
-        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        partitions = 1
+        sample = torch.empty(batch_size, 3, 224, 224).cuda()
+        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
         # model = GPipe(model, balance, chunks=chunks)
-        balance = [37] # vgg
+        # balance = [37] # vgg
         # balance = [370] # 101
         # balance = [183] # 50
         model = cast(nn.Sequential, model)
@@ -62,139 +62,136 @@ class Experiments:
         # batch_size = 512
         # chunks = 8
 
-        batch_size = 4096
-        chunks = 40
+        batch_size = 1024
+        chunks = 8
+        partitions = 2
+        sample = torch.empty(batch_size//chunks, 3, 32, 32).cuda()
+        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        model = GPipe(model, balance, chunks=chunks)
 
-        # partitions = 2
-        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
-        # model = GPipe(model, balance, chunks=chunks)
-
-        balance = [16, 21]  # vgg
+        # balance = [16, 21]  # vgg
         # balance = [135, 235]  # 101
         # # balance = [67, 116]  # 50
-        model = cast(nn.Sequential, model)
-        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        # model = cast(nn.Sequential, model)
+        # model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
     @staticmethod
     def pipeline3(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 2048
-        chunks = 100
+        batch_size = 1536
+        chunks = 12
         # batch_size = 1048
         # chunks = 100
         
-        # partitions = 8
-        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
-        # model = GPipe(model, balance, chunks=chunks)
+        partitions = 3
+        sample = torch.empty(batch_size//chunks, 3, 32, 32).cuda()
+        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        model = GPipe(model, balance, chunks=chunks)
 
-        balance = [10, 12, 15] #vgg
+        # balance = [10, 12, 15] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
-        model = cast(nn.Sequential, model)
-        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        # model = cast(nn.Sequential, model)
+        # model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
     @staticmethod
     def pipeline4(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 1048
         # chunks = 100
-        batch_size = 4096
-        chunks = 400
-
-        # partitions = 4
-        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
-        # model = GPipe(model, balance, chunks=chunks)
+        batch_size = 2048
+        chunks = 16
+        partitions = 4
+        sample = torch.empty(batch_size//chunks, 3, 32, 32).cuda()
+        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        model = GPipe(model, balance, chunks=chunks)
 
         # # batch_size = 560
         # # chunks = 4
-        balance = [9, 9, 9, 10] # vgg
+        # balance = [9, 9, 9, 10] # vgg
         # balance = [22, 46, 61, 54]  # 50
-        model = cast(nn.Sequential, model)
-        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        # model = cast(nn.Sequential, model)
+        # model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
     @staticmethod
     def pipeline5(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 2048
-        chunks = 200
+        batch_size = 2560
+        chunks = 20
         # batch_size = 1048
         # chunks = 100
         
-        # partitions = 8
-        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
-        # model = GPipe(model, balance, chunks=chunks)
+        partitions = 5
+        sample = torch.empty(batch_size//chunks, 3, 32, 32).cuda()
+        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        model = GPipe(model, balance, chunks=chunks)
 
-        balance = [7, 7, 7, 7, 9] #vgg
+        # balance = [7, 7, 7, 7, 9] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
-        model = cast(nn.Sequential, model)
-        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        # model = cast(nn.Sequential, model)
+        # model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
     @staticmethod
     def pipeline6(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 4096
-        chunks = 100
+        batch_size = 2560
+        chunks = 24
         # batch_size = 1024
         # chunks = 100
         
-        # partitions = 8
-        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
-        # model = GPipe(model, balance, chunks=chunks)
+        partitions = 6
+        sample = torch.empty(batch_size//chunks, 3, 32, 32).cuda()
+        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        model = GPipe(model, balance, chunks=chunks)
 
-        balance = [4, 4, 5, 8, 8, 8] #vgg
+
+        # balance = [4, 4, 5, 8, 8, 8] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
-        model = cast(nn.Sequential, model)
-        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        # model = cast(nn.Sequential, model)
+        # model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
     @staticmethod
     def pipeline7(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 1024
-        chunks = 24
+        batch_size = 2560
+        chunks = 28
         # batch_size = 2048  #best
         # chunks = 100
         # batch_size = 1024
         # chunks = 100
-        # partitions = 8
-        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
-        # model = GPipe(model, balance, chunks=chunks)
+        partitions = 7
+        sample = torch.empty(batch_size//chunks, 3, 32, 32).cuda()
+        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        model = GPipe(model, balance, chunks=chunks)
 
-        balance = [4, 4, 4, 4, 6, 7, 8] #vgg
+        ##balance = [4, 4, 4, 4, 6, 7, 8] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
-        model = cast(nn.Sequential, model)
-        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        # model = cast(nn.Sequential, model)
+        # model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
     @staticmethod
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 2048
-        chunks = 48
-        # batch_size = 2048
-        # chunks = 200
-        
-        # partitions = 8
-        # sample = torch.empty(batch_size, 3, 224, 224).cuda()
-        # balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
-        # model = GPipe(model, balance, chunks=chunks)
+        batch_size = 2560
+        chunks = 32
 
-        balance = [3, 4, 4, 4, 4, 5, 5, 8] #vgg
+        partitions = 8
+        sample = torch.empty(batch_size, 3, 32, 32).cuda()
+        balance = balance_by_time(partitions, resnet101(), sample, device=torch.device('cuda'))
+        model = GPipe(resnet101(), balance, chunks=chunks)
+
+        # balance = [3, 4, 4, 4, 4, 5, 5, 8] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101
         # balance = [13, 12, 14, 22, 22, 33, 33, 34]  # 50
-        model = cast(nn.Sequential, model)
-        model = GPipe(model, balance, devices=devices, chunks=chunks)
+        # model = cast(nn.Sequential, model)
+        # model = GPipe(model, balance, devices=devices, chunks=chunks)
         return model, batch_size, list(model.devices)
 
 
@@ -302,7 +299,7 @@ def cli(ctx: click.Context,
     # images over 1000 labels.
     dataset_size = 50000
 
-    input = torch.rand(batch_size, 3, 224, 224, device=in_device)
+    input = torch.rand(batch_size, 3, 32, 32, device=in_device)
     target = torch.randint(1000, (batch_size,), device=out_device)
     data = [(input, target)] * (dataset_size//batch_size)
 
