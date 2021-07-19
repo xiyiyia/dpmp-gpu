@@ -159,6 +159,10 @@ def run(rank, size, model, optimizer, epochs, args, data, Training, Communicatio
     # communications = []
     # trainings = []
     len_ = 0
+    Overhead_start = time.time()
+    model = model.to(rank)
+    Overhead_end = time.time()
+    Overhead.append(Overhead_end - Overhead_start)
     for epoch in range(epochs):
         throughputs = []
         elapsed_times = []
@@ -169,7 +173,6 @@ def run(rank, size, model, optimizer, epochs, args, data, Training, Communicatio
                 # if(rank == 0):
                 #     load_data_ts = time.time()
                 Overhead_start = time.time()
-                model = model.to(rank)
                 input = input.to(rank)
                 target = target.to(rank)
                 if rank == 0:
