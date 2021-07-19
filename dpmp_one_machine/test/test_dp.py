@@ -316,7 +316,7 @@ if __name__ == "__main__":
         p = mp.Process(target=init_process, args=(args_1, rank, run))
         end = time.time()
         print(end-start)
-        # p.start()
+        p.start()
         processes.append(p)
     for p in processes:
         p.join()
