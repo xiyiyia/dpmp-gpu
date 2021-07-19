@@ -256,7 +256,7 @@ def init_model(args):
 
 def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Communication, Overhead, backend='gloo'):
     """ Initialize the distributed environment. """
-    os.environ['MASTER_ADDR'] = '172.17.0.2'
+    os.environ['MASTER_ADDR'] = '127.0.0.1'
     os.environ['MASTER_PORT'] = '29500'
     print('connect')
     # dataset_size = 50000//args.g
