@@ -258,11 +258,13 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '172.17.0.2'
     os.environ['MASTER_PORT'] = '29500'
-
+    print('connect')
     # dataset_size = 50000//args.g
     dist.init_process_group(args.ben, rank=rank, world_size=args.g)
+    print('intl')
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
+    
     # if(rank == 0):
     #     load_model_ts = time.time()
     model = model.to(rank)
@@ -298,7 +300,7 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     if rank == 0:
         process_end = time.time()
         Processing.append(process_end - process_start)
-
+    print('done')
     # fn(rank, args.g, model, args.e, args)
 
 def store(Processing, Training, Communication):
@@ -360,6 +362,7 @@ if __name__ == "__main__":
         processes = []
         for rank in range(GPUs):
             p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Optimizer[i][j], Data[i][rank], Processing, Training, Communication, Overhead))
+            print('done intl')
             p.start()
             processes.append(p)
         for p in processes:
