@@ -316,10 +316,15 @@ if __name__ == "__main__":
         p = mp.Process(target=init_process, args=(args_1, rank, run))
         end = time.time()
         print(end-start)
-        process_start = time.time()
+
+
+        # process_start = time.time()
         p.start()
-        process_end = time.time()
-        print('Processing time: ', process_end - process_start)
+        # process_end = time.time()
+        # print('Processing time: ', process_end - process_start)
         processes.append(p)
     for p in processes:
+        process_start = time.time()
         p.join()
+        process_end = time.time()
+        print('Processing time: ', process_end - process_start)
