@@ -340,7 +340,8 @@ if __name__ == "__main__":
     Data = [[None for i in range (GPUs)] for j in range (scale)]
     BSZ = [[None for i in range (GPUs)] for j in range (scale)]
     for i in range (scale):
-        j = random.randint(1,6)
+        # j = random.randint(1,6)
+        j = 4
         if j == 1: network = 'vgg'
         elif j == 2: network = 'resnet18'
         elif j == 3: network = 'resnet50'
