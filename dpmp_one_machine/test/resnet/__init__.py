@@ -11,8 +11,16 @@ from torch import nn
 
 from resnet.bottleneck import bottleneck
 from resnet.flatten_sequential import flatten_sequential
-
+# import bottleneck
+# import flatten_sequential
 __all__ = ['resnet101']
+
+cfg = {
+    'A' : [64,     'M', 128,      'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M'],
+    'B' : [64, 64, 'M', 128, 128, 'M', 256, 256,           'M', 512, 512,           'M', 512, 512,           'M'],
+    'D' : [64, 64, 'M', 128, 128, 'M', 256, 256, 256,      'M', 512, 512, 512,      'M', 512, 512, 512,      'M'],
+    'E' : [64, 64, 'M', 128, 128, 'M', 256, 256, 256, 256, 'M', 512, 512, 512, 512, 'M', 512, 512, 512, 512, 'M']
+}
 
 
 def build_resnet(layers: List[int],
@@ -86,9 +94,63 @@ def build_resnet(layers: List[int],
 
     return model
 
+def build_vgg() -> nn.Sequential:
+    # cfg = cfg['E']
+    def make_layers(cfg, batch_norm=True):
+        layers = []
+
+        input_channel = 3
+        for l in cfg:
+            if l == 'M':
+                layers += [nn.MaxPool2d(kernel_size=2, stride=2)]
+                continue
+
+            layers += [nn.Conv2d(input_channel, l, kernel_size=3, padding=1)]
+
+            if batch_norm:
+                layers += [nn.BatchNorm2d(l)]
+
+            # layers += [nn.ReLU(inplace=True)]
+            layers += [nn.ReLU()]
+            input_channel = l
+        return nn.Sequential(*layers)
+        
+    
+    model = nn.Sequential(*(list(make_layers(cfg['E']))), 
+            nn.Flatten(),            
+            nn.Linear(25088, 4096),
+            nn.ReLU(),
+            nn.Dropout(),
+            nn.Linear(4096, 4096),
+            nn.ReLU(),
+            nn.Dropout(),
+            nn.Linear(4096, 1000))
+    # print(model)
+    model = flatten_sequential(model)
+    # print(model)
+
+    def init_weight(m: nn.Module) -> None:
+        if isinstance(m, nn.Conv2d):
+            nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
+            return
+
+        if isinstance(m, nn.BatchNorm2d):
+            nn.init.constant_(m.weight, 1)
+            nn.init.constant_(m.bias, 0)
+            return
+
+    model.apply(init_weight)
+    return model
+
 
 def resnet101(**kwargs: Any) -> nn.Sequential:
     """Constructs a ResNet-101 model."""
-    # return build_resnet([3, 4, 23, 3], **kwargs)
-    return build_resnet([3, 4, 6, 3], **kwargs)
-    # return ResNet(BottleNeck, [3, 4, 6, 3])
+    # ResNet(BasicBlock, [2, 2, 2, 2])
+    # return build_resnet([2, 2, 2, 2], **kwargs) # resnet18
+    return build_resnet([3, 4, 23, 3], **kwargs) # 101
+    # return build_resnet([3, 8, 36, 3], **kwargs) 
+    # return build_resnet([3, 4, 6, 3], **kwargs) 
+
+def vgg11(**kwargs: Any) -> nn.Sequential:
+    """Constructs a vgg11 model."""
+    return build_vgg(**kwargs)

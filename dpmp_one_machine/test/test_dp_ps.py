@@ -22,9 +22,9 @@ import torchvision.transforms as transforms
 import time
 import click
 from torch.utils.data import DataLoader, dataset
-from resnet import resnet101, vgg11
+from resnet import resnet101
 from unet import unet
-from models import inceptionv3, vgg, resnet
+from models import inceptionv3, vgg
 # import resnet
 from typing import cast
 
@@ -229,7 +229,7 @@ def run(rank, size, model, epochs, args, data):
 
 def init_process(args,rank, fn):
     """ Initialize the distributed environment. """
-    os.environ['MASTER_ADDR'] = '127.0.0.1'
+    os.environ['MASTER_ADDR'] = '172.17.0.2'
     os.environ['MASTER_PORT'] = '29500'
 
     # dataset_size = 50000//args.g
@@ -237,11 +237,7 @@ def init_process(args,rank, fn):
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
     if(args.n == 'vgg'):
-        model = vgg11().to(rank)
-        dataset_size = 50000//args.g
-        input = torch.rand(args.b, 3, 32, 32, device='cuda:'+str(rank))  ## remove args.g
-        target = torch.randint(1000, (args.b,), device='cuda:'+str(rank))  ## remove args.g
-        data = [(input, target)] * (dataset_size//args.b)
+        model = vgg.vgg19_bn().to(rank)
     # model = resnet.resnet101(num_classes=10)
     # model = cast(nn.Sequential, model)
     if(args.n == 'resnet'):
@@ -294,10 +290,7 @@ if __name__ == "__main__":
     mp.set_start_method("spawn")
 
     for rank in range(args_1.g):
-        start = time.time()
         p = mp.Process(target=init_process, args=(args_1, rank, run))
-        end = time.time()
-        print(end-start)
         p.start()
         processes.append(p)
     for p in processes:

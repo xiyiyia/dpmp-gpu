@@ -49,8 +49,31 @@ class Residual(nn.Module):
             identity = self.downsample(identity)
         return input + identity
 
+# def bottleneck(inplanes: int, ## basic neck
+#                planes: int,
+#                stride: int = 1,
+#                downsample: Optional[nn.Module] = None,
+#                inplace: bool = False,
+#                ) -> nn.Sequential:
+#     """Creates a bottleneck block in ResNet as a :class:`nn.Sequential`."""
 
-def bottleneck(inplanes: int,
+#     layers: NamedModules = OrderedDict()
+
+#     ns = Namespace()
+#     layers['identity'] = Identity().isolate(ns)  # type: ignore
+
+#     layers['conv2'] = conv3x3(planes, planes, stride)
+#     layers['bn2'] = nn.BatchNorm2d(planes)
+#     layers['relu2'] = nn.ReLU(inplace=inplace)
+
+#     layers['conv3'] = conv3x3(planes, planes * 4)
+#     layers['bn3'] = nn.BatchNorm2d(planes * 4)
+#     layers['residual'] = Residual(downsample).isolate(ns)  # type: ignore
+#     layers['relu3'] = nn.ReLU(inplace=inplace)
+
+#     return nn.Sequential(layers)
+
+def bottleneck(inplanes: int,  # bottleneck
                planes: int,
                stride: int = 1,
                downsample: Optional[nn.Module] = None,
