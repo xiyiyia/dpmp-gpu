@@ -264,10 +264,10 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     torch.cuda.set_device(rank)
 
     model = model.cuda()
-    for i, (input, target) in enumerate(data):
-        if i < 1:
-            input = input.cuda()
-            target = target.cuda()
+    # for i, (input, target) in enumerate(data):
+    #     if i < 1:
+    #         input = input.cuda()
+    #         target = target.cuda()
 
     # if(rank == 0):
     #     load_model_ts = time.time()
@@ -335,7 +335,7 @@ if __name__ == "__main__":
     BSZ = [[None for i in range (GPUs)] for j in range (scale)]
     for i in range (scale):
         # j = random.randint(1,6)
-        j = 5
+        j = 1
         if j == 1: network = 'vgg'
         elif j == 2: network = 'resnet18'
         elif j == 3: network = 'resnet50'
