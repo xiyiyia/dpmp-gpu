@@ -171,9 +171,9 @@ def run(rank, size, model, optimizer, epochs, args, data, Training, Communicatio
                 Overhead_start = time.time()
                 input = input.to(rank)
                 target = target.to(rank)
-                # if rank == 0:
-                #     Overhead_end = time.time()
-                #     Overhead.append(Overhead_end - Overhead_start)
+                if rank == 0:
+                    Overhead_end = time.time()
+                    Overhead.append(Overhead_end - Overhead_start)
                 # if(rank == 0):
                 #     load_data_te = time.time()
                     # print('data_time', load_data_te-load_data_ts)
@@ -264,7 +264,10 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     torch.cuda.set_device(rank)
 
     model = model.cuda()
-    data = data.cuda()
+    for i, (input, target) in enumerate(data):
+        if i < 1:
+            input = input.cuda()
+            target = target.cuda()
 
     # if(rank == 0):
     #     load_model_ts = time.time()
