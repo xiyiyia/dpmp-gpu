@@ -262,11 +262,9 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     dist.init_process_group(args.ben, rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
-    Overhead_start = time.time()
+
     model = model.cuda()
-    if rank == 0:
-        Overhead_end = time.time()
-        Overhead.append(Overhead_end - Overhead_start)
+
     # if(rank == 0):
     #     load_model_ts = time.time()
     # model = model.to(rank)
@@ -288,21 +286,13 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
         model, device_ids=[rank], output_device=rank
     )
 
-    # dataset_size = 50000//args.g
-    # input = torch.rand(args.b, 3, 32, 32)#, device='cuda:'+str(rank))  ## remove args.g
-    # target = torch.randint(10, (args.b,))#, device='cuda:'+str(rank))  ## remove args.g
-    # data = [(input, target)] * (dataset_size//args.b)
 
-    # if dataset_size % args.b != 0:       ## remove args.g
-    #     last_input = input[:dataset_size % args.b]  ## remove args.g
-    #     last_target = target[:dataset_size % args.b]   ## remove args.g
-    #     data.append((last_input, last_target))                         # random make data
-    process_start = time.time()
-    fn(rank, args.g, model, optimizer, args.e, args, data, Training, Communication, Overhead)
-    if rank == 0:
-        process_end = time.time()
-        Processing.append(process_end - process_start)
-    print('done')
+    # process_start = time.time()
+    # fn(rank, args.g, model, optimizer, args.e, args, data, Training, Communication, Overhead)
+    # if rank == 0:
+    #     process_end = time.time()
+    #     Processing.append(process_end - process_start)
+    # print('done')
     # fn(rank, args.g, model, args.e, args)
 
 def store(Processing, Training, Communication):
@@ -316,7 +306,7 @@ def store(Processing, Training, Communication):
 if __name__ == "__main__":
 
     scale = 1 # num of tasks
-    GPUs = 2
+    GPUs = 1
     mp.set_start_method("spawn")
 
     Processing = mp.Manager().list()   #主进程与子进程共享这个List
@@ -363,6 +353,7 @@ if __name__ == "__main__":
     
     for i in range (scale):
         processes = []
+        Overhead_start = time.time()
         for rank in range(GPUs):
             p = mp.Process(target=init_process, args=(Args[i][rank], rank, run, Model[i][rank], Optimizer[i][j], Data[i][rank], Processing, Training, Communication, Overhead))
             print('done intl')
@@ -370,6 +361,8 @@ if __name__ == "__main__":
             processes.append(p)
         for p in processes:
             p.join()
+        Overhead_end = time.time()
+        Overhead.append(Overhead_end - Overhead_start)
     print(Training)
     print(Communication)
     print(Overhead)
