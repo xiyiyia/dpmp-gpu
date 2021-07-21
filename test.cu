@@ -4,7 +4,6 @@
 #include <cuda.h>
 #include <builtin_types.h>
 
-#include "matSumKernel.h"
 #include "matSumKernel.cubin"
 
 // This will output the proper CUDA error strings
