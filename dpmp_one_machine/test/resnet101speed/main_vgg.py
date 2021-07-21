@@ -137,7 +137,7 @@ class Experiments:
     def pipeline6(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 2560
+        batch_size = 3072
         chunks = 24
         # batch_size = 1024
         # chunks = 100
@@ -158,7 +158,7 @@ class Experiments:
     def pipeline7(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 2560
+        batch_size = 3584
         chunks = 28
         # batch_size = 2048  #best
         # chunks = 100
@@ -179,13 +179,13 @@ class Experiments:
     def pipeline8(model: nn.Module, devices: List[int]) -> Stuffs:
         # batch_size = 512
         # chunks = 16
-        batch_size = 2560
+        batch_size = 4096
         chunks = 32
 
         partitions = 8
-        sample = torch.empty(batch_size, 3, 32, 32).cuda()
-        balance = balance_by_time(partitions, resnet101(), sample, device=torch.device('cuda'))
-        model = GPipe(resnet101(), balance, chunks=chunks)
+        sample = torch.empty(batch_size//chunks, 3, 32, 32).cuda()
+        balance = balance_by_time(partitions, model, sample, device=torch.device('cuda'))
+        model = GPipe(model, balance, chunks=chunks)
 
         # balance = [3, 4, 4, 4, 4, 5, 5, 8] #vgg
         # balance = [26, 22, 33, 44, 44, 66, 66, 69] #101

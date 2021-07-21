@@ -265,12 +265,12 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = '172.17.0.2'
     os.environ['MASTER_PORT'] = '29500'
-    print('connect')
+    # print('connect')
     # dataset_size = 50000//args.g
-    print(torch.cuda.device_count())
-    host_addr_full = 'tcp://172.17.0.2'
-    dist.init_process_group(args.ben, host_addr_full, rank=rank, world_size=args.g)
-    print('intl')
+    # print(torch.cuda.device_count())
+    # host_addr_full = 'tcp://172.17.0.2'
+    dist.init_process_group(args.ben, rank=rank, world_size=args.g)
+    # print('intl')
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
     

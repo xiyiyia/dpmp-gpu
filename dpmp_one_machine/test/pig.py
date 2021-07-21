@@ -1,78 +1,54 @@
 import matplotlib.pyplot as plt
 num_gpu = [2, 3, 4, 5, 6, 7, 8]
 # dp_nccl = [43.40,34.77,28.41]
-dp = [126.293, 93.709666666666666666666666666667, 82.98975, 77.1052, 72.9215, 70.603428571428571428571428571429, 68.6205] # [319.2651, 245.0382, 200.790675, 192.33954, 180.8925, 177.28045714285714285714285714286, 171.766575]  #gloo
-mp = [122.28525, 93.220916666666666666666666666667, 78.2733125, 75.20885, 75.113932291666666666666666666667, 73.856026785714285714285714285714, 74.30419921875] #[250.302, 228.111, 218, 199.368, 179.94, 175.188, 156  ] # chunks = 8
+# dp = []
+# for i in range(len(num_gpu)):
+#   dp.append(num_gpu[i]*num_gpu[i]*num_gpu[i])
+dp = [65.6249685, 53.525504, 49.2788225, 41.5384416,40.224256, 38.186636, 37.62017425]#[126.293, 93.709666666666666666666666666667, 82.98975, 77.1052, 72.9215, 70.603428571428571428571428571429, 68.6205] # [319.2651, 245.0382, 200.790675, 192.33954, 180.8925, 177.28045714285714285714285714286, 171.766575]  #gloo
+mp = [74.861, 56.722, 43.705, 36.403, 36.000, 35.125, 36.152]#[122.28525, 93.220916666666666666666666666667, 78.2733125, 75.20885, 75.113932291666666666666666666667, 73.856026785714285714285714285714, 74.30419921875] #[250.302, 228.111, 218, 199.368, 179.94, 175.188, 156  ] # chunks = 8
 # Plot Average Accuracy vs Communication rounds
 plt.figure()
-plt.title('resnet')
-# plt.plot(num_gpu, dp_nccl, "x-", color='m', label = "data_parrallel_in_nccl")
+plt.title('vgg19')
+# plt.plot(num_gpu, dp, "x-", color='m', label = "data_parrallel_in_nccl")
 plt.plot(num_gpu, dp, "+-", color='r', label = "data_parrallel")
 plt.plot(num_gpu, mp, "x-", color='m', label = "model_parrallel")
 plt.legend()
-plt.ylabel('time(s)')
-plt.xlabel('number of gpus')
-plt.savefig('./time_resnet.png')
+plt.ylabel('Time(s)')
+plt.xlabel('Number of GPUs')
+plt.savefig('./time_vgg19.png')
 
 
 ########################################################################################
 ###########                            VGG11                                   #########
 ###############        DP:         
-##        random dataset             ncll         each method's round is the same
-# 2 :     649.560 samples/sec, total: 76.975 sec/epoch, communication: 0.791 sec/epoch (average)
-# 3 :     874.324 samples/sec, total: 57.187 sec/epoch, communication: 0.792 sec/epoch (average)
-# 4 :     1171.265 samples/sec, total: 42.689 sec/epoch, communication: 0.812 sec/epoch (average)
-# 5 :     1083.847 samples/sec, total: 46.132 sec/epoch, communication: 0.875 sec/epoch (average)
-# 6 :     1146.889 samples/sec, total: 43.596 sec/epoch, communication: 0.934 sec/epoch (average)
-# 7 :     1306.463 samples/sec, total: 38.271 sec/epoch, communication: 0.940 sec/epoch (average)
-# 8 :     1654.698 samples/sec, total: 30.217 sec/epoch, communication: 0.950 sec/epoch (average)
+##        random dataset             ncll     3x32x32    each method's round is the same  128 391
+# 2 :     169602.647 samples/sec, total: 0.295 sec/epoch, communication: 0.007 sec/epoch, training: 0.286 sec/epoch (average)  57.6725
+# 3 :     150834.528 samples/sec, total: 0.331 sec/epoch, communication: 0.009 sec/epoch, training: 0.322 sec/epoch (average)  43.1403
+# 4 :     124371.560 samples/sec, total: 0.402 sec/epoch, communication: 0.010 sec/epoch, training: 0.391 sec/epoch (average)  39.2955
+# 5 :     106933.555 samples/sec, total: 0.468 sec/epoch, communication: 0.016 sec/epoch, training: 0.450 sec/epoch (average)  36.5976
+# 6 :     110740.583 samples/sec, total: 0.452 sec/epoch, communication: 0.010 sec/epoch, training: 0.440 sec/epoch (average)  29.455333333333333333333333333333
+# 7 :     96367.569 samples/sec, total: 0.519 sec/epoch, communication: 0.009 sec/epoch, training: 0.508 sec/epoch (average)  28.989857142857142857142857142857
+# 8 :     81644.800 samples/sec, total: 0.612 sec/epoch, communication: 0.011 sec/epoch, training: 0.600 sec/epoch (average)  29.9115s
 
-##          random dataset 3x224x224        gloo  round == 50
-# 2 :     308.115 samples/sec, total: 162.277 sec/epoch, communication: 38.000 sec/epoch, training: 124.254 sec/epoch (average)
-# 3 :     380.280 samples/sec, total: 131.482 sec/epoch, communication: 42.000 sec/epoch, training: 89.987 sec/epoch (average)
-# 4 :     402.852 samples/sec, total: 124.115 sec/epoch, communication: 46.000 sec/epoch, training: 78.053 sec/epoch (average)
-# 5 :     383.023 samples/sec, total: 130.540 sec/epoch, communication: 55.000 sec/epoch, training: 75.775 sec/epoch (average)
-# 6 :     375.396 samples/sec, total: 133.193 sec/epoch, communication: 0.000 sec/epoch, training: 72.345 sec/epoch (average)
-# 7 :     368.508 samples/sec, total: 135.682 sec/epoch, communication: 0.000 sec/epoch, training: 68.240 sec/epoch (average)
-# 8 :     385.432 samples/sec, total: 129.725 sec/epoch, communication: 0.000 sec/epoch, training: 63.924 sec/epoch (average)
-
+##          random dataset   nccl  3x32x32      104 480.769
+# 2 :     183348.254 samples/sec, total: 0.273 sec/epoch, communication: 0.011 sec/epoch, training: 0.261 sec/epoch (average) 240.3845  65.6249685
+# 3 :     149825.680 samples/sec, total: 0.334 sec/epoch, communication: 0.009 sec/epoch, training: 0.324 sec/epoch (average) 160.256   53.525504
+# 4 :     121336.842 samples/sec, total: 0.412 sec/epoch, communication: 0.013 sec/epoch, training: 0.398 sec/epoch (average) 120.19225  49.2788225
+# 5 :     115828.787 samples/sec, total: 0.432 sec/epoch, communication: 0.011 sec/epoch, training: 0.420 sec/epoch (average) 96.1538   41.5384416
+# 6 :     105852.508 samples/sec, total: 0.502 sec/epoch, communication: 0.009 sec/epoch, training: 0.462 sec/epoch (average) 80.128   40.224256
+# 7 :     89897.335 samples/sec, total: 0.556 sec/epoch, communication: 0.009 sec/epoch, training: 0.546 sec/epoch (average) 68.681   38.186636
+# 8 :     79819.196 samples/sec, total: 0.626 sec/epoch, communication: 0.008 sec/epoch, training: 0.617 sec/epoch (average)  60.096125  37.62017425
+#      [65.6249685, 53.525504, 49.2788225, 41.5384416, ,40.224256, 38.186636, 37.62017425]
 #############           MP:
-###       random dataset   3x224x224 
-# 2 :     pipeline-2, 1-1 epochs | 371.910 samples/sec, 134.441 sec/epoch (average)
-# 3 :     pipeline-3, 1-1 epochs | 495.354 samples/sec, 100.938 sec/epoch (average)
-# 4 :     pipeline-4, 1-1 epochs | 456.225 samples/sec, 109.595 sec/epoch (average)
-# 5 :     pipeline-5, 1-1 epochs | 457.693 samples/sec, 109.243 sec/epoch (average)
-# 6 :     pipeline-6, 1-1 epochs | 703.784 samples/sec, 71.045 sec/epoch (average)
-# 7 :     pipeline-7, 1-1 epochs | 933.117 samples/sec, 53.584 sec/epoch (average)
-# 8 :     pipeline-8, 1-1 epochs | 543.907 samples/sec, 91.927 sec/epoch (average)
-
-##          random dataset 3x224x224  128/devices      gloo
-# 2 :     205.028 samples/sec, total: 243.870 sec/epoch, communication: 139.224 sec/epoch (average)
-# 3 :     261.787 samples/sec, total: 190.995 sec/epoch, communication: 106.195 sec/epoch (average)
-# 4 :     325.373 samples/sec, total: 153.670 sec/epoch, communication: 84.616 sec/epoch (average)
-# 5 :     310.993 samples/sec, total: 160.775 sec/epoch, communication: 88.187 sec/epoch
-# 6 :     54.686*6    samples/sec, total: 152.378 sec/epoch, communication: 77.905 sec/epoch (average)
-# 7 :     57.512 samples/sec, total: 124.182 sec/epoch, communication: 64.768 sec/epoch (average)
-# 8 :     49.422 samples/sec, total: 126.463 sec/epoch, communication: 62.934 sec/epoch (average)
-
-##                                   resnet18
-##         cifar 10  gloo   128/device
-# 2 :  602.280 samples/sec, total: 83.018 sec/epoch, communication: 38.650 sec/epoch (average)
-# 3 :  502.348 samples/sec, total: 99.533 sec/epoch, communication: 56.495 sec/epoch (average)
-# 4 :  429.641 samples/sec, total: 116.376 sec/epoch, communication: 69.092 sec/epoch (average)
-# 5 :  409.107 samples/sec, total: 122.218 sec/epoch, communication: 79.600 sec/epoch (average)
-# 6 :  360.694 samples/sec, total: 138.622 sec/epoch, communication: 91.900 sec/epoch (average)
-# 7 :  336.272 samples/sec, total: 148.689 sec/epoch, communication: 101.123 sec/epoch (average)
-# 8 :  311.115 samples/sec, total: 160.712 sec/epoch, communication: 109.890 sec/epoch (average)
-
-#         random  3x32x32  gloo   
-# 2 :  1025.661 samples/sec, total: 48.749 sec/epoch, communication: 21.684 sec/epoch (average)
-# 3 :  1373.801 samples/sec, total: 36.395 sec/epoch, communication: 17.953 sec/epoch (average)
-# 4 :  1396.486 samples/sec, total: 35.804 sec/epoch, communication: 18.470 sec/epoch (average)
-# 5 :  1589.967 samples/sec, total: 31.447 sec/epoch, communication: 16.428 sec/epoch (average)
-# 6 :  1612.644 samples/sec, total: 31.005 sec/epoch, communication: 16.224 sec/epoch (average)
-# 7 :  1853.545 samples/sec, total: 26.975 sec/epoch, communication: 15.061 sec/epoch (average)
-# 8 :  1886.617 samples/sec, total: 26.502 sec/epoch, communication: 14.867 sec/epoch (average)
+###       random dataset   3x32x32
+# 2 :     pipeline-2, 1-1 epochs | 667.905 samples/sec, 74.861 sec/epoch (average)
+# 3 :     pipeline-3, 1-1 epochs | 881.485 samples/sec, 56.722 sec/epoch (average)
+# 4 :     pipeline-4, 1-1 epochs | 1144.035 samples/sec, 43.705 sec/epoch (average)
+# 5 :     pipeline-5, 1-1 epochs | 1373.514 samples/sec, 36.403 sec/epoch (average)
+# 6 :     pipeline-6, 1-1 epochs | 1353.027 samples/sec, 36.954 sec/epoch (average)
+# 7 :     pipeline-7, 1-1 epochs | 1423.475 samples/sec, 35.125 sec/epoch (average)
+# 8 :     pipeline-8, 1-1 epochs | 1383.046 samples/sec, 36.152 sec/epoch (average)
+######## [74.861, 56.722, 43.705, 36.403, 36.000, 35.125, 36.152]
 
 
 #####     unet     random 3x32x32   dp gloo    200 batch     50
