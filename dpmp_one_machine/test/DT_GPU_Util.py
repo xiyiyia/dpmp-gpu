@@ -264,6 +264,7 @@ def init_process(args,rank, fn, model, optimizer, data, Processing, Training, Co
     torch.cuda.set_device(rank)
 
     model = model.cuda()
+    data = data.cuda()
 
     # if(rank == 0):
     #     load_model_ts = time.time()
