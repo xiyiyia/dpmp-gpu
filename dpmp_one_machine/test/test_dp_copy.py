@@ -230,7 +230,7 @@ def run(rank, size, model, epochs, args, data):
 def init_process(args,rank, fn):
     """ Initialize the distributed environment. """
     os.environ['MASTER_ADDR'] = 'plab-pc2@100.65.120.46'
-    os.environ['MASTER_PORT'] = '15559'
+    os.environ['MASTER_PORT'] = '15560'
     #    100.83.231.65:56790
     # dataset_size = 50000//args.g
     # 100.83.231.65:22
