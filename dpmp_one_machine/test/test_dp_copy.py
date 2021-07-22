@@ -239,7 +239,9 @@ def init_process(args,rank, fn):
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
     if(args.n == 'vgg'):
+        
         model = vgg11().to(rank)
+        print(model)
         dataset_size = 50000//args.g
         input = torch.rand(args.b, 3, 32, 32, device='cuda:'+str(rank))  ## remove args.g
         target = torch.randint(1000, (args.b,), device='cuda:'+str(rank))  ## remove args.g
