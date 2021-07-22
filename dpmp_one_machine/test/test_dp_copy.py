@@ -236,7 +236,7 @@ def init_process(args,rank, fn):
     # 100.83.231.65:22
     # 100.80.95.72:65435
     # ,rank=rank, world_size=args.g
-    dist.init_process_group(args.ben)
+    dist.init_process_group(args.ben,rank=rank)
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
     if(args.n == 'vgg'):
