@@ -229,8 +229,8 @@ def run(rank, size, model, epochs, args, data):
 
 def init_process(args,rank, fn):
     """ Initialize the distributed environment. """
-    os.environ['MASTER_ADDR'] = '100.80.95.72'
-    os.environ['MASTER_PORT'] = '1056'
+    os.environ['MASTER_ADDR'] = '100.65.120.46'
+    os.environ['MASTER_PORT'] = '22'
     #    100.83.231.65:56790
     # dataset_size = 50000//args.g
     # 100.83.231.65:22
@@ -244,7 +244,7 @@ def init_process(args,rank, fn):
         input = torch.rand(args.b, 3, 32, 32, device='cuda:'+str(rank))  ## remove args.g
         target = torch.randint(1000, (args.b,), device='cuda:'+str(rank))  ## remove args.g
         data = [(input, target)] * (dataset_size//args.b)
-    # model = resnet.resnet101(num_classes=10)
+    # model = resnet.resnet101(num_classes=10)ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzCiyXcJq6/RGdCoq4tJtV6qhnynOBw3e+iX/mGWduicZmFLbrgzp4p0w1RZJSwi/3Qy4o09Z+G75fq16rg+0vAF/Nbbv2D/8VsqFV/2Tp0qwnBqJ+/r7pPxkEmgvQ6rqCJgzea0PYyt9IOW3iUAs1C1A2QkyaZZ97oPRwScLPw66DQud71t6l6o3dRi1Kr+++YwCQ4o7d22M9RHuPfMjtet8U8Ss8lJBhsiR0X76Ym5wkbUTEcFnN/AdBwtd1CbxIJBegBU225q1dHh3RsS02XxOWSmBxVH+mLlTLi1RIGAzLM+hNGmxIX1DIDQGmjeDkE6TBzp1zdHJjK2vlaphp plab-pc1@plab-pc1
     # model = cast(nn.Sequential, model)
     if(args.n == 'resnet'):
         model = resnet101().to(rank)
