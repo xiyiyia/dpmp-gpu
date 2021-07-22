@@ -229,11 +229,11 @@ def run(rank, size, model, epochs, args, data):
 
 def init_process(args,rank, fn):
     """ Initialize the distributed environment. """
-    os.environ['MASTER_ADDR'] = '100.83.231.65'
-    os.environ['MASTER_PORT'] = '56790'
-
+    # os.environ['MASTER_ADDR'] = '100.83.231.65'
+    # os.environ['MASTER_PORT'] = '56790'
+    #    100.83.231.65:56790
     # dataset_size = 50000//args.g
-    dist.init_process_group(args.ben, rank=rank, world_size=args.g)
+    dist.init_process_group(args.ben, 'tcp://100.83.231.65:56790',rank=rank, world_size=args.g)
     # dist.init_process_group("gloo", rank=rank, world_size=args.g)
     torch.cuda.set_device(rank)
     if(args.n == 'vgg'):
