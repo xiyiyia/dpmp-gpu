@@ -77,11 +77,11 @@ def _parallel_fit_per_epoch(
                     "Estimator: {:03d} | Epoch: {:03d} | Batch: {:03d}"
                     " | Loss: {:.5f} | Correct: {:d}/{:d}"
                 )
-                # print(
-                #     msg.format(
-                #         idx, epoch, batch_idx, loss, correct, subsample_size
-                #     )
-                # )
+                print(
+                    msg.format(
+                        idx, epoch, batch_idx, loss, correct, subsample_size
+                    )
+                )
             else:
                 msg = (
                     "Estimator: {:03d} | Epoch: {:03d} | Batch: {:03d}"
