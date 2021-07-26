@@ -3,7 +3,7 @@ from models import resnet,vgg
 import argparse
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
-
+import io,sys
 
 def get_Dataloader_model(n,d,batch_size):
   # Load data
@@ -110,7 +110,7 @@ if __name__=="__main__":
   parser.add_argument('-b', type=int, default=128, help='batchsize')
   parser.add_argument('-e', type=int, default=100, help='epoch')
   parser.add_argument('-d', type=str, default='cifar10')
-  parser.add_argument('-n', type=str, default='vgg')
+  parser.add_argument('-n', type=str, default='resnet')
   parser.add_argument('-ne', type=int, default=10, help='number of n_estimators')
   args = parser.parse_args()
 
@@ -130,11 +130,18 @@ if __name__=="__main__":
        T_max=args.e                           # additional arguments on the scheduler
   )
 
+  sio = io.StringIO()
+  sys.stdout = sio
+
   # Train the ensemble
   ensemble.fit(
       train_loader,
       epochs=args.e,                          # number of training epochs
   )
+
+  sys.stdout = sys.__stdout__  # 将标准输出复原
+  sio.seek(0)
+  print(bytes(sio.read(), encoding='utf-8'))
 
   # Evaluate the ensemble
   acc = ensemble.predict(test_loader)         # testing accuracy
