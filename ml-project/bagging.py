@@ -130,18 +130,11 @@ if __name__=="__main__":
        T_max=args.e                           # additional arguments on the scheduler
   )
 
-  sio = io.StringIO()
-  sys.stdout = sio
-
   # Train the ensemble
   ensemble.fit(
       train_loader,
       epochs=args.e,                          # number of training epochs
   )
-
-  sys.stdout = sys.__stdout__  # 将标准输出复原
-  sio.seek(0)
-  print(bytes(sio.read(), encoding='utf-8'))
 
   # Evaluate the ensemble
   acc = ensemble.predict(test_loader)         # testing accuracy
