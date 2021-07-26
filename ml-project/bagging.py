@@ -1,4 +1,4 @@
-from torchensemble import VotingClassifier  # voting is a classic ensemble strategy
+from torchensemble_ import VotingClassifier  # voting is a classic ensemble strategy
 from models import resnet,vgg
 import argparse
 from torchvision import datasets, transforms
