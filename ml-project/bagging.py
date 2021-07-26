@@ -1,4 +1,4 @@
-from torchensemble_ import VotingClassifier  # voting is a classic ensemble strategy
+from torchensemble_ import BaggingClassifier  # voting is a classic ensemble strategy
 from models import resnet,vgg
 import argparse
 from torchvision import datasets, transforms
@@ -81,24 +81,24 @@ def get_Dataloader_model(n,d,batch_size):
     )
     # Define the ensemble
     if n == 'resnet':
-      ensemble = VotingClassifier(
+      ensemble = BaggingClassifier(
           estimator=resnet.resnet18(num_classes=100),               # here is your deep learning model
           n_estimators=10,                        # number of base estimators
       )
     if n == 'vgg':
-      ensemble = VotingClassifier(
+      ensemble = BaggingClassifier(
           estimator=vgg.vgg11_bn(num_classes=100),               # here is your deep learning model
           n_estimators=10,                        # number of base estimators
       )
     return train_loader,test_loader,ensemble
   # Define the ensemble
   if n == 'resnet':
-    ensemble = VotingClassifier(
+    ensemble = BaggingClassifier(
         estimator=resnet.resnet18(num_classes=10),               # here is your deep learning model
         n_estimators=10,                        # number of base estimators
     )
   if n == 'vgg':
-    ensemble = VotingClassifier(
+    ensemble = BaggingClassifier(
         estimator=vgg.vgg11_bn(num_classes=10),               # here is your deep learning model
         n_estimators=10,                        # number of base estimators
     )
