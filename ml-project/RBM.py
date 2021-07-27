@@ -287,6 +287,7 @@ def test_rbm(args,k=1):
     rebuild_value = []
     for i in test:
         for x in range(len(i)):
+            print(i[x],len(i[x]))
             rebuild_value.append([rbm.predict(i[x])])
         break
     visualize(args,rebuild_value)
