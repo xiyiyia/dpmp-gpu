@@ -166,7 +166,7 @@ class RBM:
         np.random.shuffle(X_train)
         self.batches = []
         for i in range(0, len(X_train), self.batch_sz):
-            self.batches.append(X_train[i:i + self.batch_sz].numpy())
+            self.batches.append(X_train[i:i + self.batch_sz])
         self.indice = 0
 
     def get_batch(self):
@@ -255,7 +255,7 @@ def test_rbm(args,k=1):
     test = []
     for _, (batch_x, batch_y) in enumerate(train_data):
         if(len(batch_x) == 128):
-            data.append(batch_x.reshape(128,784))
+            data.append(batch_x.reshape(128,784).numpy())
             # print(batch_x.reshape(128,784).shape,batch_x.reshape(128,784).numpy().shape)
             # break
         else:
@@ -263,7 +263,7 @@ def test_rbm(args,k=1):
     # print(len(data),len(data[0][0]))
     for _, (batch_x, batch_y) in enumerate(test_data):
         if(len(batch_x) == 128):
-            test.append(batch_x.reshape(128,784))
+            test.append(batch_x.reshape(128,784).numpy())
         else:
             break
     # print(len(test),len(test[0][0]))
