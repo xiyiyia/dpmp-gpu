@@ -197,7 +197,7 @@ class RBM:
                 dbv = np.zeros_like(self.bv)
                 dbh = np.zeros_like(self.bh)
                 # for v0_prob in  batch_data:
-                h0_prob = self.forword(v0_prob.numpy())
+                h0_prob = self.forword(v0_prob)
                 h0 = np.zeros_like(h0_prob)
 
                 h0[h0_prob > np.random.random(h0_prob.shape)] = 1
@@ -256,6 +256,8 @@ def test_rbm(args,k=1):
     for _, (batch_x, batch_y) in enumerate(train_data):
         if(len(batch_x) == 128):
             data.append(batch_x.reshape(128,784))
+            print(data)
+            break
         else:
             break
     # print(len(data),len(data[0][0]))
