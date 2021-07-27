@@ -167,7 +167,7 @@ class RBM:
         self.batches = []
         for i in range(0, len(X_train)):#, self.batch_sz):
             for j in range(len(X_train[i])):
-                print(X_train[i][j])
+                print(X_train[i])
                 X_train[i][j] = X_train[i][j].numpy()
             self.batches.append(X_train[i])#:i + self.batch_sz])
         self.indice = 0
