@@ -207,7 +207,7 @@ def run(args):
     stop = time.time()
     print('time:',stop-start)
     plt.plot(error_list)
-    plt.savefig('./pic/'+args.d+'lossnid.png')
+    plt.savefig('./pic/'+args.d+args.n+'lossnid.png')
     eval_training(test_loader,model)
 
 if __name__ == "__main__":
