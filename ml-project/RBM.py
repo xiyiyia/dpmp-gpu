@@ -268,7 +268,7 @@ def test_rbm(args,k=1):
     rng = numpy.random.RandomState(123)
 
     # construct RBM
-    print(data(len))
+    print(len(data))
     rbm = RBM(input=data, n_visible=args.b*4, n_hidden=784, rng=rng)
 
     # train
