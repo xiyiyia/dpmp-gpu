@@ -136,7 +136,7 @@ def get_Dataloader_model(n,d,batch_size):
       )
     if n == 'vgg':
       ensemble = BaggingClassifier(
-          estimator=vgg.vgg11_bn(num_classes=100),               # here is your deep learning model
+          estimator=vgg.vgg11_bn(num_class=100),               # here is your deep learning model
           n_estimators=3,                        # number of base estimators
       )
     return train_loader,test_loader,ensemble
@@ -149,7 +149,7 @@ def get_Dataloader_model(n,d,batch_size):
     )
   if n == 'vgg':
     ensemble = BaggingClassifier(
-        estimator=vgg.vgg11_bn(num_classes=10),               # here is your deep learning model
+        estimator=vgg.vgg11_bn(num_class=10),               # here is your deep learning model
         n_estimators=3,                        # number of base estimators
     )
   return train_loader,test_loader,ensemble
