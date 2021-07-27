@@ -142,11 +142,11 @@ def get_Dataloader_model(d,batch_size):
     return train_loader,test_loader
 
 ########## CONFIGURATION ##########
-BATCH_SIZE = 64
+BATCH_SIZE = args.b
 VISIBLE_UNITS = 784  # 28 x 28 images
 HIDDEN_UNITS = 128
 CD_K = 2
-EPOCHS = 10
+EPOCHS = args.e
 
 
 CUDA = torch.cuda.is_available()
@@ -182,8 +182,8 @@ for epoch in range(EPOCHS):
     print('Epoch Error (epoch=%d): %.4f' % (epoch, epoch_error))
 
     error_list.append(epoch_error)
-plt.plot(error_list)
-
+plt.plot(error_list.cpu())
+plt.savefig('./pic/'+args.d+'loss.png')
 
 ########## EXTRACT FEATURES ##########
 print('Extracting features...')
