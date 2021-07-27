@@ -233,7 +233,7 @@ class RBM:
         plt.plot(err_list)
 
     def predict(self, input_x):
-        h0_prob = self.forword(input_x)
+        h0_prob = self.forword(input_x.T)
         h0 = np.zeros_like(h0_prob)
         h0[h0_prob > np.random.random(h0_prob.shape)] = 1
         v1 = self.backward(h0)
