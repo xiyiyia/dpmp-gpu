@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 import io,sys
 
 
-def get_Dataloader_model(n,d,batch_size):
+def get_Dataloader_model(d,batch_size):
     # Load data
     train_transformer = transforms.Compose(
         [
@@ -198,8 +198,17 @@ class RBM :
 
 def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     
-    
-    train_data, test_data = get_Dataloader_model()
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-l', type=int, default=0.1, help='learning rate')
+    parser.add_argument('-b', type=int, default=128, help='batchsize')
+    parser.add_argument('-e', type=int, default=100, help='epoch')
+    parser.add_argument('-d', type=str, default='cifar10')
+    parser.add_argument('-n', type=str, default='resnet')
+    parser.add_argument('-ne', type=int, default=10, help='number of n_estimators')
+    args = parser.parse_args()
+
+    train_data, test_data = get_Dataloader_model(args.d,args.b)
     print(train_data)
 
     rng = numpy.random.RandomState(123)
