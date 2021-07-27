@@ -121,8 +121,8 @@ if (args.d == 'cifar10' or args.d == 'cifar100'):
 else:
     VISIBLE_UNITS = 784  # 28 x 28 images
 HIDDEN_UNITS = 128
-CD_K = 2
-EPOCHS = args.e
+
+
 
 
 CUDA = torch.cuda.is_available()
@@ -163,6 +163,7 @@ for epoch in range(args.e):
         # error_list.append(loss.item[0])
         print(loss)
         if(index == 0):
+            print(v.shape)
             show_adn_save(args.d+"real",make_grid(v.view(32,1,28,28).data))
             show_adn_save(args.d+"generate",make_grid(v1.view(32,1,28,28).data))
 
