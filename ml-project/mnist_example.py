@@ -163,12 +163,12 @@ for i, (batch, labels) in enumerate(train_loader):
     train_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
 
 print(train_features.shape)
-plt.figure(figsize=(5,5), dpi=180)
-for i in range(0,16):
-    img = train_features[i*BATCH_SIZE].reshape(28,28)
-    plt.subplot(4,4,i)
-    plt.imshow(img ,cmap = plt.cm.gray)
-plt.savefig('./pic/'+args.d+'.png')
+# plt.figure(figsize=(5,5), dpi=180)
+# for i in range(0,16):
+#     img = train_features[i*BATCH_SIZE].reshape(28,28)
+#     plt.subplot(4,4,i)
+#     plt.imshow(img ,cmap = plt.cm.gray)
+# plt.savefig('./pic/'+args.d+'.png')
 
 for i, (batch, labels) in enumerate(test_loader):
     batch = batch.view(len(batch), VISIBLE_UNITS)  # flatten input data
@@ -178,7 +178,8 @@ for i, (batch, labels) in enumerate(test_loader):
 
     test_features[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = rbm.sample_hidden(batch).cpu().numpy()
     test_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
-
+    print(test_features.shape)
+print(test_features.shape)
 
 
 ########## CLASSIFICATION ##########
