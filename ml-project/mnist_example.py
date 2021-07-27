@@ -153,15 +153,15 @@ for i, (batch, labels) in enumerate(train_loader):
     train_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
 
     plt.figure(figsize=(5,5), dpi=180)
-    for i in range(0,8):
-        for j in range(0,8):
+    for i in range(0,4):
+        for j in range(0,4):
             if (args.d == 'cifar10' or args.d == 'cifar100'):
-                img = np.array(train_features[i*8+j]).reshape(32,32)
+                img = np.array(train_features[i*4+j]).reshape(32,32)
                 plt.subplot(8,8,i*8+j+1)
                 plt.imshow(img ,cmap = plt.cm.gray)
             else:
-                img = np.array(train_features[i*8+j]).reshape(28,28)
-                plt.subplot(8,8,i*8+j+1)
+                img = np.array(train_features[i*4+j]).reshape(28,28)
+                plt.subplot(4,4,i*4+j+1)
                 plt.imshow(img ,cmap = plt.cm.gray)
     plt.savefig('./pic/'+args.d+'.png')
     break
