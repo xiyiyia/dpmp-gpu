@@ -162,10 +162,10 @@ for i, (batch, labels) in enumerate(train_loader):
     train_features[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = rbm.sample_hidden(batch).cpu().numpy()
     train_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
 
-# print(len(train_labels[0]))
+print(len(train_features[i*BATCH_SIZE]))
 plt.figure(figsize=(5,5), dpi=180)
 for i in range(0,16):
-    img = train_features[i*BATCH_SIZE:(i+1)*BATCH_SIZE].reshape(28,28)
+    img = train_features[i*BATCH_SIZE].reshape(28,28)
     plt.subplot(4,4,i)
     plt.imshow(img ,cmap = plt.cm.gray)
 plt.savefig('./pic/'+args.d+'.png')
