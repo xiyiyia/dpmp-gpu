@@ -266,7 +266,7 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     data = []
     for _, (batch_x, batch_y) in enumerate(train_data):
         print(batch_x[0].shape)
-        m,h,w = batch_x.shape
+        [m,h,w] = batch_x.shape
         x_line = batch_x.reshape((m,1,h,w))
         if(len(x_line) == 128):
             print(x_line[:128].reshape(128,784))
