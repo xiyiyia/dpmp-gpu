@@ -155,7 +155,6 @@ class RBM:
         return 1.0 / (1.0 + np.exp(-z))
 
     def forword(self, inpt):
-        print(self.bh.shape, inpt.shape, self.W.T.shape)
         z = np.dot(inpt, self.W.T) + self.bh
         return self.sigmoid(z)
 
@@ -237,10 +236,10 @@ class RBM:
         h0 = np.zeros_like(h0_prob)
         h0[h0_prob > np.random.random(h0_prob.shape)] = 1
         v1 = self.backward(h0)
+        print(len(v1))
         return v1
 
 def visualize(args,input_x):
-    print(len(input_x))
     plt.figure(figsize=(5,5), dpi=180)
     for i in range(0,8):
         for j in range(0,8):
@@ -282,8 +281,10 @@ def test_rbm(args,k=1):
                 test = np.append(test,batch_x.reshape(128,784).numpy(),axis=0)
         else:
             break
-
-    rbm = RBM(nh=100,nv=784)
+    if(args.d == 'cifar100'):
+        rbm = RBM(nh=100,nv=784)
+    else:
+        rbm = RBM(nh=10,nv=784)
     rbm.fit(data,epochs=args.e)
     rebuild_value = []
     # for i in test:
