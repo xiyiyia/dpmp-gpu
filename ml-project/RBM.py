@@ -23,6 +23,8 @@ def get_Dataloader_model(d,batch_size):
         )
         test_transformer = transforms.Compose(
             [
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomCrop(28, 4),
                 transforms.ToTensor(),
                 transforms.Normalize(
                     (0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)
@@ -44,8 +46,8 @@ def get_Dataloader_model(d,batch_size):
     if d == 'mnist':
         train_transformer = transforms.Compose(
             [
-                transforms.RandomHorizontalFlip(),
-                transforms.RandomCrop(28, 4),
+                # transforms.RandomHorizontalFlip(),
+                # transforms.RandomCrop(28, 4),
                 transforms.ToTensor(),
                 transforms.Normalize(
                     (0.5), (0.5)
@@ -75,8 +77,8 @@ def get_Dataloader_model(d,batch_size):
     if d == 'fmnist':
         train_transformer = transforms.Compose(
             [
-                transforms.RandomHorizontalFlip(),
-                transforms.RandomCrop(28, 4),
+                # transforms.RandomHorizontalFlip(),
+                # transforms.RandomCrop(28, 4),
                 transforms.ToTensor(),
                 transforms.Normalize(
                     (0.5), (0.5)
@@ -117,6 +119,8 @@ def get_Dataloader_model(d,batch_size):
         )
         test_transformer = transforms.Compose(
             [
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomCrop(28, 4),
                 transforms.ToTensor(),
                 transforms.Normalize(
                     (0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)
@@ -176,7 +180,7 @@ class RBM:
         self.indice += 1
         return self.batches[self.indice - 1]
 
-    def fit(self, X_train, epochs=50, batch_sz=128):
+    def fit(args,self, X_train, epochs=50, batch_sz=128):
         '''
         用梯度上升法做训练
         '''
@@ -230,7 +234,7 @@ class RBM:
             print('Epoch {0},err_sum {1}'.format(epoch, err_sum))
 
         plt.plot(err_list)
-        plt.savefig('./pic/loss.png')
+        plt.savefig('./pic/'+args.d+'loss.png')
 
     def predict(self, input_x):
         h0_prob = self.forword(input_x)
@@ -247,7 +251,8 @@ def visualize(args,input_x):
             img = np.array(input_x[i*8+j]).reshape(28,28)
             plt.subplot(8,8,i*8+j+1)
             plt.imshow(img ,cmap = plt.cm.gray)
-            plt.savefig('./pic/'+args.d+str(i)+str(j)+'.png')
+  
+    plt.savefig('./pic/'+args.d+'.png')
     # plt.figure()
     # plt.title('')
     # #  plt.plot(num_gpu, dp, "x-", color='m', label = "data_parrallel_in_nccl")
@@ -286,7 +291,7 @@ def test_rbm(args,k=1):
         rbm = RBM(nh=100,nv=784)
     else:
         rbm = RBM(nh=10,nv=784)
-    rbm.fit(data,epochs=args.e)
+    rbm.fit(args,data,epochs=args.e)
     visualize(args,rbm.predict(test[0:64]))
 
 
