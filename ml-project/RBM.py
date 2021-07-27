@@ -166,7 +166,7 @@ class RBM:
         np.random.shuffle(X_train)
         self.batches = []
         for i in range(0, len(X_train)):#, self.batch_sz):
-            self.batches.append(X_train[i])#:i + self.batch_sz])
+            self.batches.append(X_train[i].numpy())#:i + self.batch_sz])
         self.indice = 0
 
     def get_batch(self):
