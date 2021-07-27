@@ -134,12 +134,11 @@ for epoch in range(EPOCHS):
         if CUDA:
             batch = batch.cuda()
 
-        batch_error = rbm.contrastive_divergence(batch)
+        batch_error = rbm.contrastive_divergence(batch).cpu()
 
         epoch_error += batch_error
-    print('Epoch Error (epoch=%d): %.4f' % (epoch, epoch_error/BATCH_SIZE))
-
-    error_list.append(epoch_error/BATCH_SIZE)
+    print('Epoch Error (epoch=%d): %.4f' % (epoch, epoch_error/(BATCH_SIZE*len(train_loader))))
+    error_list.append(epoch_error/(BATCH_SIZE*len(train_loader)))
 plt.plot(error_list)
 plt.savefig('./pic/'+args.d+'loss.png')
 
