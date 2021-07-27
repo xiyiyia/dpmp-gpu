@@ -155,7 +155,7 @@ for epoch in range(args.e):
         sample_data = data.bernoulli()
         
         v,v1 = rbm(sample_data)
-        loss = (rbm.free_energy(v) - rbm.free_energy(v1))*(rbm.free_energy(v) - rbm.free_energy(v1))
+        loss = rbm.free_energy(v) - rbm.free_energy(v1)
         loss_.append(loss.item())
         train_op.zero_grad()
         loss.backward()
