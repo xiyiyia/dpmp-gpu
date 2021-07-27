@@ -19,7 +19,10 @@ from .utils import io
 from .utils import set_module
 from .utils import operator as op
 
-
+# global theRecodOfLoss
+theRecodOfLoss0 = []
+theRecodOfLoss1 = []
+theRecodOfLoss2 = []
 __all__ = ["BaggingClassifier", "BaggingRegressor"]
 
 
@@ -64,6 +67,13 @@ def _parallel_fit_per_epoch(
         loss = criterion(sampling_output, sampling_target)
         loss.backward()
         optimizer.step()
+        if idx == 0:
+            theRecodOfLoss0.append(loss)
+        elif idx == 1:
+            theRecodOfLoss1.append(loss)
+        else:
+            theRecodOfLoss2.append(loss)
+
 
         # Print training status
         if batch_idx % log_interval == 0:
@@ -175,6 +185,8 @@ class BaggingClassifier(BaseClassifier):
 
             # Training loop
             for epoch in range(epochs):
+                print('epoch:')
+                print(epoch)
                 self.train()
 
                 if self.use_scheduler_:
