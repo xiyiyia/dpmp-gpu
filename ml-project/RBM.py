@@ -180,7 +180,7 @@ class RBM:
         self.indice += 1
         return self.batches[self.indice - 1]
 
-    def fit(args,self, X_train, epochs=50, batch_sz=128):
+    def fit(self,args, X_train, epochs=50, batch_sz=128):
         '''
         用梯度上升法做训练
         '''
