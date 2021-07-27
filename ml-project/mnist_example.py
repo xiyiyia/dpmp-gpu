@@ -179,7 +179,7 @@ print('Classifying...')
 clf = LogisticRegression()
 clf.fit(train_features, train_labels)
 predictions = clf.predict(test_features)
-
+print(predictions)
 plt.figure(figsize=(5,5), dpi=180)
 for i in range(0,4):
     for j in range(0,4):
