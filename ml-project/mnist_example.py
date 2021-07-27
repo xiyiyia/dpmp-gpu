@@ -161,6 +161,7 @@ for epoch in range(10):
         loss.backward()
         train_op.step()
         # error_list.append(loss.item[0])
+        print(loss)
     error_list.append(sum(loss_)/len(train_loader))
 stop = time.time()
 print('time:',stop-start)
