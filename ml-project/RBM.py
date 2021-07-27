@@ -5,7 +5,7 @@ import argparse
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import io,sys
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 def get_Dataloader_model(d,batch_size):
     # Load data
@@ -155,7 +155,7 @@ class RBM:
         return 1.0 / (1.0 + np.exp(-z))
 
     def forword(self, inpt):
-        print(inpt.shape)
+        # print(inpt.shape)
         z = np.dot(inpt, self.W.T) + self.bh
         return self.sigmoid(z)
 
@@ -239,14 +239,23 @@ class RBM:
         v1 = self.backward(h0)
         return v1
 
-def visualize(input_x):
+def visualize(args,input_x):
     plt.figure(figsize=(5,5), dpi=180)
     for i in range(0,8):
         for j in range(0,8):
             img = input_x[i*8+j].reshape(28,28)
             plt.subplot(8,8,i*8+j+1)
             plt.imshow(img ,cmap = plt.cm.gray)
-
+    # plt.figure()
+    # plt.title('')
+    # #  plt.plot(num_gpu, dp, "x-", color='m', label = "data_parrallel_in_nccl")
+    # plt.plot(time_1,loss_1,"+-",color = 'r',label="noise levels: 0")
+    # plt.plot(time_2,loss_2,"x-",color = 'b',label="noise levels: 100")
+    # plt.plot(time_3,loss_3,"-",color = 'y',label="noise levels: 10000")
+    # plt.legend()
+    # plt.ylabel('MSE error')
+    # plt.xlabel('Transmissions')
+    plt.savefig('./pic/'+args.d+'.png')
 
 
 
@@ -261,21 +270,16 @@ def test_rbm(args,k=1):
 
         else:
             break
-    # print(len(data),len(data[0][0]))
     for _, (batch_x, batch_y) in enumerate(test_data):
         if(len(batch_x) == 128):
             test.append(batch_x.reshape(128,784).numpy())
         else:
             break
-    # print(len(test),len(test[0][0]))
-
-    # construct RBM
-    # print(len(data))
 
     rbm = RBM(nv=args.b, nh=784)
     rbm.fit(data,epochs=args.e)
     rebuild_value = [rbm.predict(x) for x in test]
-    visualize(rebuild_value)
+    visualize(args,rebuild_value)
     # print(rbm.reconstruct(test))
 
 
