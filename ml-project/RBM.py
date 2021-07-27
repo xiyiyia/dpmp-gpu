@@ -166,7 +166,7 @@ class RBM:
     def train_loader(self, X_train):
         np.random.shuffle(X_train)
         self.batches = []
-        for i in range(0, len(X_train)):#, self.batch_sz):
+        for i in range(0, len(X_train), self.batch_sz):
             # print(len(X_train),len(X_train[0]))
             self.batches.append(X_train[i:i + self.batch_sz])
         self.indice = 0
