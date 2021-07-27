@@ -26,28 +26,33 @@ args = parser.parse_args()
 def get_Dataloader_model(d,batch_size):
     # Load data
 
-    if d == 'cifar10':
-        transformer = transforms.Compose(
-            [
-                transforms.ToTensor(),
-            ]
-        )
-        train_dataset = datasets.CIFAR10(
-                './data', train=True, download=True, transform=transformer
-            )
-        train_loader = DataLoader(
-            train_dataset,
-            batch_size=batch_size,
-            shuffle=True,
-        )
-        test_dataset = datasets.CIFAR10(
-                './data', train=False, download=True, transform=transformer
-            )
-        test_loader = DataLoader(
-            test_dataset,
-            batch_size=batch_size,
-            shuffle=True,
-        )
+    if d == 'kmnist':
+        train_dataset = torchvision.datasets.KMNIST(root='./data', train=True, transform=torchvision.transforms.ToTensor(), download=True)
+        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE)
+
+        test_dataset = torchvision.datasets.KMNIST(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
+        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=BATCH_SIZE)
+        # transformer = transforms.Compose(
+        #     [
+        #         transforms.ToTensor(),
+        #     ]
+        # )
+        # train_dataset = datasets.CIFAR10(
+        #         './data', train=True, download=True, transform=transformer
+        #     )
+        # train_loader = DataLoader(
+        #     train_dataset,
+        #     batch_size=batch_size,
+        #     shuffle=True,
+        # )
+        # test_dataset = datasets.CIFAR10(
+        #         './data', train=False, download=True, transform=transformer
+        #     )
+        # test_loader = DataLoader(
+        #     test_dataset,
+        #     batch_size=batch_size,
+        #     shuffle=True,
+        # )
     if d == 'mnist':
         train_dataset = torchvision.datasets.MNIST(root='./data', train=True, transform=torchvision.transforms.ToTensor(), download=True)
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE)
@@ -61,29 +66,34 @@ def get_Dataloader_model(d,batch_size):
         test_dataset = torchvision.datasets.FashionMNIST(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
-    if d == 'cifar100':
-        transformer = transforms.Compose(
-            [
-                transforms.ToTensor(),
-            ]
-        )
+    if d == 'qmnist':
+        train_dataset = torchvision.datasets.QMNIST(root='./data', train=True, transform=torchvision.transforms.ToTensor(), download=True)
+        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE)
 
-        train_dataset = datasets.CIFAR100(
-                './data', train=True, download=True, transform=transformer
-            )
-        train_loader = DataLoader(
-            train_dataset,
-            batch_size=batch_size,
-            shuffle=True,
-        )
-        test_dataset = datasets.CIFAR100(
-                './data', train=False, download=True, transform=transformer
-            )
-        test_loader = DataLoader(
-            test_dataset,
-            batch_size=batch_size,
-            shuffle=True,
-        )
+        test_dataset = torchvision.datasets.QMNIST(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
+        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=BATCH_SIZE)
+        # transformer = transforms.Compose(
+        #     [
+        #         transforms.ToTensor(),
+        #     ]
+        # )
+
+        # train_dataset = datasets.CIFAR100(
+        #         './data', train=True, download=True, transform=transformer
+        #     )
+        # train_loader = DataLoader(
+        #     train_dataset,
+        #     batch_size=batch_size,
+        #     shuffle=True,
+        # )
+        # test_dataset = datasets.CIFAR100(
+        #         './data', train=False, download=True, transform=transformer
+        #     )
+        # test_loader = DataLoader(
+        #     test_dataset,
+        #     batch_size=batch_size,
+        #     shuffle=True,
+        # )
     return train_dataset, test_dataset, train_loader,test_loader
 
 ########## CONFIGURATION ##########
@@ -157,7 +167,7 @@ for i, (batch, labels) in enumerate(train_loader):
         for j in range(0,4):
             if (args.d == 'cifar10' or args.d == 'cifar100'):
                 img = np.array(train_features[i*4+j]).reshape(32,32)
-                plt.subplot(8,8,i*8+j+1)
+                plt.subplot(4,4,i*4+j+1)
                 plt.imshow(img ,cmap = plt.cm.gray)
             else:
                 img = np.array(train_features[i*4+j]).reshape(28,28)
