@@ -256,6 +256,8 @@ def test_rbm(args,k=1):
     for _, (batch_x, batch_y) in enumerate(train_data):
         if(len(batch_x) == 128):
             data.append(batch_x.reshape(128,784).numpy())
+            print(len(batch_x.reshape(128,784).numpy()),len(batch_x.reshape(128,784).numpy()[1]))
+            break
             # print(batch_x.reshape(128,784).shape,batch_x.reshape(128,784).numpy().shape)
             # break
         else:
