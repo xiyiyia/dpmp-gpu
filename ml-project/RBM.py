@@ -149,7 +149,7 @@ class RBM:
     def __init__(self):
         self.nv = 784
         self.nh = 500
-        self.lr = 0.1
+        self.lr = 1
         self.W = np.random.randn(self.nh, self.nv) * 0.1
         self.bv = np.zeros(self.nv)
         self.bh = np.zeros(self.nh)
