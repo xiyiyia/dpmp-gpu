@@ -37,14 +37,13 @@ args = parser.parse_args()
 def show_adn_save(file_name,img):
     npimg = np.transpose(img.numpy(),(1,2,0))
     # f = "./%s.png" % file_name
-    # plt.imshow(npimg)
+    plt.imshow(npimg)
     # plt.imsave(f,npimg)
     plt.savefig(file_name)
     # plt.savefig('./pic/'+args.d+'loss.png')
     # plt.savefig('./pic/'+args.d+'loss.png')
 def get_Dataloader_model(d,batch_size):
     # Load data
-
     if d == 'kmnist':
         train_dataset = torchvision.datasets.KMNIST(root='./data', train=True, transform=torchvision.transforms.ToTensor(), download=True)
         train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE)
@@ -121,7 +120,7 @@ if (args.d == 'cifar10' or args.d == 'cifar100'):
     VISIBLE_UNITS = 1024*3  # 28 x 28 images
 else:
     VISIBLE_UNITS = 784  # 28 x 28 images
-HIDDEN_UNITS = 128
+# HIDDEN_UNITS = 128
 
 
 
@@ -162,12 +161,6 @@ for epoch in range(args.e):
         loss.backward()
         train_op.step()
         # error_list.append(loss.item[0])
-    print(loss_)
-    v = v[0:32,:]
-    v1 = v1[0:32,:]
-    print(v.shape)
-    show_adn_save("./pic/"+args.d+"real",make_grid(v.view(32,1,28,28).data))
-    show_adn_save("./pic/"+args.d+"generate",make_grid(v1.view(32,1,28,28).data))
 
     error_list.append(sum(loss_)/len(train_loader))
 stop = time.time()
@@ -175,6 +168,11 @@ print('time:',stop-start)
 plt.plot(error_list)
 plt.savefig('./pic/'+args.d+'loss.png')
 
+v = v[0:32,:]
+v1 = v1[0:32,:]
+print(v.shape)
+show_adn_save("./pic/"+args.d+"real",make_grid(v.view(32,1,28,28).data))
+show_adn_save("./pic/"+args.d+"generate",make_grid(v1.view(32,1,28,28).data))
 # show_adn_save(args.d+"real",make_grid(v.view(32,1,28,28).data))
 
 # show_adn_save(args.d+"generate",make_grid(v1.view(32,1,28,28).data))
