@@ -155,8 +155,7 @@ class RBM:
         return 1.0 / (1.0 + np.exp(-z))
 
     def forword(self, inpt):
-        print(len(inpt),len(inpt[0]))
-        print(len(self.W),len(self.W[0]),len(self.bh))
+        print(inpt.shape())
         z = np.dot(inpt.T, self.W.T) + self.bh
         return self.sigmoid(z)
 
