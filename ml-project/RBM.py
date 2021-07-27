@@ -278,7 +278,11 @@ def test_rbm(args,k=1):
 
     rbm = RBM(nv=args.b, nh=784)
     rbm.fit(data,epochs=args.e)
-    rebuild_value = [rbm.predict(x) for x in test]
+    rebuild_value = []
+    for i in test:
+        for x in range(len(i)):
+            rebuild_value.appen([rbm.predict(i[x])])
+        break
     visualize(args,rebuild_value)
     # print(rbm.reconstruct(test))
 
