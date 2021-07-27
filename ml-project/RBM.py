@@ -156,7 +156,7 @@ class RBM:
 
     def forword(self, inpt):
         print(inpt.shape)
-        z = np.dot(inpt.T, self.W.T) + self.bh
+        z = np.dot(inpt, self.W.T) + self.bh
         return self.sigmoid(z)
 
     def backward(self, inpt):
@@ -190,7 +190,7 @@ class RBM:
             err_sum = 0
 
             while 1:
-                v0_prob = self.get_batch()
+                v0_prob = self.get_batch().T
 
                 if type(v0_prob) == type(None): break
                 size = len(v0_prob)
