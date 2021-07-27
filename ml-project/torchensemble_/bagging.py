@@ -47,7 +47,7 @@ def _parallel_fit_per_epoch(
     if cur_lr:
         # Parallelization corrupts the binding between optimizer and scheduler
         set_module.update_lr(optimizer, cur_lr)
-
+    loss_list = []
     for batch_idx, elem in enumerate(train_loader):
 
         data, target = io.split_data_target(elem, device)
@@ -67,13 +67,8 @@ def _parallel_fit_per_epoch(
         loss = criterion(sampling_output, sampling_target)
         loss.backward()
         optimizer.step()
-        if idx == 0:
-            theRecodOfLoss0.append(loss)
-        elif idx == 1:
-            theRecodOfLoss1.append(loss)
-        else:
-            theRecodOfLoss2.append(loss)
 
+        loss_list.append(loss)
 
         # Print training status
         if batch_idx % log_interval == 0:
@@ -98,7 +93,12 @@ def _parallel_fit_per_epoch(
                     " | Loss: {:.5f}"
                 )
                 print(msg.format(idx, epoch, batch_idx, loss))
-
+    if idx == 0:
+        theRecodOfLoss0.append(loss_list.sum()/len(train_loader))
+    elif idx == 1:
+        theRecodOfLoss1.append(loss_list.sum()/len(train_loader))
+    else:
+        theRecodOfLoss2.append(loss_list.sum()/len(train_loader))
     return estimator, optimizer
 
 
