@@ -257,7 +257,7 @@ def test_rbm(args,k=1):
         if(len(batch_x) == 128):
             data.append(batch_x.reshape(128,784))
             # print(batch_x.reshape(128,784).shape,batch_x.reshape(128,784).numpy().shape)
-            break
+            # break
         else:
             break
     # print(len(data),len(data[0][0]))
