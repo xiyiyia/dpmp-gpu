@@ -148,9 +148,9 @@ train_op = optim.SGD(rbm.parameters(),0.1)
 
 error_list = []
 start = time.time()
-for epoch in range(10):
+for epoch in range(args.e):
     loss_ = []
-    for _, (data,target) in enumerate(train_loader):
+    for index, (data,target) in enumerate(train_loader):
         data = Variable(data.view(-1,784))
         sample_data = data.bernoulli()
         
@@ -162,15 +162,19 @@ for epoch in range(10):
         train_op.step()
         # error_list.append(loss.item[0])
         print(loss)
+        if(index == 0):
+            show_adn_save(args.d+"real",make_grid(v.view(32,1,28,28).data))
+            show_adn_save(args.d+"generate",make_grid(v1.view(32,1,28,28).data))
+
     error_list.append(sum(loss_)/len(train_loader))
 stop = time.time()
 print('time:',stop-start)
 plt.plot(error_list)
 plt.savefig('./pic/'+args.d+'loss.png')
 
-show_adn_save(args.d+"real",make_grid(v.view(32,1,28,28).data))
+# show_adn_save(args.d+"real",make_grid(v.view(32,1,28,28).data))
 
-show_adn_save(args.d+"generate",make_grid(v1.view(32,1,28,28).data))
+# show_adn_save(args.d+"generate",make_grid(v1.view(32,1,28,28).data))
 # ########## EXTRACT FEATURES ##########
 # print('Extracting features...')
 
