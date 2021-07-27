@@ -230,6 +230,7 @@ class RBM:
             print('Epoch {0},err_sum {1}'.format(epoch, err_sum))
 
         plt.plot(err_list)
+        plt.savefig('./pic/loss.png')
 
     def predict(self, input_x):
         h0_prob = self.forword(input_x)
