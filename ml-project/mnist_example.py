@@ -1,9 +1,9 @@
 import numpy as np
 from sklearn.linear_model import LogisticRegression
 import torch
-import torchvision.datasets
+
 import torchvision.models
-import torchvision.transforms
+
 import matplotlib.pyplot as plt
 from rbm_new import RBM
 import sys
@@ -27,7 +27,7 @@ def get_Dataloader_model(d,batch_size):
     # Load data
 
     if d == 'cifar10':
-        train_transformer = transforms.Compose(
+        transformer = transforms.Compose(
             [
                 transforms.RandomHorizontalFlip(),
                 transforms.RandomCrop(28, 28),
@@ -37,25 +37,19 @@ def get_Dataloader_model(d,batch_size):
                 ),
             ]
         )
-        test_transformer = transforms.Compose(
-            [
-                transforms.RandomHorizontalFlip(),
-                transforms.RandomCrop(28, 28),
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    (0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)
-                ),
-            ]
-        )
+        train_dataset = datasets.CIFAR10(
+                './data', train=True, download=True, transform=transformer
+            )
         train_loader = DataLoader(
-            datasets.CIFAR10(
-                './data', train=True, download=True, transform=train_transformer
-            ),
+            train_dataset,
             batch_size=batch_size,
             shuffle=True,
         )
+        test_dataset = datasets.CIFAR10(
+                './data', train=False, download=True, transform=transformer
+            )
         test_loader = DataLoader(
-            datasets.CIFAR10('./data', train=False, transform=test_transformer),
+            test_dataset,
             batch_size=batch_size,
             shuffle=True,
         )
@@ -66,31 +60,14 @@ def get_Dataloader_model(d,batch_size):
         test_dataset = torchvision.datasets.MNIST(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=BATCH_SIZE)
     if d == 'fmnist':
-        train_transformer = transforms.Compose(
-            [
-                transforms.ToTensor()
-            ]
-        )
-        test_transformer = transforms.Compose(
-            [
-                transforms.ToTensor()
-            ]
-        )
-        train_loader = DataLoader(
-            datasets.FashionMNIST(
-                './data', train=True, download=True, transform=train_transformer
-            ),
-            batch_size=batch_size,
-            shuffle=True,
-        )
-        test_loader = DataLoader(
-            datasets.FashionMNIST('./data', train=False, transform=test_transformer),
-            batch_size=batch_size,
-            shuffle=True,
-        )
+        train_dataset = torchvision.datasets.FashionMNIST(root='./data', train=True, transform=torchvision.transforms.ToTensor(), download=True)
+        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE)
+
+        test_dataset = torchvision.datasets.FashionMNIST(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
+        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=BATCH_SIZE)
 
     if d == 'cifar100':
-        train_transformer = transforms.Compose(
+        transformer = transforms.Compose(
             [
                 transforms.RandomHorizontalFlip(),
                 transforms.RandomCrop(28, 28),
@@ -100,25 +77,20 @@ def get_Dataloader_model(d,batch_size):
                 ),
             ]
         )
-        test_transformer = transforms.Compose(
-            [
-                transforms.RandomHorizontalFlip(),
-                transforms.RandomCrop(28, 28),
-                transforms.ToTensor(),
-                transforms.Normalize(
-                    (0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)
-                ),
-            ]
-        )
+
+        train_dataset = datasets.CIFAR100(
+                './data', train=True, download=True, transform=transformer
+            )
         train_loader = DataLoader(
-            datasets.CIFAR100(
-                './data', train=True, download=True, transform=train_transformer
-            ),
+            train_dataset,
             batch_size=batch_size,
             shuffle=True,
         )
+        test_dataset = datasets.CIFAR100(
+                './data', train=False, download=True, transform=transformer
+            )
         test_loader = DataLoader(
-            datasets.CIFAR100('./data', train=False, transform=test_transformer),
+            test_dataset,
             batch_size=batch_size,
             shuffle=True,
         )
@@ -162,10 +134,10 @@ for epoch in range(EPOCHS):
         batch_error = rbm.contrastive_divergence(batch)
 
         epoch_error += batch_error
-    print('Epoch Error (epoch=%d): %.4f' % (epoch, epoch_error))
+    print('Epoch Error (epoch=%d): %.4f' % (epoch, epoch_error/BATCH_SIZE))
 
-    error_list.append(epoch_error)
-plt.plot(error_list.cpu())
+    error_list.append(epoch_error/BATCH_SIZE)
+plt.plot(error_list)
 plt.savefig('./pic/'+args.d+'loss.png')
 
 ########## EXTRACT FEATURES ##########
