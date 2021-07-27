@@ -264,7 +264,7 @@ def test_rbm(args,k=1):
             test.append(batch_x.reshape(128,784).numpy().tolist())
         else:
             break
-    print(len(test),len(test[0]))
+    print(len(test),len(test[0][0]))
 
     # construct RBM
     # print(len(data))
