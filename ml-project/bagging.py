@@ -204,9 +204,9 @@ if __name__=="__main__":
   # Evaluate the ensemble
   # acc = ensemble.predict(test_loader)         # testing accuracy
 
-  plt.plot(theRecodOfLoss0, label="estimiter1")
-  plt.plot(theRecodOfLoss1, label="estimiter2", linestyle="--")
-  plt.plot(theRecodOfLoss2, label="estimiter3", linestyle="-.")
+  plt.plot(theRecodOfLoss0.detach().numpy(), label="estimiter1")
+  plt.plot(theRecodOfLoss1.detach().numpy(), label="estimiter2", linestyle="--")
+  plt.plot(theRecodOfLoss2.detach().numpy(), label="estimiter3", linestyle="-.")
   plt.xlabel("Epoch")
   plt.ylabel("Loss")
   plt.title('Training process')

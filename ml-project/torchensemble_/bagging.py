@@ -68,9 +68,9 @@ def _parallel_fit_per_epoch(
         loss.backward()
         optimizer.step()
 
-        loss = loss.cpu()
+        # loss = loss.cpu()
         loss_list.append(loss)
-        loss = loss.cuda()
+        # loss = loss.cuda()
 
         # Print training status
         if batch_idx % log_interval == 0:
@@ -95,7 +95,7 @@ def _parallel_fit_per_epoch(
                     " | Loss: {:.5f}"
                 )
                 print(msg.format(idx, epoch, batch_idx, loss))
-    loss = loss.cpu()
+    # loss = loss.cpu()
     if idx == 0:
         theRecodOfLoss0.append(sum(loss_list)/len(train_loader))
     elif idx == 1:
