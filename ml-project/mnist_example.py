@@ -36,9 +36,10 @@ args = parser.parse_args()
 
 def show_adn_save(file_name,img):
     npimg = np.transpose(img.numpy(),(1,2,0))
-    f = "./%s.png" % file_name
-    plt.imshow(npimg)
-    plt.imsave(f,npimg)
+    # f = "./%s.png" % file_name
+    # plt.imshow(npimg)
+    # plt.imsave(f,npimg)
+    plt.savefig(file_name)
     # plt.savefig('./pic/'+args.d+'loss.png')
     # plt.savefig('./pic/'+args.d+'loss.png')
 def get_Dataloader_model(d,batch_size):
@@ -165,8 +166,8 @@ for epoch in range(args.e):
     v = v[0:32,:]
     v1 = v1[0:32,:]
     print(v.shape)
-    show_adn_save(args.d+"real",make_grid(v.view(32,1,28,28).data))
-    show_adn_save(args.d+"generate",make_grid(v1.view(32,1,28,28).data))
+    show_adn_save("./pic/"+args.d+"real",make_grid(v.view(32,1,28,28).data))
+    show_adn_save("./pic/"+args.d+"generate",make_grid(v1.view(32,1,28,28).data))
 
     error_list.append(sum(loss_)/len(train_loader))
 stop = time.time()
