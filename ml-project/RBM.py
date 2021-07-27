@@ -203,15 +203,18 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     parser.add_argument('-l', type=int, default=0.1, help='learning rate')
     parser.add_argument('-b', type=int, default=128, help='batchsize')
     parser.add_argument('-e', type=int, default=100, help='epoch')
-    parser.add_argument('-d', type=str, default='cifar10')
+    parser.add_argument('-d', type=str, default='mnist')
     parser.add_argument('-n', type=str, default='resnet')
     parser.add_argument('-ne', type=int, default=10, help='number of n_estimators')
     args = parser.parse_args()
 
     train_data, test_data = get_Dataloader_model(args.d,args.b)
+
     for step , (batch_x, batch_y) in enumerate(train_data):
         print(batch_x[0].shape)
-        print(step, batch_x[129].shape, batch_y)
+        m,h,w = batch_x.shape
+        x_line = batch_x.reshape((m,1,h,w))
+
         break
 
     rng = numpy.random.RandomState(123)
