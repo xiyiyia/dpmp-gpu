@@ -98,7 +98,10 @@ def get_Dataloader_model(d,batch_size):
 
 ########## CONFIGURATION ##########
 BATCH_SIZE = args.b
-VISIBLE_UNITS = 784  # 28 x 28 images
+if (args.d == 'cifar10' or args.d == 'cifar100'):
+    VISIBLE_UNITS = 784*3  # 28 x 28 images
+else:
+    VISIBLE_UNITS = 784  # 28 x 28 images
 HIDDEN_UNITS = 128
 CD_K = 2
 EPOCHS = args.e
