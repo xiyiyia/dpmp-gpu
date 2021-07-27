@@ -240,6 +240,7 @@ class RBM:
         return v1
 
 def visualize(args,input_x):
+    print(len(input_x))
     plt.figure(figsize=(5,5), dpi=180)
     for i in range(0,8):
         for j in range(0,8):
