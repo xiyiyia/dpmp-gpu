@@ -149,7 +149,7 @@ class RBM:
         self.W = np.random.randn(self.nh, self.nv) * 0.1
         self.bv = np.zeros(self.nv)
         self.bh = np.zeros(self.nh)
-        self.b = 128
+        self.b = b
 
     def sigmoid(self, z):
         return 1.0 / (1.0 + np.exp(-z))
@@ -233,7 +233,7 @@ class RBM:
         plt.plot(err_list)
 
     def predict(self, input_x):
-        h0_prob = self.forword(input_x.T)
+        h0_prob = self.forword(input_x)
         h0 = np.zeros_like(h0_prob)
         h0[h0_prob > np.random.random(h0_prob.shape)] = 1
         v1 = self.backward(h0)
@@ -268,10 +268,8 @@ def test_rbm(args,k=1):
         if(len(batch_x) == 128):
             if turn == 0:
                 data = batch_x.reshape(128,784).numpy()
-                print(len(data))
             else:
                 data = np.append(data,batch_x.reshape(128,784).numpy(),axis=0)
-                print(len(data))
         else:
             break
     for turn, (batch_x, batch_y) in enumerate(test_data):
@@ -279,18 +277,17 @@ def test_rbm(args,k=1):
             if turn == 0:
                 test = batch_x.reshape(128,784).numpy()
             else:
-                np.append(test,batch_x.reshape(128,784).numpy(),axis=0)
+                test = np.append(test,batch_x.reshape(128,784).numpy(),axis=0)
         else:
             break
 
-    rbm = RBM(nv=args.b, nh=784)
+    rbm = RBM(nv=args.b, nv = 784, nh=args.b*4)
     rbm.fit(data,epochs=args.e)
     rebuild_value = []
     for i in test:
         rebuild_value.append([rbm.predict(i)])
         break
     visualize(args,rebuild_value)
-    # print(rbm.reconstruct(test))
 
 
 
