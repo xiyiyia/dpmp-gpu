@@ -156,12 +156,12 @@ for epoch in range(args.e):
         
         v,v1 = rbm(sample_data)
         loss = rbm.free_energy(v) - rbm.free_energy(v1)
-        loss_.append(loss.item())
+        loss_.append(loss.item()**2)
         train_op.zero_grad()
         loss.backward()
         train_op.step()
         # error_list.append(loss.item[0])
-    print(loss)
+    print(loss_)
     v = v[0:32,:]
     v1 = v1[0:32,:]
     print(v.shape)
