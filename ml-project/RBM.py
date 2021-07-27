@@ -1,11 +1,11 @@
 import sys
-import numpy
+import numpy as np
 from functions import *
 import argparse
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 import io,sys
-
+import matplotlib as plt
 
 def get_Dataloader_model(d,batch_size):
     # Load data
@@ -137,114 +137,112 @@ def get_Dataloader_model(d,batch_size):
         )
     return train_loader,test_loader
 
-class RBM :
-    def __init__(self, input=None, n_visible=2, n_hidden=3, W=None, hbias=None, vbias=None, rng=None):
-        
-        self.n_visible = n_visible  # num of units in visible (input) layer
-        self.n_hidden = n_hidden    # num of units in hidden layer
+class RBM:
+    '''
+    设计一个专用于MNIST生成的RBM模型
+    '''
 
-        if rng is None:
-            rng = numpy.random.RandomState(1234)
+    def __init__(self, nv = 784, nh = 500, b = 128, lr = 0.1):
+        self.nv = nv
+        self.nh = nh
+        self.lr = lr
+        self.W = np.random.randn(self.nh, self.nv) * 0.1
+        self.bv = np.zeros(self.nv)
+        self.bh = np.zeros(self.nh)
+        self.b = 128
 
+    def sigmoid(self, z):
+        return 1.0 / (1.0 + np.exp(-z))
 
-        if W is None:
-            a = 1. / n_visible
-            initial_W = numpy.array(rng.uniform(  # initialize W uniformly
-                low=-a,
-                high=a,
-                size=(n_visible, n_hidden)))
+    def forword(self, inpt):
+        z = np.dot(inpt, self.W.T) + self.bh
+        return self.sigmoid(z)
 
-            W = initial_W
+    def backward(self, inpt):
+        z = np.dot(inpt, self.W) + self.bv
+        return self.sigmoid(z)
 
-        if hbias is None:
-            hbias = numpy.zeros(n_hidden)  # initialize h bias 0
+    def train_loader(self, X_train):
+        np.random.shuffle(X_train)
+        self.batches = []
+        for i in range(0, len(X_train), self.batch_sz):
+            self.batches.append(X_train[i:i + self.batch_sz])
+        self.indice = 0
 
-        if vbias is None:
-            vbias = numpy.zeros(n_visible)  # initialize v bias 0
+    def get_batch(self):
+        if self.indice >= len(self.batches):
+            return None
+        self.indice += 1
+        return np.array(self.batches[self.indice - 1])
 
+    def fit(self, X_train, epochs=50, batch_sz=128):
+        '''
+        用梯度上升法做训练
+        '''
+        self.batch_sz = batch_sz
+        err_list = []
 
-        self.rng = rng
-        self.input = input
-        self.W = W
-        self.hbias = hbias
-        self.vbias = vbias
+        for epoch in range(epochs):
+            # 初始化data loader
+            self.train_loader(X_train)
+            err_sum = 0
 
+            while 1:
+                v0_prob = self.get_batch()
 
-    def contrastive_divergence(self, lr=0.1, k=1, input=None):
-        if input is not None:
-            self.input = input
-        
-        ''' CD-k '''
-        ph_mean, ph_sample = self.sample_h_given_v(self.input)
+                if type(v0_prob) == type(None): break
+                size = len(v0_prob)
 
-        chain_start = ph_sample
+                dW = np.zeros_like(self.W)
+                dbv = np.zeros_like(self.bv)
+                dbh = np.zeros_like(self.bh)
+                # for v0_prob in  batch_data:
+                h0_prob = self.forword(v0_prob)
+                h0 = np.zeros_like(h0_prob)
+                h0[h0_prob > np.random.random(h0_prob.shape)] = 1
 
-        for step in xrange(k):
-            if step == 0:
-                nv_means, nv_samples, nh_means, nh_samples = self.gibbs_hvh(chain_start)
-            else:
-                nv_means, nv_samples, nh_means, nh_samples = self.gibbs_hvh(nh_samples)
+                v1_prob = self.backward(h0)
+                v1 = np.zeros_like(v1_prob)
+                v1[v1_prob > np.random.random(v1_prob.shape)] = 1
 
-        # chain_end = nv_samples
+                h1_prob = self.forword(v1)
+                h1 = np.zeros_like(h1_prob)
+                h1[h1_prob > np.random.random(h1_prob.shape)] = 1
 
+                dW = np.dot(h0.T, v0_prob) - np.dot(h1.T, v1_prob)
+                dbv = np.sum(v0_prob - v1_prob, axis=0)
+                dbh = np.sum(h0_prob - h1_prob, axis=0)
 
-        self.W += lr * (numpy.dot(self.input.T, ph_mean) - numpy.dot(nv_samples.T, nh_means))
-        self.vbias += lr * numpy.mean(self.input - nv_samples, axis=0)
-        self.hbias += lr * numpy.mean(ph_mean - nh_means, axis=0)
+                err_sum += np.mean(np.sum((v0_prob - v1_prob) ** 2, axis=1))
 
+                dW /= size
+                dbv /= size
+                dbh /= size
 
-    def sample_h_given_v(self, v0_sample):
-        h1_mean = self.propup(v0_sample)
-        h1_sample = self.rng.binomial(size=h1_mean.shape,   # discrete: binomial
-                                       n=1,
-                                       p=h1_mean)
+                self.W += dW * self.lr
+                self.bv += dbv * self.lr
+                self.bh += dbh * self.lr
 
-        return [h1_mean, h1_sample]
+            err_sum = err_sum / len(X_train)
+            err_list.append(err_sum)
+            print('Epoch {0},err_sum {1}'.format(epoch, err_sum))
 
+        plt.plot(err_list)
 
-    def sample_v_given_h(self, h0_sample):
-        v1_mean = self.propdown(h0_sample)
-        v1_sample = self.rng.binomial(size=v1_mean.shape,   # discrete: binomial
-                                            n=1,
-                                            p=v1_mean)
-        
-        return [v1_mean, v1_sample]
+    def predict(self, input_x):
+        h0_prob = self.forword(input_x)
+        h0 = np.zeros_like(h0_prob)
+        h0[h0_prob > np.random.random(h0_prob.shape)] = 1
+        v1 = self.backward(h0)
+        return v1
 
-    def propup(self, v):
-        pre_sigmoid_activation = numpy.dot(v, self.W) + self.hbias
-        return sigmoid(pre_sigmoid_activation)
-
-    def propdown(self, h):
-        pre_sigmoid_activation = numpy.dot(h, self.W.T) + self.vbias
-        return sigmoid(pre_sigmoid_activation)
-
-
-    def gibbs_hvh(self, h0_sample):
-        v1_mean, v1_sample = self.sample_v_given_h(h0_sample)
-        h1_mean, h1_sample = self.sample_h_given_v(v1_sample)
-
-        return [v1_mean, v1_sample,
-                h1_mean, h1_sample]
-    
-
-    def get_reconstruction_cross_entropy(self):
-        pre_sigmoid_activation_h = numpy.dot(self.input, self.W) + self.hbias
-        sigmoid_activation_h = sigmoid(pre_sigmoid_activation_h)
-        
-        pre_sigmoid_activation_v = numpy.dot(sigmoid_activation_h, self.W.T) + self.vbias
-        sigmoid_activation_v = sigmoid(pre_sigmoid_activation_v)
-
-        cross_entropy =  - numpy.mean(
-            numpy.sum(self.input * numpy.log(sigmoid_activation_v) +
-            (1 - self.input) * numpy.log(1 - sigmoid_activation_v),
-                      axis=1))
-        
-        return cross_entropy
-
-    def reconstruct(self, v):
-        h = sigmoid(numpy.dot(v, self.W) + self.hbias)
-        reconstructed_v = sigmoid(numpy.dot(h, self.W.T) + self.vbias)
-        return reconstructed_v
+def visualize(input_x):
+    plt.figure(figsize=(5,5), dpi=180)
+    for i in range(0,8):
+        for j in range(0,8):
+            img = input_x[i*8+j].reshape(28,28)
+            plt.subplot(8,8,i*8+j+1)
+            plt.imshow(img ,cmap = plt.cm.gray)
 
 
 
@@ -265,17 +263,14 @@ def test_rbm(args,k=1):
         else:
             break
 
-    rng = numpy.random.RandomState(123)
-
     # construct RBM
-    print(len(data))
-    rbm = RBM(input=data, n_visible=len(data), n_hidden=784, rng=rng)
+    # print(len(data))
 
-    # train
-    for _ in range(args.e):
-        rbm.contrastive_divergence(lr=args.l, k=k)
-
-    print(rbm.reconstruct(test))
+    rbm = RBM(nv=args.b*4, n_hidden=784)
+    rbm.fit(data,epochs=args.e)
+    rebuild_value = [rbm.predict(x) for x in test]
+    visualize(rebuild_value)
+    # print(rbm.reconstruct(test))
 
 
 
