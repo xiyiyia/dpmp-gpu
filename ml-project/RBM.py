@@ -280,7 +280,7 @@ def test_rbm(args,k=1):
                 np.append(test,batch_x.reshape(128,784).numpy(),axis=0)
         else:
             break
-    print(len(data))
+    print(len(data[0]))
 
     rbm = RBM(nv=args.b, nh=784)
     rbm.fit(data,epochs=args.e)
