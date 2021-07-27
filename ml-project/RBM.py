@@ -166,14 +166,14 @@ class RBM:
         np.random.shuffle(X_train)
         self.batches = []
         for i in range(0, len(X_train), self.batch_sz):
-            self.batches.append(X_train[i:i + self.batch_sz])
+            self.batches.append(X_train[i:i + self.batch_sz].numpy())
         self.indice = 0
 
     def get_batch(self):
         if self.indice >= len(self.batches):
             return None
         self.indice += 1
-        return np.array(self.batches[self.indice - 1].numpy())
+        return np.array(self.batches[self.indice - 1])
 
     def fit(self, X_train, epochs=50, batch_sz=128):
         '''
