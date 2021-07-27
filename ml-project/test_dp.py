@@ -176,7 +176,7 @@ def eval_training(test_loader,model):
         test_loss += loss.item()
         _, preds = outputs.max(1)
         correct += preds.eq(labels).sum()
-        sum += 1
+        sum += len(images)
     print(correct/sum)
 
 
