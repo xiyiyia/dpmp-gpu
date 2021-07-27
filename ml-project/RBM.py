@@ -173,7 +173,7 @@ class RBM:
         if self.indice >= len(self.batches):
             return None
         self.indice += 1
-        return np.array(self.batches[self.indice - 1])
+        return self.batches[self.indice - 1]
 
     def fit(self, X_train, epochs=50, batch_sz=128):
         '''
