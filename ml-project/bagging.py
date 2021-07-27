@@ -42,20 +42,22 @@ def get_Dataloader_model(n,d,batch_size):
   if d == 'mnist':
     train_transformer = transforms.Compose(
       [
-        #   transforms.RandomHorizontalFlip(),
-        #   transforms.RandomCrop(32, 4),
-          transforms.ToTensor()
-        #   transforms.Normalize(
-        #       (0.5), (0.5)
-        #   ),
+          transforms.RandomHorizontalFlip(),
+          transforms.RandomCrop(32, 4),
+          transforms.ToTensor(),
+          transforms.Normalize(
+              (0.5), (0.5)
+          )
       ]
     )
     test_transformer = transforms.Compose(
       [
-          transforms.ToTensor()
-        #   transforms.Normalize(
-        #       (0.5), (0.5)
-        #   ),
+          transforms.RandomHorizontalFlip(),
+          transforms.RandomCrop(32, 4),
+          transforms.ToTensor(),
+          transforms.Normalize(
+              (0.5), (0.5)
+          )
       ]
     )
     train_loader = DataLoader(
@@ -73,20 +75,22 @@ def get_Dataloader_model(n,d,batch_size):
   if d == 'fmnist':
     train_transformer = transforms.Compose(
       [
-        #   transforms.RandomHorizontalFlip(),
-        #   transforms.RandomCrop(32, 4),
-          transforms.ToTensor()
-        #   transforms.Normalize(
-        #       (0.5), (0.5)
-        #   ),
+          transforms.RandomHorizontalFlip(),
+          transforms.RandomCrop(32, 4),
+          transforms.ToTensor(),
+          transforms.Normalize(
+              (0.5), (0.5)
+          )
       ]
     )
     test_transformer = transforms.Compose(
       [
-          transforms.ToTensor()
-        #   transforms.Normalize(
-        #       (0.5), (0.5)
-        #   ),
+          transforms.RandomHorizontalFlip(),
+          transforms.RandomCrop(32, 4),
+          transforms.ToTensor(),
+          transforms.Normalize(
+              (0.5), (0.5)
+          )
       ]
     )
     train_loader = DataLoader(
