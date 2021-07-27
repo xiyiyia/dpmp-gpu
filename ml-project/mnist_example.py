@@ -155,19 +155,18 @@ for epoch in range(args.e):
         sample_data = data.bernoulli()
         
         v,v1 = rbm(sample_data)
-        loss = (rbm.free_energy(v) - rbm.free_energy(v1))**2
+        loss = (rbm.free_energy(v) - rbm.free_energy(v1))*(rbm.free_energy(v) - rbm.free_energy(v1))
         loss_.append(loss.item())
         train_op.zero_grad()
         loss.backward()
         train_op.step()
         # error_list.append(loss.item[0])
     print(loss)
-    if(index == 0):
-        v = v[0:32,:]
-        v1 = v1[0:32,:]
-        print(v.shape)
-        show_adn_save(args.d+"real",make_grid(v.view(32,1,28,28).data))
-        show_adn_save(args.d+"generate",make_grid(v1.view(32,1,28,28).data))
+    v = v[0:32,:]
+    v1 = v1[0:32,:]
+    print(v.shape)
+    show_adn_save(args.d+"real",make_grid(v.view(32,1,28,28).data))
+    show_adn_save(args.d+"generate",make_grid(v1.view(32,1,28,28).data))
 
     error_list.append(sum(loss_)/len(train_loader))
 stop = time.time()
