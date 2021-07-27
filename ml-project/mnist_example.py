@@ -60,28 +60,11 @@ def get_Dataloader_model(d,batch_size):
             shuffle=True,
         )
     if d == 'mnist':
-        train_transformer = transforms.Compose(
-            [
-                transforms.ToTensor()
-            ]
-        )
-        test_transformer = transforms.Compose(
-            [
-                transforms.ToTensor()
-            ]
-        )
-        train_loader = DataLoader(
-            datasets.MNIST(
-                './data', train=True, download=True, transform=train_transformer
-            ),
-            batch_size=batch_size,
-            shuffle=True,
-        )
-        test_loader = DataLoader(
-            datasets.MNIST('./data', train=False, transform=test_transformer),
-            batch_size=batch_size,
-            shuffle=True,
-        )
+        train_dataset = torchvision.datasets.MNIST(root='./data', train=True, transform=torchvision.transforms.ToTensor(), download=True)
+        train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=BATCH_SIZE)
+
+        test_dataset = torchvision.datasets.MNIST(root='./data', train=False, transform=torchvision.transforms.ToTensor(), download=True)
+        test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=BATCH_SIZE)
     if d == 'fmnist':
         train_transformer = transforms.Compose(
             [
@@ -139,7 +122,7 @@ def get_Dataloader_model(d,batch_size):
             batch_size=batch_size,
             shuffle=True,
         )
-    return train_loader,test_loader
+    return train_dataset, test_dataset, train_loader,test_loader
 
 ########## CONFIGURATION ##########
 BATCH_SIZE = args.b
@@ -153,13 +136,13 @@ CUDA = torch.cuda.is_available()
 CUDA_DEVICE = 0
 
 if CUDA:
-    torch.cuda.set_device(CUDA_DEVICE)
+    torch.cuda.set_device('cuda:0')
 
 
 ########## LOADING DATASET ##########
 print('Loading dataset...')
 
-train_loader, test_loader = get_Dataloader_model(args.d,args.b)
+train_dataset, test_dataset, train_loader, test_loader = get_Dataloader_model(args.d,args.b)
 
 
 ########## TRAINING RBM ##########
@@ -171,7 +154,7 @@ for epoch in range(EPOCHS):
     epoch_error = 0.0
 
     for batch, _ in train_loader:
-        batch = batch.view(len(batch), VISIBLE_UNITS)  # flatten input data
+        batch = batch.view(len(batch), VISIBLE_UNITS).cuda()  # flatten input data
 
         if CUDA:
             batch = batch.cuda()
