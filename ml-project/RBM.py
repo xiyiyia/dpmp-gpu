@@ -267,7 +267,7 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     for _, (batch_x, batch_y) in enumerate(train_data):
         print(batch_x[0].shape)
         shape_tensor = batch_x.shape
-        x_line = batch_x.reshape((shape_tensor[0],1,shape_tensor[1],shape_tensor[2]))
+        x_line = batch_x.reshape((shape_tensor[0],shape_tensor[1],shape_tensor[2],shape_tensor[3]))
         if(len(x_line) == 128):
             print(x_line[:128].reshape(128,784))
             data.append(x_line[:128].reshape(128,784))
