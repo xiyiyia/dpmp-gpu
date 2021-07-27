@@ -212,3 +212,4 @@ if __name__=="__main__":
   plt.title('Training process')
   plt.legend()  # 打上标签
   plt.show()
+  plt.savefig('./pic/'+args.d+'bagging.png')
