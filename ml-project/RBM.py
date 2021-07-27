@@ -268,8 +268,10 @@ def test_rbm(args,k=1):
         if(len(batch_x) == 128):
             if turn == 0:
                 data = batch_x.reshape(128,784).numpy()
+                print(len(data))
             else:
-                np.append(data,batch_x.reshape(128,784).numpy(),axis=0)
+                data = np.append(data,batch_x.reshape(128,784).numpy(),axis=0)
+                print(len(data))
         else:
             break
     for turn, (batch_x, batch_y) in enumerate(test_data):
@@ -280,7 +282,6 @@ def test_rbm(args,k=1):
                 np.append(test,batch_x.reshape(128,784).numpy(),axis=0)
         else:
             break
-    print(len(data[0]))
 
     rbm = RBM(nv=args.b, nh=784)
     rbm.fit(data,epochs=args.e)
