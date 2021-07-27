@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import numpy as np
 import io,sys
+import time
 theRecodOfLoss0 = bagg.theRecodOfLoss0
 theRecodOfLoss1 = bagg.theRecodOfLoss1
 theRecodOfLoss2 = bagg.theRecodOfLoss2
@@ -194,13 +195,14 @@ if __name__=="__main__":
       "CosineAnnealingLR"   ,                # type of learning rate scheduler
        T_max=args.e                           # additional arguments on the scheduler
   )
-
+  start = time.time()
   # Train the ensemble
   ensemble.fit(
       train_loader,
       epochs=args.e,                          # number of training epochs
   )
-
+  stop = time.time()
+  print('time:',stop- start)
   # Evaluate the ensemble
   # acc = ensemble.predict(test_loader)         # testing accuracy
 
