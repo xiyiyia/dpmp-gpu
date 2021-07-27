@@ -168,7 +168,7 @@ class RBM:
         self.batches = []
         for i in range(0, len(X_train)):#, self.batch_sz):
             # print(len(X_train),len(X_train[0]))
-            self.batches.append(X_train[i])#:i + self.batch_sz])
+            self.batches.append(X_train[i:i + self.batch_sz])
         self.indice = 0
 
     def get_batch(self):
@@ -262,17 +262,16 @@ def visualize(args,input_x):
 
 def test_rbm(args,k=1):
     train_data, test_data = get_Dataloader_model(args.d,args.b)
-    data = []
-    test = []
+    data = np.array([])
+    test = np.array([])
     for _, (batch_x, batch_y) in enumerate(train_data):
         if(len(batch_x) == 128):
-            data.append(batch_x.reshape(128,784).numpy())
-
+            np.concatenate((data,batch_x.reshape(128,784).numpy()))
         else:
             break
     for _, (batch_x, batch_y) in enumerate(test_data):
         if(len(batch_x) == 128):
-            test.append(batch_x.reshape(128,784).numpy())
+            np.concatenate((test,batch_x.reshape(128,784).numpy()))
         else:
             break
 
