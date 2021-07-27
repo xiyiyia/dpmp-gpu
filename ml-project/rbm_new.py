@@ -3,7 +3,7 @@ import torch
 
 class RBM():
 
-    def __init__(self, num_visible, num_hidden, k, learning_rate=1e-5, momentum_coefficient=0.5, weight_decay=1e-4, use_cuda=True):
+    def __init__(self, num_visible, num_hidden, k, learning_rate=1e-1, momentum_coefficient=0.5, weight_decay=1e-1, use_cuda=True):
         self.num_visible = num_visible
         self.num_hidden = num_hidden
         self.k = k
