@@ -262,9 +262,9 @@ def test_rbm(args,k=1):
     for _, (batch_x, batch_y) in enumerate(test_data):
         if(len(batch_x) == 128):
             test.append(batch_x.reshape(128,784).numpy().tolist())
-            print(test)
         else:
             break
+    print(test)
 
     # construct RBM
     # print(len(data))
