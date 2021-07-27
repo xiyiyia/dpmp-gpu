@@ -384,7 +384,8 @@ def test_rbm(args,k=1):
     else:
         # rbm = RBM(nh=100,nv=784)
         rbm = RBM()
-    rbm.fit(args,data,epochs=args.e)
+    # rbm.fit(args,data,epochs=args.e)
+    rbm.fit(data)
     visualize(args,rbm.predict(test[0:64]))
 
 
