@@ -256,18 +256,19 @@ def test_rbm(args,k=1):
     test = []
     for _, (batch_x, batch_y) in enumerate(train_data):
         if(len(batch_x) == 128):
-            data.append(batch_x[:128].reshape(128,784))
+            data.append(batch_x.reshape(128,784))
         else:
             break
     for _, (batch_x, batch_y) in enumerate(test_data):
         if(len(batch_x) == 128):
-            test.append(batch_x[:128].reshape(128,784))
+            test.append(batch_x.reshape(128,784))
         else:
             break
 
     rng = numpy.random.RandomState(123)
 
     # construct RBM
+    print(data(len))
     rbm = RBM(input=data, n_visible=args.b*4, n_hidden=784, rng=rng)
 
     # train
