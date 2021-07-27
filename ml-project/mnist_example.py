@@ -3,7 +3,7 @@ from sklearn.linear_model import LogisticRegression
 import torch
 
 import torchvision.models
-
+import time
 import matplotlib.pyplot as plt
 from rbm_new import RBM
 import sys
@@ -29,12 +29,7 @@ def get_Dataloader_model(d,batch_size):
     if d == 'cifar10':
         transformer = transforms.Compose(
             [
-                transforms.RandomHorizontalFlip(),
-                transforms.RandomCrop(28, 28),
                 transforms.ToTensor(),
-                transforms.Normalize(
-                    (0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)
-                ),
             ]
         )
         train_dataset = datasets.CIFAR10(
@@ -69,12 +64,7 @@ def get_Dataloader_model(d,batch_size):
     if d == 'cifar100':
         transformer = transforms.Compose(
             [
-                transforms.RandomHorizontalFlip(),
-                transforms.RandomCrop(28, 28),
                 transforms.ToTensor(),
-                transforms.Normalize(
-                    (0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)
-                ),
             ]
         )
 
@@ -99,7 +89,7 @@ def get_Dataloader_model(d,batch_size):
 ########## CONFIGURATION ##########
 BATCH_SIZE = args.b
 if (args.d == 'cifar10' or args.d == 'cifar100'):
-    VISIBLE_UNITS = 784*3  # 28 x 28 images
+    VISIBLE_UNITS = 1024*3  # 28 x 28 images
 else:
     VISIBLE_UNITS = 784  # 28 x 28 images
 HIDDEN_UNITS = 128
@@ -125,6 +115,7 @@ print('Training RBM...')
 
 rbm = RBM(VISIBLE_UNITS, HIDDEN_UNITS, CD_K, use_cuda=CUDA)
 error_list = []
+start = time.time()
 for epoch in range(EPOCHS):
     epoch_error = 0.0
 
@@ -139,6 +130,8 @@ for epoch in range(EPOCHS):
         epoch_error += batch_error
     print('Epoch Error (epoch=%d): %.4f' % (epoch, epoch_error/(BATCH_SIZE*len(train_loader))))
     error_list.append(epoch_error/(BATCH_SIZE*len(train_loader)))
+stop = time.time()
+print('time:',stop-start)
 plt.plot(error_list)
 plt.savefig('./pic/'+args.d+'loss.png')
 
@@ -159,6 +152,15 @@ for i, (batch, labels) in enumerate(train_loader):
     train_features[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = rbm.sample_hidden(batch).cpu().numpy()
     train_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
 
+    plt.figure(figsize=(5,5), dpi=180)
+    for i in range(0,8):
+        for j in range(0,8):
+            img = np.array(train_features[i*8+j]).reshape(28,28)
+            plt.subplot(8,8,i*8+j+1)
+            plt.imshow(img ,cmap = plt.cm.gray)
+    plt.savefig('./pic/'+args.d+'.png')
+    break
+
 for i, (batch, labels) in enumerate(test_loader):
     batch = batch.view(len(batch), VISIBLE_UNITS)  # flatten input data
 
@@ -167,6 +169,7 @@ for i, (batch, labels) in enumerate(test_loader):
 
     test_features[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = rbm.sample_hidden(batch).cpu().numpy()
     test_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
+
 
 
 ########## CLASSIFICATION ##########
