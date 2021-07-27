@@ -48,7 +48,7 @@ def get_Dataloader_model(d,batch_size):
                 transforms.RandomCrop(28, 4),
                 transforms.ToTensor(),
                 transforms.Normalize(
-                    (0.5, 0.5), (0.5, 0.5)
+                    (0.5), (0.5)
                 ),
             ]
         )
@@ -56,7 +56,7 @@ def get_Dataloader_model(d,batch_size):
             [
                 transforms.ToTensor(),
                 transforms.Normalize(
-                    (0.5, 0.5), (0.5, 0.5)
+                    (0.5), (0.5)
                 ),
             ]
         )
@@ -79,7 +79,7 @@ def get_Dataloader_model(d,batch_size):
                 transforms.RandomCrop(28, 4),
                 transforms.ToTensor(),
                 transforms.Normalize(
-                    (0.5, 0.5), (0.5, 0.5)
+                    (0.5), (0.5)
                 ),
             ]
         )
@@ -87,7 +87,7 @@ def get_Dataloader_model(d,batch_size):
             [
                 transforms.ToTensor(),
                 transforms.Normalize(
-                    (0.5, 0.5), (0.5, 0.5)
+                    (0.5), (0.5)
                 ),
             ]
         )
