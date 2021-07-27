@@ -94,11 +94,11 @@ def _parallel_fit_per_epoch(
                 )
                 print(msg.format(idx, epoch, batch_idx, loss))
     if idx == 0:
-        theRecodOfLoss0.append(loss_list.sum()/len(train_loader))
+        theRecodOfLoss0.append(sum(loss_list)/len(train_loader))
     elif idx == 1:
-        theRecodOfLoss1.append(loss_list.sum()/len(train_loader))
+        theRecodOfLoss1.append(sum(loss_list)/len(train_loader))
     else:
-        theRecodOfLoss2.append(loss_list.sum()/len(train_loader))
+        theRecodOfLoss2.append(sum(loss_list)/len(train_loader))
     return estimator, optimizer
 
 
