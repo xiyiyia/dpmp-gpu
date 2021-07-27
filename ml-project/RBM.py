@@ -175,7 +175,7 @@ class RBM:
         if self.indice >= len(self.batches):
             return None
         self.indice += 1
-        return self.batches[self.indice - 1]
+        return self.batches[self.indice - 1].T
 
     def fit(self, X_train, epochs=50, batch_sz=128):
         '''
@@ -190,7 +190,7 @@ class RBM:
             err_sum = 0
 
             while 1:
-                v0_prob = self.get_batch().T
+                v0_prob = self.get_batch()
 
                 if type(v0_prob) == type(None): break
                 size = len(v0_prob)
