@@ -236,7 +236,7 @@ class RBM:
         h0 = np.zeros_like(h0_prob)
         h0[h0_prob > np.random.random(h0_prob.shape)] = 1
         v1 = self.backward(h0)
-        print(len(v1))
+        # print(len(v1))
         return v1
 
 def visualize(args,input_x):
@@ -286,12 +286,7 @@ def test_rbm(args,k=1):
     else:
         rbm = RBM(nh=10,nv=784)
     rbm.fit(data,epochs=args.e)
-    rebuild_value = []
-    # for i in test:
-        # print(i)
-    rebuild_value.append([rbm.predict(test[0:64])])
-        # break
-    visualize(args,rebuild_value)
+    visualize(args,rbm.predict(test[0:64]))
 
 
 
