@@ -262,8 +262,8 @@ def visualize(args,input_x):
 
 def test_rbm(args,k=1):
     train_data, test_data = get_Dataloader_model(args.d,args.b)
-    data = np.array([])
-    test = np.array([])
+    data = np.array([[]])
+    test = np.array([[]])
     for _, (batch_x, batch_y) in enumerate(train_data):
         if(len(batch_x) == 128):
             np.append(data,batch_x.reshape(128,784).numpy(),axis=0)
@@ -274,6 +274,7 @@ def test_rbm(args,k=1):
             np.append(test,batch_x.reshape(128,784).numpy(),axis=0)
         else:
             break
+    print(data[0])
 
     rbm = RBM(nv=args.b, nh=784)
     rbm.fit(data,epochs=args.e)
