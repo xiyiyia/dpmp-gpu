@@ -69,7 +69,7 @@ def _parallel_fit_per_epoch(
         optimizer.step()
 
         # loss = loss.cpu()
-        loss_list.append(loss)
+        loss_list.append(loss.item())
         # loss = loss.cuda()
 
         # Print training status
@@ -188,8 +188,6 @@ class BaggingClassifier(BaseClassifier):
 
             # Training loop
             for epoch in range(epochs):
-                print('epoch:')
-                print(epoch)
                 self.train()
 
                 if self.use_scheduler_:
