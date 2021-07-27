@@ -165,6 +165,7 @@ for epoch in range(args.e):
         if(index == 0):
             v = v[0:31,:]
             v1 = v1[0:31,:]
+            print(v.shape)
             show_adn_save(args.d+"real",make_grid(v.view(32,1,28,28).data))
             show_adn_save(args.d+"generate",make_grid(v1.view(32,1,28,28).data))
 
