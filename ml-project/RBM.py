@@ -199,9 +199,9 @@ class RBM:
                 # for v0_prob in  batch_data:
                 h0_prob = self.forword(v0_prob)
                 h0 = np.zeros_like(h0_prob)
-
-                print(v0_prob,h0_prob,np.random.random(h0_prob.shape))
-                h0[h0_prob > np.random.random(h0_prob.shape)] = 1
+                # ho_prob.numpy().tolist()
+                # print(v0_prob,h0_prob,np.random.random(h0_prob.shape))
+                h0[h0_prob.numpy().tolist() > np.random.random(h0_prob.shape)] = 1
 
                 v1_prob = self.backward(h0)
                 v1 = np.zeros_like(v1_prob)
