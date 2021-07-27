@@ -250,8 +250,35 @@ class RBM :
 
 
 
-def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
-    
+def test_rbm(args,k=1):
+    train_data, test_data = get_Dataloader_model(args.d,args.b)
+    data = []
+    test = []
+    for _, (batch_x, batch_y) in enumerate(train_data):
+        if(len(batch_x) == 128):
+            data.append(batch_x[:128].reshape(128,784))
+        else:
+            break
+    for _, (batch_x, batch_y) in enumerate(test_data):
+        if(len(batch_x) == 128):
+            test.append(batch_x[:128].reshape(128,784))
+        else:
+            break
+
+    rng = numpy.random.RandomState(123)
+
+    # construct RBM
+    rbm = RBM(input=data, n_visible=args.b*4, n_hidden=784, rng=rng)
+
+    # train
+    for _ in range(args.e):
+        rbm.contrastive_divergence(lr=args.l, k=k)
+
+    print(rbm.reconstruct(test))
+
+
+
+if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-l', type=int, default=0.1, help='learning rate')
@@ -262,35 +289,4 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     parser.add_argument('-ne', type=int, default=10, help='number of n_estimators')
     args = parser.parse_args()
 
-    train_data, test_data = get_Dataloader_model(args.d,args.b)
-    data = []
-    for _, (batch_x, batch_y) in enumerate(train_data):
-        # print(batch_x[0].shape)
-        # shape_tensor = batch_x.shape
-        # x_line = batch_x.reshape((shape_tensor[0],shape_tensor[1],shape_tensor[2],shape_tensor[3]))
-        if(len(batch_x) == 128):
-            print(batch_x[:128].reshape(128,784))
-            data.append(batch_x[:128].reshape(128,784))
-        else:
-            break
-
-    rng = numpy.random.RandomState(123)
-
-    # construct RBM
-    rbm = RBM(input=data, n_visible=6, n_hidden=2, rng=rng)
-
-    # train
-    for epoch in xrange(training_epochs):
-        rbm.contrastive_divergence(lr=learning_rate, k=k)
-
-
-    # test
-    v = numpy.array([[1, 1, 0, 0, 0, 0],
-                     [0, 0, 0, 1, 1, 0]])
-
-    # print rbm.reconstruct(v)
-
-
-
-if __name__ == "__main__":
-    test_rbm()
+    test_rbm(args)
