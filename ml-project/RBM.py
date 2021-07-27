@@ -12,7 +12,7 @@ def get_Dataloader_model(d,batch_size):
     train_transformer = transforms.Compose(
         [
             transforms.RandomHorizontalFlip(),
-            transforms.RandomCrop(32, 4),
+            transforms.RandomCrop(28, 4),
             transforms.ToTensor(),
             transforms.Normalize(
                 (0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010)
@@ -209,13 +209,16 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     args = parser.parse_args()
 
     train_data, test_data = get_Dataloader_model(args.d,args.b)
-
-    for step , (batch_x, batch_y) in enumerate(train_data):
+    data = []
+    for _, (batch_x, batch_y) in enumerate(train_data):
         print(batch_x[0].shape)
         m,h,w = batch_x.shape
         x_line = batch_x.reshape((m,1,h,w))
-
-        break
+        if(len(x_line) == 128):
+            print(x_line[:128].reshape(128,784))
+            data.append(x_line[:128].reshape(128,784))
+        else:
+            break
 
     rng = numpy.random.RandomState(123)
 
