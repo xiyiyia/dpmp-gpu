@@ -181,7 +181,7 @@ def eval_training(test_loader,model):
 
 
 """ Distributed Synchronous SGD Example """
-def run(args, model):
+def run(args):
     
     train_loader,test_loader,model = get_Dataloader_model(args.n,args.d,args.b)
 
@@ -207,7 +207,7 @@ def run(args, model):
     stop = time.time()
     print('time:',stop-start)
     plt.plot(error_list)
-    plt.savefig('./pic/'+args.d+'loss.png')
+    plt.savefig('./pic/'+args.d+'lossnid.png')
     eval_training(test_loader,model)
 
 if __name__ == "__main__":
