@@ -209,7 +209,7 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
     args = parser.parse_args()
 
     train_data, test_data = get_Dataloader_model(args.d,args.b)
-    print(train_data)
+    print(train_data.shape)
 
     rng = numpy.random.RandomState(123)
 
