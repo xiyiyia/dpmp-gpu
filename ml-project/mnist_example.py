@@ -161,7 +161,7 @@ for i, (batch, labels) in enumerate(train_loader):
 
     train_features[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = rbm.sample_hidden(batch).cpu().numpy()
     train_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
-
+    print(train_features,train_labels)
 for i, (batch, labels) in enumerate(test_loader):
     batch = batch.view(len(batch), VISIBLE_UNITS)  # flatten input data
 
@@ -179,7 +179,7 @@ print('Classifying...')
 clf = LogisticRegression()
 clf.fit(train_features, train_labels)
 predictions = clf.predict(test_features)
-print(predictions)
+
 plt.figure(figsize=(5,5), dpi=180)
 for i in range(0,4):
     for j in range(0,4):
