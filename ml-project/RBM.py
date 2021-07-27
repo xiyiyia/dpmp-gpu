@@ -210,7 +210,7 @@ def test_rbm(learning_rate=0.1, k=1, training_epochs=1000):
 
     train_data, test_data = get_Dataloader_model(args.d,args.b)
     for step , (batch_x, batch_y) in enumerate(train_data):
-        print(step, batch_x[0], batch_y)
+        print(step, batch_x[1], batch_y)
         break
 
     rng = numpy.random.RandomState(123)
