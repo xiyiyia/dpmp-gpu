@@ -286,6 +286,7 @@ def test_rbm(args,k=1):
     rbm.fit(data,epochs=args.e)
     rebuild_value = []
     for i in test:
+        print(i)
         rebuild_value.append([rbm.predict(i)])
         break
     visualize(args,rebuild_value)
