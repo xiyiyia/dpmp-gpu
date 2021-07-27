@@ -162,7 +162,7 @@ for i, (batch, labels) in enumerate(train_loader):
     train_features[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = rbm.sample_hidden(batch).cpu().numpy()
     train_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
 
-print(type(train_labels[0]))
+print(len(train_labels[0]))
 plt.figure(figsize=(5,5), dpi=180)
 for i in range(0,4):
     for j in range(0,4):
