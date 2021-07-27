@@ -269,7 +269,7 @@ def test_rbm(args,k=1):
 
     # construct RBM
     print(len(data))
-    rbm = RBM(input=data, n_visible=args.b*4, n_hidden=784, rng=rng)
+    rbm = RBM(input=data, n_visible=4, n_hidden=784, rng=rng)
 
     # train
     for _ in range(args.e):
