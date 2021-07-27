@@ -266,12 +266,12 @@ def test_rbm(args,k=1):
     test = np.array([])
     for _, (batch_x, batch_y) in enumerate(train_data):
         if(len(batch_x) == 128):
-            np.concatenate((data,batch_x.reshape(128,784).numpy()))
+            np.append(data,batch_x.reshape(128,784).numpy(),axis=0)
         else:
             break
     for _, (batch_x, batch_y) in enumerate(test_data):
         if(len(batch_x) == 128):
-            np.concatenate((test,batch_x.reshape(128,784).numpy()))
+            np.append(test,batch_x.reshape(128,784).numpy(),axis=0)
         else:
             break
 
