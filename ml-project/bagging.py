@@ -7,9 +7,9 @@ from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
 import numpy as np
 import io,sys
-theRecodOfLoss0 = bagg.theRecodOfLoss0
-theRecodOfLoss1 = bagg.theRecodOfLoss1
-theRecodOfLoss2 = bagg.theRecodOfLoss2
+theRecodOfLoss0 = bagg.theRecodOfLoss0.cpu()
+theRecodOfLoss1 = bagg.theRecodOfLoss1.cpu()
+theRecodOfLoss2 = bagg.theRecodOfLoss2.cpu()
 
 def get_Dataloader_model(n,d,batch_size):
   # Load data
