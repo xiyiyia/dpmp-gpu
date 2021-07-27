@@ -146,14 +146,13 @@ class RBM:
     设计一个专用于MNIST生成的RBM模型
     '''
 
-    def __init__(self, nv = 784, nh = 128, b = 128, lr = 0.1):
-        self.nv = nv
-        self.nh = nh
-        self.lr = lr
+    def __init__(self):
+        self.nv = 784
+        self.nh = 500
+        self.lr = 0.1
         self.W = np.random.randn(self.nh, self.nv) * 0.1
         self.bv = np.zeros(self.nv)
         self.bh = np.zeros(self.nh)
-        self.b = b
 
     def sigmoid(self, z):
         return 1.0 / (1.0 + np.exp(-z))
@@ -170,7 +169,6 @@ class RBM:
         np.random.shuffle(X_train)
         self.batches = []
         for i in range(0, len(X_train), self.batch_sz):
-            # print(len(X_train),len(X_train[0]))
             self.batches.append(X_train[i:i + self.batch_sz])
         self.indice = 0
 
@@ -178,9 +176,9 @@ class RBM:
         if self.indice >= len(self.batches):
             return None
         self.indice += 1
-        return self.batches[self.indice - 1]
+        return np.array(self.batches[self.indice - 1])
 
-    def fit(self,args, X_train, epochs=50, batch_sz=128):
+    def fit(self, X_train, epochs=50, batch_sz=128):
         '''
         用梯度上升法做训练
         '''
@@ -204,7 +202,6 @@ class RBM:
                 # for v0_prob in  batch_data:
                 h0_prob = self.forword(v0_prob)
                 h0 = np.zeros_like(h0_prob)
-                
                 h0[h0_prob > np.random.random(h0_prob.shape)] = 1
 
                 v1_prob = self.backward(h0)
@@ -234,15 +231,109 @@ class RBM:
             print('Epoch {0},err_sum {1}'.format(epoch, err_sum))
 
         plt.plot(err_list)
-        plt.savefig('./pic/'+args.d+'loss.png')
 
-    def predict(self, input_x):
-        h0_prob = self.forword(input_x)
-        h0 = np.zeros_like(h0_prob)
-        h0[h0_prob > np.random.random(h0_prob.shape)] = 1
-        v1 = self.backward(h0)
-        # print(len(v1))
-        return v1
+# class RBM:
+#     '''
+#     设计一个专用于MNIST生成的RBM模型
+#     '''
+
+#     def __init__(self, nv = 784, nh = 128, b = 128, lr = 0.1):
+#         self.nv = nv
+#         self.nh = nh
+#         self.lr = lr
+#         self.W = np.random.randn(self.nh, self.nv) * 0.1
+#         self.bv = np.zeros(self.nv)
+#         self.bh = np.zeros(self.nh)
+#         self.b = b
+
+#     def sigmoid(self, z):
+#         return 1.0 / (1.0 + np.exp(-z))
+
+#     def forword(self, inpt):
+#         z = np.dot(inpt, self.W.T) + self.bh
+#         return self.sigmoid(z)
+
+#     def backward(self, inpt):
+#         z = np.dot(inpt, self.W) + self.bv
+#         return self.sigmoid(z)
+
+#     def train_loader(self, X_train):
+#         np.random.shuffle(X_train)
+#         self.batches = []
+#         for i in range(0, len(X_train), self.batch_sz):
+#             # print(len(X_train),len(X_train[0]))
+#             self.batches.append(X_train[i:i + self.batch_sz])
+#         self.indice = 0
+
+#     def get_batch(self):
+#         if self.indice >= len(self.batches):
+#             return None
+#         self.indice += 1
+#         return self.batches[self.indice - 1]
+
+#     def fit(self,args, X_train, epochs=50, batch_sz=128):
+#         '''
+#         用梯度上升法做训练
+#         '''
+#         self.batch_sz = batch_sz
+#         err_list = []
+
+#         for epoch in range(epochs):
+#             # 初始化data loader
+#             self.train_loader(X_train)
+#             err_sum = 0
+
+#             while 1:
+#                 v0_prob = self.get_batch()
+
+#                 if type(v0_prob) == type(None): break
+#                 size = len(v0_prob)
+
+#                 dW = np.zeros_like(self.W)
+#                 dbv = np.zeros_like(self.bv)
+#                 dbh = np.zeros_like(self.bh)
+#                 # for v0_prob in  batch_data:
+#                 h0_prob = self.forword(v0_prob)
+#                 h0 = np.zeros_like(h0_prob)
+                
+#                 h0[h0_prob > np.random.random(h0_prob.shape)] = 1
+
+#                 v1_prob = self.backward(h0)
+#                 v1 = np.zeros_like(v1_prob)
+#                 v1[v1_prob > np.random.random(v1_prob.shape)] = 1
+
+#                 h1_prob = self.forword(v1)
+#                 h1 = np.zeros_like(h1_prob)
+#                 h1[h1_prob > np.random.random(h1_prob.shape)] = 1
+
+#                 dW = np.dot(h0.T, v0_prob) - np.dot(h1.T, v1_prob)
+#                 dbv = np.sum(v0_prob - v1_prob, axis=0)
+#                 dbh = np.sum(h0_prob - h1_prob, axis=0)
+
+#                 err_sum += np.mean(np.sum((v0_prob - v1_prob) ** 2, axis=1))
+
+#                 dW /= size
+#                 dbv /= size
+#                 dbh /= size
+
+#                 self.W += dW * self.lr
+#                 self.bv += dbv * self.lr
+#                 self.bh += dbh * self.lr
+
+#             err_sum = err_sum / len(X_train)
+#             err_list.append(err_sum)
+#             print('Epoch {0},err_sum {1}'.format(epoch, err_sum))
+
+#         plt.plot(err_list)
+#         plt.savefig('./pic/'+args.d+'loss.png')
+
+#     def predict(self, input_x):
+#         h0_prob = self.forword(input_x)
+#         h0 = np.zeros_like(h0_prob)
+#         h0[h0_prob > np.random.random(h0_prob.shape)] = 1
+#         v1 = self.backward(h0)
+#         # print(len(v1))
+#         return v1
 
 def visualize(args,input_x):
     plt.figure(figsize=(5,5), dpi=180)
