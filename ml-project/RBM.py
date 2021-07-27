@@ -157,7 +157,7 @@ class RBM:
     def forword(self, inpt):
         print(len(inpt),len(inpt[0]),len(inpt[1]))
         print(len(self.W.T),len(self.W.T[0]),len(self.W.T[1]))
-        z = np.dot(inpt, self.W) + self.bh
+        z = np.dot(inpt.T, self.W) + self.bh
         return self.sigmoid(z)
 
     def backward(self, inpt):
