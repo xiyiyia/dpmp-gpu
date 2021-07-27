@@ -155,6 +155,8 @@ class RBM:
         return 1.0 / (1.0 + np.exp(-z))
 
     def forword(self, inpt):
+        print(len(inpt),len(inpt[0]),len(inpt[1]))
+        print(len(self.W.T),len(self.W.T[0]),len(self.W.T[1]))
         z = np.dot(inpt, self.W.T) + self.bh
         return self.sigmoid(z)
 
@@ -167,7 +169,7 @@ class RBM:
         self.batches = []
         for i in range(0, len(X_train)):#, self.batch_sz):
             print(len(X_train),len(X_train[0]))
-            self.batches.append(X_train[i][0])#:i + self.batch_sz])
+            self.batches.append(X_train[i])#:i + self.batch_sz])
         self.indice = 0
 
     def get_batch(self):
