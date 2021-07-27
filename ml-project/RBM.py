@@ -243,7 +243,7 @@ def visualize(args,input_x):
     plt.figure(figsize=(5,5), dpi=180)
     for i in range(0,8):
         for j in range(0,8):
-            img = input_x[0].numpy().reshape(28,28)
+            img = np.array(input_x[i*8+j]).reshape(28,28)
             plt.subplot(8,8,i*8+j+1)
             plt.imshow(img ,cmap = plt.cm.gray)
             plt.savefig('./pic/'+args.d+str(i)+str(j)+'.png')
