@@ -70,7 +70,7 @@ def _parallel_fit_per_epoch(
 
         loss = loss.cpu()
         loss_list.append(loss)
-        loss = loss.gpu()
+        loss = loss.cuda()
 
         # Print training status
         if batch_idx % log_interval == 0:
