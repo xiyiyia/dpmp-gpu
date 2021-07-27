@@ -162,28 +162,14 @@ for i, (batch, labels) in enumerate(train_loader):
     train_features[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = rbm.sample_hidden(batch).cpu().numpy()
     train_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
 
-    plt.figure(figsize=(5,5), dpi=180)
-    for i in range(0,4):
-        for j in range(0,4):
-            if (args.d == 'cifar10' or args.d == 'cifar100'):
-                img = np.array(train_features[i*4+j]).reshape(32,32)
-                plt.subplot(4,4,i*4+j+1)
-                plt.imshow(img ,cmap = plt.cm.gray)
-            else:
-                img = np.array(train_features[i*4+j]).reshape(28,28)
-                plt.subplot(4,4,i*4+j+1)
-                plt.imshow(img ,cmap = plt.cm.gray)
-    plt.savefig('./pic/'+args.d+'.png')
-    break
+for i, (batch, labels) in enumerate(test_loader):
+    batch = batch.view(len(batch), VISIBLE_UNITS)  # flatten input data
 
-# for i, (batch, labels) in enumerate(test_loader):
-#     batch = batch.view(len(batch), VISIBLE_UNITS)  # flatten input data
+    if CUDA:
+        batch = batch.cuda()
 
-#     if CUDA:
-#         batch = batch.cuda()
-
-#     test_features[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = rbm.sample_hidden(batch).cpu().numpy()
-#     test_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
+    test_features[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = rbm.sample_hidden(batch).cpu().numpy()
+    test_labels[i*BATCH_SIZE:i*BATCH_SIZE+len(batch)] = labels.numpy()
 
 
 
@@ -193,6 +179,14 @@ print('Classifying...')
 clf = LogisticRegression()
 clf.fit(train_features, train_labels)
 predictions = clf.predict(test_features)
+
+plt.figure(figsize=(5,5), dpi=180)
+for i in range(0,4):
+    for j in range(0,4):
+        img = np.array(predictions[i*4+j]).reshape(28,28)
+        plt.subplot(4,4,i*4+j+1)
+        plt.imshow(img ,cmap = plt.cm.gray)
+plt.savefig('./pic/'+args.d+'.png')
 
 print('Result: %d/%d' % (sum(predictions == test_labels), test_labels.shape[0]))
 
