@@ -142,7 +142,7 @@ class RBM:
     设计一个专用于MNIST生成的RBM模型
     '''
 
-    def __init__(self, nv = 784, nh = 500, b = 128, lr = 0.1):
+    def __init__(self, nv = 784, nh = 128, b = 128, lr = 0.1):
         self.nv = nv
         self.nh = nh
         self.lr = lr
@@ -282,7 +282,7 @@ def test_rbm(args,k=1):
         else:
             break
 
-    rbm = RBM()
+    rbm = RBM(nh=128,nv=784)
     rbm.fit(data,epochs=args.e)
     rebuild_value = []
     for i in test:
