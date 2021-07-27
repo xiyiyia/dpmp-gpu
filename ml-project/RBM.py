@@ -246,6 +246,7 @@ def visualize(args,input_x):
             img = input_x[i*8+j].reshape(28,28)
             plt.subplot(8,8,i*8+j+1)
             plt.imshow(img ,cmap = plt.cm.gray)
+            plt.savefig('./pic/'+args.d+str(i)+str(j)+'.png')
     # plt.figure()
     # plt.title('')
     # #  plt.plot(num_gpu, dp, "x-", color='m', label = "data_parrallel_in_nccl")
@@ -255,7 +256,7 @@ def visualize(args,input_x):
     # plt.legend()
     # plt.ylabel('MSE error')
     # plt.xlabel('Transmissions')
-    plt.savefig('./pic/'+args.d+'.png')
+    # plt.savefig('./pic/'+args.d+'.png')
 
 
 
@@ -281,7 +282,7 @@ def test_rbm(args,k=1):
         else:
             break
 
-    rbm = RBM(nv=784,nh=args.b*4)
+    rbm = RBM()
     rbm.fit(data,epochs=args.e)
     rebuild_value = []
     for i in test:
