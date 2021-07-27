@@ -156,7 +156,7 @@ class RBM:
 
     def forword(self, inpt):
         print(len(inpt),len(inpt[0]),len(inpt[1]))
-        print(len(self.W.T),len(self.W.T[0]))
+        #print(len(self.W.T),len(self.W.T[0]))
         z = np.dot(inpt, self.W.T) + self.bh
         return self.sigmoid(z)
 
@@ -202,7 +202,7 @@ class RBM:
                 # for v0_prob in  batch_data:
                 h0_prob = self.forword(v0_prob)
                 h0 = np.zeros_like(h0_prob)
-                print(h0_prob.shape,np.random.random(h0_prob.shape).shape)
+                
                 h0[h0_prob > np.random.random(h0_prob.shape)] = 1
 
                 v1_prob = self.backward(h0)
@@ -259,10 +259,7 @@ def test_rbm(args,k=1):
     for _, (batch_x, batch_y) in enumerate(train_data):
         if(len(batch_x) == 128):
             data.append(batch_x.reshape(128,784).numpy())
-            print(len(batch_x.reshape(128,784).numpy()),len(batch_x.reshape(128,784).numpy()[1]))
-            break
-            # print(batch_x.reshape(128,784).shape,batch_x.reshape(128,784).numpy().shape)
-            # break
+
         else:
             break
     # print(len(data),len(data[0][0]))
