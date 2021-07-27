@@ -262,16 +262,22 @@ def visualize(args,input_x):
 
 def test_rbm(args,k=1):
     train_data, test_data = get_Dataloader_model(args.d,args.b)
-    data = np.array([[]])
-    test = np.array([[]])
-    for _, (batch_x, batch_y) in enumerate(train_data):
+    # data = np.array([[]])
+    # test = np.array([[]])
+    for turn, (batch_x, batch_y) in enumerate(train_data):
         if(len(batch_x) == 128):
-            np.append(data,batch_x.reshape(128,784).numpy(),axis=0)
+            if turn == 0:
+                data = batch_x.reshape(128,784).numpy()
+            else:
+                np.append(data,batch_x.reshape(128,784).numpy(),axis=0)
         else:
             break
-    for _, (batch_x, batch_y) in enumerate(test_data):
+    for turn, (batch_x, batch_y) in enumerate(test_data):
         if(len(batch_x) == 128):
-            np.append(test,batch_x.reshape(128,784).numpy(),axis=0)
+            if turn == 0:
+                test = batch_x.reshape(128,784).numpy()
+            else:
+                np.append(test,batch_x.reshape(128,784).numpy(),axis=0)
         else:
             break
     print(data[0])
